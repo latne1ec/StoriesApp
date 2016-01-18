@@ -1,0 +1,166 @@
+-(void)downloadVideos {
+
+for (PFObject *object in self.contentArray) {
+
+if ([[object objectForKey:@"postType"] isEqualToString:@"video"]) {
+
+NSString *urlString = [object objectForKey:@"videoUrl"];
+
+AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:urlString] options:nil];
+NSArray *keys = @[@"playable", @"tracks",@"duration" ];
+
+[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+
+//                 // make sure everything downloaded properly
+//                 for (NSString *thisKey in keys) {
+//                     NSError *error = nil;
+//                     AVKeyValueStatus keyStatus = [asset statusOfValueForKey:thisKey error:&error];
+//                     if (keyStatus == AVKeyValueStatusFailed) {
+//                         return ;
+//                     }
+//                 }
+
+AVPlayerItem *item = [[AVPlayerItem alloc] initWithAsset:asset];
+
+dispatch_async(dispatch_get_main_queue(), ^ {
+
+[self.qPlayer insertItem:item afterItem:nil];
+//                     self.avPlayerLayer =[AVPlayerLayer playerLayerWithPlayer:self.qPlayer];
+//                     [self.avPlayerLayer setFrame:self.view.frame];
+//                     [self.view.layer addSublayer:self.avPlayerLayer];
+//                     [self.view bringSubviewToFront:self.imageView];
+//                     [self.view bringSubviewToFront:self.countDownLabel];
+//                     [self.qPlayer seekToTime:kCMTimeZero];
+[self.qPlayer pause];
+//[self.qPlayer play];
+});
+
+}];
+}
+}
+}
+
+-(void)showVideoImageTemporarily {
+
+PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
+SDWebImageManager *managerOne = [SDWebImageManager sharedManager];
+NSString *urlString = [currentContent objectForKey:@"imageUrl"];
+NSURL *url = [NSURL URLWithString:urlString];
+
+[managerOne downloadImageWithURL:url options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+
+}
+completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+
+//self.imageView.image = nil;
+self.imageView.image = images;
+//                               self.imageView.hidden = NO;
+//                               [self.avPlayer pause];
+//                               self.avPlayerLayer.hidden = YES;
+//                               [self.avPlayerLayer removeFromSuperlayer];
+//                               [self.view bringSubviewToFront:self.imageView];
+//                               [self.view bringSubviewToFront:self.countDownLabel];
+
+}];
+
+}
+
+
+//- (void)recordVid {
+//
+//    NSLog(@"Record");
+//    [self.cameraButton removeGestureRecognizer:self.camTap];
+//
+//    [UIView animateWithDuration:0.06 delay:0.02 options:0 animations:^{
+//        self.cameraButton.transform = CGAffineTransformMakeScale(1.135, 1.135);
+//    } completion:^(BOOL finished) {
+//        self.cameraButton.transform = CGAffineTransformMakeScale(1.11, 1.11);
+//    }];
+//
+////    self.menu.hidden = YES;
+////    self.flash.hidden = YES;
+////    self.selfieButton.hidden = YES;
+//    [self.cameraButton setHighlighted:YES];
+//    [_recorder record];
+//
+//}
+//
+//
+//-(void)stopVid {
+//
+//    NSLog(@"Stopping");
+//
+//    self.videoProgress.hidden = YES;
+//    CMTime currentTime = kCMTimeZero;
+//    currentTime = _recorder.session.currentSegmentDuration;
+//
+//    //CMTime newTime = CMTimeMakeWithSeconds(2, 1);
+//
+////    if (CMTimeGetSeconds(currentTime) <= CMTimeGetSeconds(newTime)) {
+////        [_recorder pause];
+////        self.menu.hidden = NO;
+////        self.flash.hidden = NO;
+////        self.selfieButton.hidden = NO;
+////        self.videoProgress.hidden = NO;
+////
+////        [_recorder.session removeAllSegments];
+////        [self capturePhoto:self];
+////    }
+////
+////    else {
+//
+//        [UIView animateWithDuration:0.10 animations:^{
+//            self.cameraButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
+//        } completion:nil];
+//
+//        [_recorder pause:^{
+//            self.cameraButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
+//            //[self.imageSelectedView removeFromSuperview];
+//            [self saveAndShowSession:_recorder.session];
+//        }];
+//    //}
+//}
+
+
+//    PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
+//    NSString *urlString = [currentContent objectForKey:@"contentUrl"];
+//    NSURL *url = [NSURL URLWithString:urlString];
+//
+//    self.subtitleLabel.text = [currentContent objectForKey:@"photoCaption"];
+//
+//    self.avAsset = [AVAsset assetWithURL:url];
+//    self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
+//    self.avPlayer = [AVPlayer playerWithPlayerItem:self.avPlayerItem];
+//    self.avPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: self.avPlayer];
+//    self.avPlayerLayer.frame = self.view.layer.bounds;
+//    [self.view.layer addSublayer:self.avPlayerLayer];
+
+
+//    self.avPlayerLayer = [AVPlayerLayer playerLayerWithPlayer: self.avPlayer];
+//    self.avPlayerLayer.frame = self.view.layer.bounds;
+//    [self.view.layer addSublayer:self.avPlayerLayer];
+//    [self.avPlayer play];
+//    [self.view bringSubviewToFront:self.subtitleLabel];
+//    [self.view bringSubviewToFront:self.countDownLabel];
+
+
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+//                        change:(NSDictionary *)change context:(void *)context {
+//    if (object == self.avPlayer && [keyPath isEqualToString:@"status"]) {
+//        if (self.avPlayer.status == AVPlayerStatusReadyToPlay) {
+//            [self.avPlayer play];
+//
+//        } else if (self.avPlayer.status == AVPlayerStatusFailed) {
+//            // something went wrong. player.error should contain some information
+//        }
+//    }
+//
+//    if (object == self.avPlayerTwo && [keyPath isEqualToString:@"status"]) {
+//        if (self.avPlayerTwo.status == AVPlayerStatusReadyToPlay) {
+//            [self.avPlayerTwo play];
+//
+//        } else if (self.avPlayerTwo.status == AVPlayerStatusFailed) {
+//            // something went wrong. player.error should contain some information
+//        }
+//    }
+//}
