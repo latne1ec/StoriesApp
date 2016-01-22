@@ -11,8 +11,6 @@
 #import <ParseUI/ParseUI.h>
 #import <AWSCore/AWSCore.h>
 
-
-
 @interface AppDelegate ()
 
 
@@ -33,7 +31,6 @@
     
     if([UIScreen mainScreen].bounds.size.height <= 568.0) {
         
-        NSLog(@"iPhone 4 or 5");
         
         NSShadow *shadow = [[NSShadow alloc] init];
         shadow.shadowColor = [UIColor clearColor];
@@ -41,7 +38,7 @@
         [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                               [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
                                                               shadow, NSShadowAttributeName,
-                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26], NSFontAttributeName, nil]];
+                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26.5], NSFontAttributeName, nil]];
     }
     
     else {
@@ -53,17 +50,7 @@
         [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                               [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
                                                               shadow, NSShadowAttributeName,
-                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:27], NSFontAttributeName, nil]];
-    }
-    
-    if ([PFUser currentUser]) {
-        
-    } else {
-        [PFUser enableAutomaticUser];
-        [[PFUser currentUser] setObject:@"pending" forKey:@"userStatus"];
-        [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            
-        }];
+                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
     }
     
     
@@ -82,66 +69,13 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
-//    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"localUser"] isEqualToString:@"YES"]) {
-//        //do something
-//        
-//        //int currentUserScore = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
-//        NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
-//        
-//        PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
-//        [query whereKey:@"userId" equalTo:userId];
-//        [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-//            if (error) {
-//                
-//            } else {
-//                
-//                self.currentUser = object;
-//                [self.currentUser setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"] forKey:@"userSchool"];
-//                 
-//                NSLog(@"User: %@", [object objectForKey:@"userStatus"]);
-//                
-//            }
-//        }];
-//        
-//    } else {
-//        
-//        NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
-//        
-//        PFObject *newUser = [PFObject objectWithClassName:@"CustomUser"];
-//        [newUser setObject:userId forKey:@"userId"];
-//        [newUser setObject:@"Locked 🔒" forKey:@"userSchool"];
-//        [newUser incrementKey:@"userScore" byAmount:[NSNumber numberWithInt:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue]]];
-//        [newUser incrementKey:@"runCount"];
-//        [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//            if (error) {
-//                
-//            } else {
-//                
-//                _currentUser = newUser;
-//                NSLog(@"NEW USER: %@", newUser);
-//                
-//                [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"localUser"];
-//                 [[NSUserDefaults standardUserDefaults] setObject:newUser.objectId forKey:@"userObjectId"];
-//                
-//                PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//                [currentInstallation setObject:newUser forKey:@"customUser"];
-//                [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//                    
-//                }];
-//            }
-//        }];
-//    }
-    
-    
     self.swipeBetweenVC = [YZSwipeBetweenViewController new];
     [self setupRootViewControllerForWindow];
     self.window.rootViewController = self.swipeBetweenVC;
     
-    
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:1 animated:NO];
 
-    
     [self.window makeKeyAndVisible];
     
     
@@ -149,11 +83,9 @@
     AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
                                                                                                     identityPoolId:@"us-east-1:071bc929-229a-4a61-8e99-063d4b14083e"];
     
-    
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest1
                                                                          credentialsProvider:credentialsProvider];
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
-    
     
     return YES;
 }
@@ -169,26 +101,71 @@
 
 }
 
+-(void)askUserToEnablePushInAppDelgate {
+    
+    UIApplication *application = [UIApplication sharedApplication];
+    
+    
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+                                                        UIUserNotificationTypeBadge |
+                                                        UIUserNotificationTypeSound);
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+                                                                                 categories:nil];
+        [application registerUserNotificationSettings:settings];
+        [application registerForRemoteNotifications];
+    } else {
+        // Register for Push Notifications before iOS 8
+        [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                         UIRemoteNotificationTypeAlert |
+                                                         UIRemoteNotificationTypeSound)];
+    }
+    
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    
+    NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    currentInstallation.channels = @[ @"global", userSchool ];
+    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSLog(@"Saved Sucessfully");
+        }
+    }];
+}
+
+-(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    if (currentInstallation.badge != 0) {
+        currentInstallation.badge = 0;
+        [currentInstallation saveEventually];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

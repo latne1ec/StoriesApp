@@ -1,0 +1,232 @@
+//
+//  AppDelegate.m
+//  Stories
+//
+//  Created by Evan Latner on 1/7/16.
+//  Copyright © 2016 stories. All rights reserved.
+//
+
+#import "AppDelegate.h"
+#import <Parse/Parse.h>
+#import <ParseUI/ParseUI.h>
+#import <AWSCore/AWSCore.h>
+
+
+
+@interface AppDelegate ()
+
+
+@end
+
+@implementation AppDelegate
+
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+_accepted = false;
+
+[Parse setApplicationId:@"UaGnyAmcvVo2aDaCaHf0bnNm0c5IyjyiSCSip75i"
+clientKey:@"CR1zqHWJ8FdsZWgf43IjSJbxuckMT83UZRCS7Kba"];
+
+[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+[PFImageView class];
+
+if([UIScreen mainScreen].bounds.size.height <= 568.0) {
+
+NSLog(@"iPhone 4 or 5");
+
+NSShadow *shadow = [[NSShadow alloc] init];
+shadow.shadowColor = [UIColor clearColor];
+shadow.shadowOffset = CGSizeMake(0, .0);
+[[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+[UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
+shadow, NSShadowAttributeName,
+[UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26.5], NSFontAttributeName, nil]];
+}
+
+else {
+
+
+NSShadow *shadow = [[NSShadow alloc] init];
+shadow.shadowColor = [UIColor clearColor];
+shadow.shadowOffset = CGSizeMake(0, .0);
+[[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+[UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
+shadow, NSShadowAttributeName,
+[UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
+}
+
+
+if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1"] isEqualToString:@"YES"]) {
+//do something
+} else {
+
+NSString *userId = [[NSUUID UUID] UUIDString];
+
+[[NSUserDefaults standardUserDefaults] setObject:userId forKey:@"userId"];
+[[NSUserDefaults standardUserDefaults] setInteger:98 forKey:@"localUserScore"];
+[[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCount"];
+[[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1"];
+[[NSUserDefaults standardUserDefaults] setObject:userId forKey:@"userId"];
+[[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchool"];
+[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+//    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"localUser"] isEqualToString:@"YES"]) {
+//        //do something
+//
+//        //int currentUserScore = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
+//        NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+//
+//        PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
+//        [query whereKey:@"userId" equalTo:userId];
+//        [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+//            if (error) {
+//
+//            } else {
+//
+//                self.currentUser = object;
+//                [self.currentUser setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"] forKey:@"userSchool"];
+//
+//                NSLog(@"User: %@", [object objectForKey:@"userStatus"]);
+//
+//            }
+//        }];
+//
+//    } else {
+//
+//        NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+//
+//        PFObject *newUser = [PFObject objectWithClassName:@"CustomUser"];
+//        [newUser setObject:userId forKey:@"userId"];
+//        [newUser setObject:@"Locked 🔒" forKey:@"userSchool"];
+//        [newUser incrementKey:@"userScore" byAmount:[NSNumber numberWithInt:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue]]];
+//        [newUser incrementKey:@"runCount"];
+//        [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//            if (error) {
+//
+//            } else {
+//
+//                _currentUser = newUser;
+//                NSLog(@"NEW USER: %@", newUser);
+//
+//                [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"localUser"];
+//                 [[NSUserDefaults standardUserDefaults] setObject:newUser.objectId forKey:@"userObjectId"];
+//
+//                PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//                [currentInstallation setObject:newUser forKey:@"customUser"];
+//                [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//
+//                }];
+//            }
+//        }];
+//    }
+
+
+self.swipeBetweenVC = [YZSwipeBetweenViewController new];
+[self setupRootViewControllerForWindow];
+self.window.rootViewController = self.swipeBetweenVC;
+
+
+AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+[appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:1 animated:NO];
+
+
+[self.window makeKeyAndVisible];
+
+
+
+AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
+identityPoolId:@"us-east-1:071bc929-229a-4a61-8e99-063d4b14083e"];
+
+
+AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest1
+credentialsProvider:credentialsProvider];
+AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+
+
+return YES;
+}
+
+- (void)setupRootViewControllerForWindow{
+
+UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+UINavigationController *navCon1 = [storyboard instantiateViewControllerWithIdentifier:@"CameraNav"];
+UINavigationController *navCon2 = [storyboard instantiateViewControllerWithIdentifier:@"StoriesNav"];
+
+self.swipeBetweenVC.viewControllers = @[navCon2, navCon1];
+self.swipeBetweenVC.initialViewControllerIndex = (NSInteger)self.swipeBetweenVC.viewControllers.count/2;
+
+}
+
+-(void)askUserToEnablePushInAppDelgate {
+
+UIApplication *application = [UIApplication sharedApplication];
+
+
+if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+UIUserNotificationTypeBadge |
+UIUserNotificationTypeSound);
+UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+categories:nil];
+[application registerUserNotificationSettings:settings];
+[application registerForRemoteNotifications];
+} else {
+// Register for Push Notifications before iOS 8
+[application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+UIRemoteNotificationTypeAlert |
+UIRemoteNotificationTypeSound)];
+}
+
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+
+// Store the deviceToken in the current installation and save it to Parse.
+PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+[currentInstallation setDeviceTokenFromData:deviceToken];
+currentInstallation.channels = @[ @"global" ];
+[currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+if (error) {
+NSLog(@"Error: %@", error);
+} else {
+NSLog(@"Saved Sucessfully");
+}
+}];
+}
+
+-(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+
+NSLog(@"Error registering for push notifications: %@", error);
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+[PFPush handlePush:userInfo];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+if (currentInstallation.badge != 0) {
+currentInstallation.badge = 0;
+[currentInstallation saveEventually];
+}
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+@end

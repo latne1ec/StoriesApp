@@ -21,6 +21,8 @@
 
 - (void)setupRootViewControllerForWindow;
 
+-(void)askUserToEnablePushInAppDelgate;
+
 
 @end
 

@@ -15,13 +15,10 @@
 #define IS_IOS8 [[UIDevice currentDevice].systemVersion floatValue] >= 8.0
 
 
-
-
 @interface VerifyEmailTableViewController ()
 
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSMutableArray *acceptableEmailAddress;
-
 
 @end
 
@@ -43,7 +40,9 @@
             
         } else {
             self.acceptableEmailAddress = config[@"acceptableEmailAddress"];
-            NSLog(@"This: %@", self.acceptableEmailAddress);
+            NSString *link = config[@"appLink"];
+            [[NSUserDefaults standardUserDefaults] setObject:link forKey:@"appLink"];
+            NSLog(@"Link: %@", link);
             
         }
     }];
@@ -67,6 +66,11 @@
 -(void)viewDidAppear:(BOOL)animated {
     
     [self.emailTextfield becomeFirstResponder];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark - Table view data source
@@ -108,7 +112,7 @@
     self.userschool = [string capitalizedString];
     
     if ([aString rangeOfString:@".edu"].location == NSNotFound) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email" message:@"Please enter a valid .edu email address" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email" message:@"Please enter a valid .edu email address" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
         [alert show];
         return;
     }
@@ -119,16 +123,13 @@
     }
     
     if (![self.acceptableEmailAddress containsObject:self.userschool]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"Stories isn't available there right now." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"Stories isn't available there right now." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
             [alert show];
             return;
         
     } else {
-    
-        NSLog(@"UserSchool: %@", self.userschool);
-        
+            
         [self incrementSchoolUserCount];
-        
         [[NSUserDefaults standardUserDefaults] setObject:self.userschool forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
@@ -139,7 +140,14 @@
         PFObject *user = self.currentUser;
         [user setObject:emailAddress forKey:@"emailAddress"];
         [user setObject:self.userschool forKey:@"userSchool"];
-        [user setObject:@"pending" forKey:@"userStatus"];
+        if ([self.userschool isEqualToString:@"Example"]) {
+            [user setObject:@"approved" forKey:@"userStatus"];
+            [[NSUserDefaults standardUserDefaults] setObject:@"approved" forKey:@"userStatus"];
+            [[NSUserDefaults standardUserDefaults] setObject:@"approved" forKey:@"universityStatus"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        } else {
+            [user setObject:@"pending" forKey:@"userStatus"];
+        }
         [user setObject:@"pending" forKey:@"universityStatus"];
         [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
@@ -157,7 +165,9 @@
                         [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.6];
                         [self.emailTextfield resignFirstResponder];
                         [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
-                        //[self dismissViewControllerAnimated:YES completion:nil];
+                        [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+
                     }
                 }];
             }
@@ -167,7 +177,7 @@
 
 -(void)showAlert {
     
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Please check your email and activate your account. If you didn't receive the email, check your spam folder." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Please check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
         [alertView show];
 
         alertView.tag = 101;
@@ -181,10 +191,8 @@
         
         if (buttonIndex == 0) {
             
-            StatusTableViewController *svc = [self.storyboard instantiateViewControllerWithIdentifier:@"StatusVC"];
-            svc.view.layer.speed = 2.0;
-            svc.currentUser = self.currentUser;
-            [self presentViewController:svc animated:YES completion:nil];
+            [self dismissViewControllerAnimated:YES completion:nil];
+                
         }
     }
 }
@@ -195,21 +203,21 @@
     [query whereKey:@"universityName" equalTo:self.userschool];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if (error) {
-            NSLog(@"ERROR: yo %@", error);
             
             PFObject *school = [PFObject objectWithClassName:@"Universities"];
             [school setObject:self.userschool forKey:@"universityName"];
             [school setObject:@"pending" forKey:@"universityStatus"];
-            [school incrementKey:@"userCount"];
+            [school incrementKey:@"userSignupCount"];
+            [school setObject:[NSNumber numberWithInt:499] forKey:@"userThreshold"];
             [school saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 
                 if (error) {
                 } else {
                 }
             }];
-        } else {
+         } else {
 
-            [object incrementKey:@"userCount"];
+            [object incrementKey:@"userSignupCount"];
             [object saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                
                 if (error) {

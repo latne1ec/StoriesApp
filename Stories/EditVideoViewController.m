@@ -18,9 +18,6 @@
 @property (nonatomic) float keyboardOriginY;
 @property (nonatomic, strong) AppDelegate *appDelegate;
 
-
-
-
 @end
 
 @implementation EditVideoViewController
@@ -33,9 +30,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
-        // Custom initialization
     }
-    
     return self;
 }
 
@@ -54,9 +49,9 @@
         
         self.filterSwitcherView.filters = @[
                                             emptyFilter,
-                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectChrome"],
+                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectNoir"],
+                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
                                             ];
         _player.SCImageView = self.filterSwitcherView;
         [self.filterSwitcherView addObserver:self forKeyPath:@"selectedFilter" options:NSKeyValueObservingOptionNew context:nil];
@@ -100,7 +95,7 @@
     [overlayView setBackgroundColor:[UIColor clearColor]];
     [self.view addSubview:overlayView];
 
-    self.uploadPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(overlayView.frame)-60, -9, 44, 44)];
+    self.uploadPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(overlayView.frame)-57, -5, 44, 44)];
     [self.uploadPhotoButton setImage:[UIImage imageNamed:@"addDos"] forState:UIControlStateNormal];
     //[self.uploadPhotoButton addTarget:self action:@selector(saveToCameraRoll) forControlEvents:UIControlEventTouchUpInside];
     
@@ -108,13 +103,12 @@
     
     [overlayView addSubview:self.uploadPhotoButton];
     
-//    UITapGestureRecognizer *imageViewTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
-//    imageViewTap.delegate = (id) self;
-//    imageViewTap.numberOfTapsRequired = 1;
-//    imageViewTap.numberOfTouchesRequired = 1;
-//    [self.view addGestureRecognizer:imageViewTap];
-//    UIPanGestureRecognizer *drag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(captionDrag:)];
-//    [self.view addGestureRecognizer:drag];
+    UITapGestureRecognizer *imageViewTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
+    imageViewTap.delegate = (id) self;
+    imageViewTap.numberOfTapsRequired = 1;
+    [self.view addGestureRecognizer:imageViewTap];
+    UIPanGestureRecognizer *drag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(captionDrag:)];
+    [self.view addGestureRecognizer:drag];
     
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(keyboardOnScreen:) name:UIKeyboardDidShowNotification object:nil];
@@ -127,7 +121,7 @@
 }
 
 - (IBAction)bounce {
-    NSLog(@"Boucning");
+    //NSLog(@"Boucning");
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.duration = 1.1;
     animationGroup.repeatCount = INFINITY;
@@ -147,7 +141,7 @@
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
-        NSLog(@"hiiii");
+        //NSLog(@"hiiii");
         [UIView animateWithDuration:0.12 animations:^{
             self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.30, 1.30);
             
@@ -161,7 +155,7 @@
         //self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
         [UIView animateWithDuration:0.1 animations:^{
         } completion:^(BOOL finished) {
-            NSLog(@"Ended:");
+            //NSLog(@"Ended:");
             [self saveToCameraRoll];
             
             self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
@@ -177,12 +171,8 @@
 ///********************************************************************
 /////PHOTO CAPTION
 - (void)imageViewTapped:(UITapGestureRecognizer *)recognizer {
-    
-    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
-    }
-    else {
         
-        NSLog(@"Tap tap");
+        //NSLog(@"Tap tap");
         caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         if([caption isFirstResponder]){
@@ -198,7 +188,6 @@
                 caption.alpha = 1;
             }
         }
-    }
 }
 - (void) initCaption{
     
@@ -281,7 +270,7 @@ replacementString:(NSString *)string{
     CGRect rawFrame      = [value CGRectValue];
     CGRect keyboardFrame = [self.view convertRect:rawFrame fromView:nil];
     
-    NSLog(@"keyboard %f and %f", keyboardFrame.origin.y-40, keyboardFrame.origin.x);
+    //NSLog(@"keyboard %f and %f", keyboardFrame.origin.y-40, keyboardFrame.origin.x);
     
     _keyboardOriginY = keyboardFrame.origin.y;
     [self setKeyboardFrame];
@@ -473,7 +462,7 @@ replacementString:(NSString *)string{
     UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
     
-    NSLog(@"Thumbnail: %@", thumbnail);
+    //NSLog(@"Thumbnail: %@", thumbnail);
     
     
     if (thumbnail.size.width > 140) thumbnail = ResizePhotoTwo(thumbnail, 225, 400); //300 x 400 -- 240 x 430
@@ -563,10 +552,10 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
         [userPhoto setObject:caption.text forKey:@"contentCaption"];
         [userPhoto setObject:capLoc forKey:@"captionLocation"];
     }
-    [userPhoto setObject:@"approved" forKey:@"postStatus"];
+    [userPhoto setObject:@"pending" forKey:@"postStatus"];
     [userPhoto setObject:@"video" forKey:@"postType"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
-   // [userPhoto setObject:self.currentUser forKey:@"user"];
+    [userPhoto setObject:self.currentUser forKey:@"user"];
        [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {
@@ -587,11 +576,11 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
         [UIView animateWithDuration:0.09 animations:^{
-            NSLog(@"Started");
+            //NSLog(@"Started");
             self.closeButton.transform = CGAffineTransformMakeScale(1.4, 1.4);
             
         } completion:^(BOOL finished) {
-            NSLog(@"FINISHED");
+            //NSLog(@"FINISHED");
             
         }];
     }
@@ -599,12 +588,11 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         
         [UIView animateWithDuration:0.08 animations:^{
-            NSLog(@"Started");
+            //NSLog(@"Started");
             self.closeButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
             
         } completion:^(BOOL finished) {
-            NSLog(@"FINISHED");
-            
+            //NSLog(@"FINISHED");
             [self cancelVideo];
         }];
     }

@@ -38,6 +38,11 @@
 @property (nonatomic, readonly) NSUInteger currentIndex;
 @property (nonatomic, strong) UIButton *camButtonBottom;
 
+@property (nonatomic, strong) PFObject *currentUser;
+@property (nonatomic, strong) PFObject *university;
+
+
+
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapp;
 

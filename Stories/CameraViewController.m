@@ -16,6 +16,7 @@
 #import "VerifyEmailTableViewController.h"
 #import "StatusTableViewController.h"
 #import "Reachability.h"
+#import "StoriesTableViewController.h"
 
 
 #define kVideoPreset AVCaptureSessionPresetHigh
@@ -33,18 +34,17 @@
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic) BOOL accepted;
 
+@property (nonatomic, strong) UIVisualEffectView *visualEffectView;
+@property (nonatomic, strong) UIVisualEffect *blurEffect;
+
 @end
 
 @implementation CameraViewController
-
 
 @synthesize caption;
 
 #pragma mark - UIViewController
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
-
-#endif
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -57,14 +57,18 @@
                                                                            [[UIScreen mainScreen] bounds].size.height)];
     imageView.tag = 101;
     
-    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
-        [imageView setImage:[UIImage imageNamed:@"blackScreen"]];
-    } else {
-        [imageView setImage:[UIImage imageNamed:@"blackScreen6"]];
+    if([UIScreen mainScreen].bounds.size.height < 568.0) {
+        [imageView setImage:[UIImage imageNamed:@"iphone4Black"]];
     }
-    //[UIApplication.sharedApplication.keyWindow addSubview:imageView];
-    
-    
+    else if([UIScreen mainScreen].bounds.size.height == 568.0) {
+        [imageView setImage:[UIImage imageNamed:@"blackScreen"]];
+    } else if ([UIScreen mainScreen].bounds.size.height == 667.0) {
+        [imageView setImage:[UIImage imageNamed:@"blackScreen6"]];
+    } else  if ([UIScreen mainScreen].bounds.size.height == 736.0) {
+        [imageView setImage:[UIImage imageNamed:@"6plusBlack"]];
+    }
+        
+    [UIApplication.sharedApplication.keyWindow addSubview:imageView];
     
     if ([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]==NotReachable) {
         //connection unavailable
@@ -84,197 +88,127 @@
         [badEmail addSubview:button];
         
     } else {
-        
         //connection available
     }
     
-//    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"accountActivated"] isEqualToString:@"YES"]) {
-//        NSLog(@"DOOOOPPEE SON");
-//        [self getUser];
-//        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//            imageView.alpha = 0.0;
-//        } completion:^(BOOL finished) {
-//            
-//        }];
-//    } else {
-//    
-//        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"localUser"] isEqualToString:@"YES"]) {
-//            
-//        NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
-//        
-//        PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
-//        [query whereKey:@"userId" equalTo:userId];
-//        [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-//            if (error) {
-//                NSLog(@"ERROR: %@", error);
-//            } else {
-//                
-//                self.currentUser = object;
-//                
-//                NSString *userSchool = [object objectForKey:@"userSchool"];
-//                [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
-//                [[NSUserDefaults standardUserDefaults] synchronize];
-//                
-//                NSLog(@"Current User: %@", object);
-//                
-//                
-//                if ([self.currentUser objectForKey:@"emailAddress"] == nil) {
-//                    NSLog(@"Emial is nil");
-//                    //[imageView removeFromSuperview];
-//                    
-//                    VerifyEmailTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"VerifyEmail"];
-//                    vc.view.layer.speed = 2.0;
-//                    vc.currentUser = self.currentUser;
-//                   [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//                       imageView.alpha = 0.0;
-//                   } completion:^(BOOL finished) {
-//                       
-//                   }];
-//                    
-//                    [self presentViewController:vc animated:NO completion:nil];
-//                    
-//                }
-//                
-//                else if ([[self.currentUser objectForKey:@"universityStatus"] isEqualToString:@"pending"]) {
-//                    
-//                    [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//                        imageView.alpha = 0.0;
-//                    } completion:^(BOOL finished) {
-//                        
-//                    }];
-//
-//                    StatusTableViewController *svc = [self.storyboard instantiateViewControllerWithIdentifier:@"StatusVC"];
-//                    svc.view.layer.speed = 2.0;
-//                    svc.currentUser = self.currentUser;
-//                    [self presentViewController:svc animated:NO completion:nil];
-//                }
-//                
-//                else if ([[self.currentUser objectForKey:@"userStatus"] isEqualToString:@"pending"]) {
-//                    
-//                    UIView *badEmail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-//                    [self.view addSubview:badEmail];
-//                    badEmail.backgroundColor = [UIColor clearColor];
-//                    UIButton *button = [[UIButton alloc] init];
-//                    button.frame = CGRectMake(0, 0, 300, 100);
-//                    button.center = self.view.center;
-//                    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//                    button.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:20];
-//                    button.titleLabel.numberOfLines = 2;
-//                    [button.titleLabel setTextAlignment:NSTextAlignmentCenter];
-//                    [button setTitle:@"Please check your email \n to activate your account" forState:UIControlStateNormal];
-//                    [imageView addSubview:badEmail];
-//                    [badEmail addSubview:button];
-//                }
-//                
-//                else {
-//                    [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//                        imageView.alpha = 0.0;
-//                    } completion:^(BOOL finished) {
-//                        
-//                    }];
-//                    NSLog(@"We all good");
-//                    
-//                    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"accountActivated"];
-//                    [[NSUserDefaults standardUserDefaults] synchronize];
-//
-//                }
-//            }
-//            }];
-//        } else {
-//            
-//            NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
-//            
-//            PFObject *newUser = [PFObject objectWithClassName:@"CustomUser"];
-//            [newUser setObject:userId forKey:@"userId"];
-//            [newUser setObject:@"" forKey:@"userSchool"];
-//            [newUser incrementKey:@"userScore" byAmount:[NSNumber numberWithInt:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue]]];
-//            [newUser incrementKey:@"runCount" byAmount:[NSNumber numberWithInt:2]];
-//            [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//                if (error) {
-//                    
-//                } else {
-//                    
-//                    self.currentUser = newUser;
-//                    NSLog(@"NEW USER: %@", newUser);
-//                    
-//                    
-//                    
-//                    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"localUser"];
-//                    [[NSUserDefaults standardUserDefaults] setObject:newUser.objectId forKey:@"userObjectId"];
-//                    NSString *userSchool = [newUser objectForKey:@"userSchool"];
-//                    [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
-//                    [[NSUserDefaults standardUserDefaults] synchronize];
-//                    
-//                    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//                    [currentInstallation setObject:newUser forKey:@"customUser"];
-//                    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//                        
-//                    }];
-//                    
-//                    if ([self.currentUser objectForKey:@"emailAddress"] == nil) {
-//                        NSLog(@"Emial is nil");
-//                        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//                            imageView.alpha = 0.0;
-//                        } completion:^(BOOL finished) {
-//                            
-//                        }];
-//
-//                        VerifyEmailTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"VerifyEmail"];
-//                        vc.view.layer.speed = 2.0;
-//                        vc.currentUser = self.currentUser;
-//                        [self presentViewController:vc animated:NO completion:nil];
-//                        
-//                    }
-//                    
-//                    else if ([[self.currentUser objectForKey:@"universityStatus"] isEqualToString:@"pending"]) {
-//                        
-//                        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//                            imageView.alpha = 0.0;
-//                        } completion:^(BOOL finished) {
-//                            
-//                        }];
-//
-//                        StatusTableViewController *svc = [self.storyboard instantiateViewControllerWithIdentifier:@"StatusVC"];
-//                        svc.view.layer.speed = 2.0;
-//                        svc.currentUser = self.currentUser;
-//                        [self presentViewController:svc animated:NO completion:nil];
-//                    }
-//                    
-//                    else if ([[self.currentUser objectForKey:@"userStatus"] isEqualToString:@"pending"]) {
-//                        
-//                        UIView *badEmail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-//                        [self.view addSubview:badEmail];
-//                        badEmail.backgroundColor = [UIColor clearColor];
-//                        UIButton *button = [[UIButton alloc] init];
-//                        button.frame = CGRectMake(0, 0, 300, 100);
-//                        button.center = self.view.center;
-//                        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//                        button.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:20];
-//                        button.titleLabel.numberOfLines = 2;
-//                        [button.titleLabel setTextAlignment:NSTextAlignmentCenter];
-//                        [button setTitle:@"Please check your email \n to activate your account" forState:UIControlStateNormal];
-//                        [imageView addSubview:badEmail];
-//                        [badEmail addSubview:button];
-//                    }
-//                    
-//                    else {
-//                        NSLog(@"We all good");
-//                        
-//                        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"accountActivated"];
-//                        [[NSUserDefaults standardUserDefaults] synchronize];
-//
-//                        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
-//                            imageView.alpha = 0.0;
-//                        } completion:^(BOOL finished) {
-//                            
-//                        }];
-//                    }
-//
-//                }
-//            }];
-//
-//            }
-//    }
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"accountActivated"] isEqualToString:@"YES"]) {
+        //NSLog(@"DOOOOPPEE SON");
+        
+        [self getUser];
+        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
+            imageView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    } else {
+    
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"localUser"] isEqualToString:@"YES"]) {
+            
+            //User already created, find them
+            NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+            PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
+            [query whereKey:@"userId" equalTo:userId];
+            [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+                if (error) {
+                    //NSLog(@"ERROR: %@", error);
+                } else {
+                    
+                    self.currentUser = object;
+                    
+                    NSString *userSchool = [object objectForKey:@"userSchool"];
+                    [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    if ([self.currentUser objectForKey:@"emailAddress"] == nil) {
+                        
+                        VerifyEmailTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"VerifyEmail"];
+                        vc.view.layer.speed = 2.0;
+                        vc.currentUser = self.currentUser;
+                       [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
+                           imageView.alpha = 0.0;
+                       } completion:^(BOOL finished) {
+                           
+                       }];
+                        
+                        [self presentViewController:vc animated:NO completion:nil];
+                        
+                    }
+                    
+                    else {
+                        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
+                            imageView.alpha = 0.0;
+                        } completion:^(BOOL finished) {
+                        }];
+                        
+                        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"accountActivated"];
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:100] forKey:@"localUserScore"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+
+                    }
+                }
+            }];
+        } else {
+            
+            //Create User
+            NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+            PFObject *newUser = [PFObject objectWithClassName:@"CustomUser"];
+            [newUser setObject:userId forKey:@"userId"];
+            [newUser setObject:@"" forKey:@"userSchool"];
+            [newUser incrementKey:@"userScore" byAmount:[NSNumber numberWithInt:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue]]];
+            [newUser incrementKey:@"runCount" byAmount:[NSNumber numberWithInt:2]];
+            [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (error) {
+                    
+                } else {
+                    
+                    self.currentUser = newUser;
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"localUser"];
+                    [[NSUserDefaults standardUserDefaults] setObject:newUser.objectId forKey:@"userObjectId"];
+                    NSString *userSchool = [newUser objectForKey:@"userSchool"];
+                    [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+                    [currentInstallation setObject:newUser forKey:@"customUser"];
+                    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        
+                    }];
+                    
+                    if ([self.currentUser objectForKey:@"emailAddress"] == nil) {
+
+                        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
+                            imageView.alpha = 0.0;
+                        } completion:^(BOOL finished) {
+                            
+                        }];
+
+                        VerifyEmailTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"VerifyEmail"];
+                        vc.view.layer.speed = 2.0;
+                        vc.currentUser = self.currentUser;
+                        [self presentViewController:vc animated:NO completion:nil];
+                        
+                    }
+                    
+                    else {
+                        
+                        //NSLog(@"We all good");
+                        
+                        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"accountActivated"];
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:100] forKey:@"localUserScore"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        [UIView animateWithDuration:0.25 delay:.7 options:0 animations:^{
+                            imageView.alpha = 0.0;
+                        } completion:^(BOOL finished) {
+                            
+                        }];
+                    }
+                }
+            }];
+        }
+    }
+    
     
     
     self.capturePhotoButton.alpha = 0.0;
@@ -316,10 +250,12 @@
     _recorder.captureSessionPreset = [SCRecorderTools bestCaptureSessionPresetCompatibleWithAllDevices];
     _recorder.maxRecordDuration = CMTimeMake(7, 1);
     //_recorder.fastRecordMethodEnabled = true;
+    _recorder.mirrorOnFrontCamera = YES;
+
     
     
     _recorder.delegate = self;
-    _recorder.autoSetVideoOrientation = YES;
+    _recorder.autoSetVideoOrientation = NO;
     
     self.previewView = [[UIView alloc] initWithFrame:self.view.frame];
     
@@ -351,7 +287,7 @@
     
     NSError *error;
     if (![_recorder prepare:&error]) {
-        NSLog(@"Prepare error: %@", error.localizedDescription);
+        //NSLog(@"Prepare error: %@", error.localizedDescription);
     }
     
     self.camTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(capturePhoto:)];
@@ -376,8 +312,14 @@
     [self.cameraButton.layer setCornerRadius:20.0];
     [self.view addSubview:self.cameraButton];
     
+    self.flashButton = [[UIButton alloc]initWithFrame:CGRectMake(14, 17, 33, 33)];
+    [self.flashButton setImage:[UIImage imageNamed:@"flash"] forState:UIControlStateNormal];
+    [self.flashButton setImage:[UIImage imageNamed:@"flashSelectedTwo"] forState:UIControlStateSelected];
+    [self.flashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
+    [self.flashButton setSelected:YES];
+    [self.view addSubview:self.flashButton];
     
-    self.menu = [[UIButton alloc]initWithFrame:CGRectMake(6, CGRectGetHeight(self.view.frame)-70, 65, 65)];
+    self.menu = [[UIButton alloc]initWithFrame:CGRectMake(6, CGRectGetHeight(self.view.frame)-70, 68, 68)];
     [self.menu setImage:[UIImage imageNamed:@"dasMenu"] forState:UIControlStateNormal];
     //[self.menu addTarget:self action:@selector(ScrollToHomeView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.menu];
@@ -394,6 +336,10 @@
     [self.selfieButton setImage:[UIImage imageNamed:@"flipCamTho"] forState:UIControlStateNormal];
     [self.selfieButton addTarget:self action:@selector(handleReverseCameraTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.selfieButton];
+    
+    
+    [self.videoProgress setTransform:CGAffineTransformMakeScale(1.0, 20.0)];
+    
 
     [self.videoProgress setTransform:CGAffineTransformMakeScale(1.0, 20.0)];
     [self.videoProgress setProgress:0.f];
@@ -404,7 +350,7 @@
     longPressTwo.minimumPressDuration = 0.05;
     [longPressTwo addTarget:self action:@selector(makeUploadButtonBounce:)];
 
-    self.uploadPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.photoOverlayView.frame)-60, -9, 44, 44)];
+    self.uploadPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.photoOverlayView.frame)-57, -5, 44, 44)];
     [self.uploadPhotoButton setImage:[UIImage imageNamed:@"addDos"] forState:UIControlStateNormal];
     //[self.uploadPhotoButton addTarget:self action:@selector(uploadPhoto) forControlEvents:UIControlEventTouchUpInside];
     
@@ -426,8 +372,11 @@
 
 }
 
+
 -(void)appClosed{
     
+    NSLog(@"App Closed");
+    [ProgressHUD dismiss];
     [UIApplication sharedApplication].statusBarHidden = YES;
     
 }
@@ -445,7 +394,6 @@
                 if (error) {
                     
                 } else {
-                    NSLog(@"Saved");
                 }
             }];
         }
@@ -482,7 +430,7 @@
         }];
         
         self.menu.hidden = YES;
-        self.flash.hidden = YES;
+        self.flashButton.hidden = YES;
         self.selfieButton.hidden = YES;
         [_recorder record];
 
@@ -508,7 +456,6 @@
 
     if (recognizer.state == UIGestureRecognizerStateBegan) {
 
-        NSLog(@"hiiii");
         [UIView animateWithDuration:0.07 animations:^{
             self.menu.transform = CGAffineTransformMakeScale(1.30, 1.30);
 
@@ -525,7 +472,6 @@
             [self ScrollToHomeView];
 
         } completion:^(BOOL finished) {
-            NSLog(@"Ended:");
 
             self.menu.transform = CGAffineTransformMakeScale(1.0, 1.0);
         }];
@@ -536,7 +482,6 @@
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
-        NSLog(@"hiiii");
         [UIView animateWithDuration:0.12 animations:^{
             self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.30, 1.30);
             
@@ -551,7 +496,6 @@
         //self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
         [UIView animateWithDuration:0.1 animations:^{
         } completion:^(BOOL finished) {
-            NSLog(@"Ended:");
             [self uploadPhoto];
             self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
         }];
@@ -566,7 +510,7 @@
     self.closeButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
     
     self.menu.hidden = NO;
-    self.flash.hidden = NO;
+    self.flashButton.hidden = NO;
     self.selfieButton.hidden = NO;
 
     
@@ -591,7 +535,7 @@
     int currentUserScore = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
     
     if (currentUserScore == 99) {
-        NSLog(@"BACK AT IT");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reload_data" object:self];
         [self viewDidLoad];
     }
     
@@ -610,7 +554,7 @@
     [self.cameraButton addGestureRecognizer:self.camTap];
     
     self.menu.hidden = NO;
-    self.flash.hidden = NO;
+    self.flashButton.hidden = NO;
     self.selfieButton.hidden = NO;
     [self.videoProgress setProgress:0.f animated:NO];
     self.videoProgress.hidden = YES;
@@ -634,10 +578,10 @@
     tap.delegate = self;
     tap.numberOfTapsRequired = 1;
     //[self performSelector:@selector(focus) withObject:nil afterDelay:2.0];
+    
 }
 
 -(void)focus {
-    NSLog(@"Focus manneee!!");
     CGPoint point = CGPointMake(250, 250);
     [_recorder autoFocusAtPoint:point];
 }
@@ -732,7 +676,8 @@ replacementString:(NSString *)string{
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.15];
     [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:caption cache:YES];
-    caption.frame = CGRectMake(0,self.view.frame.size.height/2+50,self.view.frame.size.width,40);
+    caption.frame = CGRectMake(0,self.view.frame.size.height/2+31,self.view.frame.size.width,40);
+    //[self setKeyboardFrame];
     [UIView commitAnimations];
     
 }
@@ -754,8 +699,6 @@ replacementString:(NSString *)string{
     
     CGRect rawFrame      = [value CGRectValue];
     CGRect keyboardFrame = [self.view convertRect:rawFrame fromView:nil];
-    
-    NSLog(@"keyboard %f and %f", keyboardFrame.origin.y-40, keyboardFrame.origin.x);
     
     _keyboardOriginY = keyboardFrame.origin.y;
     [self setKeyboardFrame];
@@ -787,13 +730,11 @@ replacementString:(NSString *)string{
     
         if (self.device == AVCaptureDevicePositionBack) {
     
-            NSLog(@"Switching to Selfie");
             self.device = AVCaptureDevicePositionFront;
             //[self.cameraButton addGestureRecognizer:self.camTap];
         }
     
         else {
-            NSLog(@"Switching to Back Cam");
             self.device = AVCaptureDevicePositionBack;
             //[self.cameraButton addGestureRecognizer:self.camTap];
         }
@@ -887,10 +828,14 @@ replacementString:(NSString *)string{
             case SCFlashModeAuto:
                 flashModeString = @"Flash : Off";
                 _recorder.flashMode = SCFlashModeOff;
+                [self.flashButton setSelected:NO];
+
                 break;
             case SCFlashModeOff:
                 flashModeString = @"Flash : On";
                 _recorder.flashMode = SCFlashModeOn;
+                [self.flashButton setSelected:YES];
+
                 break;
             case SCFlashModeOn:
                 flashModeString = @"Flash : Light";
@@ -908,10 +853,14 @@ replacementString:(NSString *)string{
             case SCFlashModeOff:
                 flashModeString = @"Flash : On";
                 _recorder.flashMode = SCFlashModeLight;
+                [self.flashButton setSelected:NO];
+
                 break;
             case SCFlashModeLight:
                 flashModeString = @"Flash : Off";
                 _recorder.flashMode = SCFlashModeOff;
+                [self.flashButton setSelected:YES];
+
                 break;
             default:
                 break;
@@ -932,12 +881,10 @@ replacementString:(NSString *)string{
 }
 
 - (void)recorder:(SCRecorder *)recorder didCompleteSession:(SCRecordSession *)recordSession {
-    NSLog(@"didCompleteSession:");
     [self saveAndShowSession:recordSession];
 }
 
 - (IBAction)bounce {
-    NSLog(@"Boucning");
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.duration = 1.1;
     animationGroup.repeatCount = INFINITY;
@@ -963,8 +910,6 @@ replacementString:(NSString *)string{
                 //////IF SELFIE TAKEN
                 if (self.device == AVCaptureDevicePositionFront) {
 
-                    NSLog(@"selfie was taken");
-
                     UIImage * flippedImage = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationLeftMirrored];
 
                     self.selectedImage = flippedImage;
@@ -974,7 +919,7 @@ replacementString:(NSString *)string{
                     self.selectedImage = flippedImage;
                     
                     if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
-                        NSLog(@"Version: %f", NSFoundationVersionNumber);
+                        //NSLog(@"Version: %f", NSFoundationVersionNumber);
                         
                     } else {
                     
@@ -991,9 +936,8 @@ replacementString:(NSString *)string{
                                                             emptyFilter,
                                                             [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectNoir"],
+                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
                                                             ];
-
 
                         [self.capturedImageView addSubview:self.filterSwitcherView];
                         [self.filterSwitcherView setNeedsDisplay];
@@ -1001,8 +945,6 @@ replacementString:(NSString *)string{
                         
                     }
                     
-                    NSLog(@"Made it here");
-
                 }
 
                 else {
@@ -1012,7 +954,7 @@ replacementString:(NSString *)string{
                     [self.view addSubview:self.imageSelectedView];
                     
                     if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
-                        NSLog(@"Version: %f", NSFoundationVersionNumber);
+                        //NSLog(@"Version: %f", NSFoundationVersionNumber);
                         
                     } else {
 
@@ -1028,8 +970,9 @@ replacementString:(NSString *)string{
                                                             emptyFilter,
                                                             [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectNoir"],
+                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
                                                             ];
+
                         
                         [self.capturedImageView addSubview:self.filterSwitcherView];
                         [self.filterSwitcherView setNeedsDisplay];
@@ -1073,7 +1016,7 @@ replacementString:(NSString *)string{
     
     
     if (dur >= 7) {
-        NSLog(@"Time: %f", dur);
+        //NSLog(@"Time: %f", dur);
         [self saveAndShowSession:_recorder.session];
     }
 }
@@ -1095,7 +1038,7 @@ replacementString:(NSString *)string{
     [self ScrollToHomeView];
     
     if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
-        NSLog(@"Version: %f", NSFoundationVersionNumber);
+        //NSLog(@"Version: %f", NSFoundationVersionNumber);
         
     } else{
      
@@ -1139,7 +1082,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 -(void)uploadToS3:(NSData *)imgdata {
 
     //[self ScrollToHomeView];
-    NSLog(@"upload to S3 yooo");
+    //NSLog(@"upload to S3 yooo");
     [self.imageSelectedView removeFromSuperview];
     [self.filterSwitcherView setFilters:nil];
 
@@ -1171,7 +1114,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
         if (task.error) {
 
-            NSLog(@"AWS ERROR: %@", task.error);
+            //NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [ProgressHUD showError:@"Network Error"];
 
@@ -1180,7 +1123,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
         else {
 
-            NSLog(@"AWS URL: %@", _awsPicUrl);
+            //NSLog(@"AWS URL: %@", _awsPicUrl);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [self uploadToParse];
             [ProgressHUD dismiss];
@@ -1206,9 +1149,9 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     }
     
     [userPhoto setObject:@"photo" forKey:@"postType"];
-    [userPhoto setObject:@"approved" forKey:@"postStatus"];
+    [userPhoto setObject:@"pending" forKey:@"postStatus"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
-    //[userPhoto setObject:self.currentUser forKey:@"user"];
+    [userPhoto setObject:self.currentUser forKey:@"user"];
     [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 
         if (succeeded) {
@@ -1236,11 +1179,11 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
         [UIView animateWithDuration:0.08 animations:^{
-            NSLog(@"Started");
+            //NSLog(@"Started");
             self.closeButton.transform = CGAffineTransformMakeScale(1.4, 1.4);
             
         } completion:^(BOOL finished) {
-            NSLog(@"FINISHED");
+            //NSLog(@"FINISHED");
             
         }];
     }
@@ -1248,11 +1191,11 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         
         [UIView animateWithDuration:0.07 animations:^{
-            NSLog(@"Started");
+            ///NSLog(@"Started");
             self.closeButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
             
         } completion:^(BOOL finished) {
-            NSLog(@"FINISHED");
+            //NSLog(@"FINISHED");
             [self cancelSelectedPhoto:self];
             [self cancelTextCaption];
         }];
@@ -1261,60 +1204,35 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
 -(void)getUser {
     
-    NSLog(@"GET USER");
-    
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
     
     PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
     [query whereKey:@"userId" equalTo:userId];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if (error) {
-            NSLog(@"ERROR: %@", error);
+            
             if(error.code == kPFErrorConnectionFailed) {
                 
                 [self showNoInternetError];
             }
         } else {
+            
             self.currentUser = object;
             
-            if (![[self.currentUser objectForKey:@"userStatus"] isEqualToString:@"accepted"]) {
-                [self showBannedError];
-            } else {
-             
-                NSString *userSchool = [object objectForKey:@"userSchool"];
-                [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                [self.currentUser incrementKey:@"runCount"];
-                [self.currentUser saveEventually];
-            }
+            NSString *userSchool = [object objectForKey:@"userSchool"];
+            NSString *userStatus = [object objectForKey:@"userStatus"];
+            NSString *universityStatus = [object objectForKey:@"universityStatus"];
+            [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
+            [[NSUserDefaults standardUserDefaults] setObject:userStatus forKey:@"userStatus"];
+            [[NSUserDefaults standardUserDefaults] setObject:universityStatus forKey:@"universityStatus"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"justReloadTheTable" object:self];
+            [self.currentUser incrementKey:@"runCount"];
+            [self.currentUser saveEventually];
         }
     }];
 }
 
--(void)showBannedError {
-    
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,
-                                                                           [[UIScreen mainScreen] bounds].size.width,
-                                                                           [[UIScreen mainScreen] bounds].size.height)];
-    imageView.tag = 101;
-    [imageView setImage:[UIImage imageNamed:@"black"]];
-    
-    UIView *badEmail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:badEmail];
-    badEmail.backgroundColor = [UIColor clearColor];
-    UIButton *button = [[UIButton alloc] init];
-    button.frame = CGRectMake(0, 0, 300, 100);
-    button.center = self.view.center;
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:18];
-    button.titleLabel.numberOfLines = 2;
-    [button.titleLabel setTextAlignment:NSTextAlignmentCenter];
-    [button setTitle:@"You have been banned." forState:UIControlStateNormal];
-    [imageView addSubview:badEmail];
-    [badEmail addSubview:button];
-    [UIApplication.sharedApplication.keyWindow addSubview:imageView];
-
-}
 
 -(void)showNoInternetError {
     

@@ -16,9 +16,7 @@
 #import "JTMaterialTransition.h"
 #import "UIImageView+WebCache.h"
 #import "AppDelegate.h"
-
-
-
+#import "CameraViewController.h"
 
 @interface StoriesTableViewController () <SSARefreshControlDelegate> {
     
@@ -34,7 +32,6 @@
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSDictionary *dasDic;
 @property (nonatomic, strong) NSMutableArray *dicArray;
-
 @property (nonatomic, strong) MainStoriesViewController *daMvc;
 @property (nonatomic, strong) SSARefreshControl *refreshControl;
 
@@ -52,7 +49,6 @@
 @synthesize currentIndex;
 
 
-
 -(BOOL)prefersStatusBarHidden {
     
     return NO;
@@ -62,11 +58,17 @@
     return UIStatusBarStyleDefault;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     [self queryForHomePic];
+    
+    NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
+    if ([universityStatus isEqualToString:@"approved"]) {
+        
+    } else {
+       [self countUsers];
+    }
     
     _appDelegate = [[UIApplication sharedApplication] delegate];
         
@@ -109,15 +111,30 @@
     self.navigationController.navigationBarHidden = NO;
     [self.navigationController setNavigationBarHidden:NO];
     self.tableView.tableFooterView = [UIView new];
-    [self performSelector:@selector(reloadTableview) withObject:nil afterDelay:0.50];
     
-//    self.refreshControl = [[SSARefreshControl alloc] initWithScrollView:self.tableView andRefreshViewLayerType:SSARefreshViewLayerTypeOnScrollView];
-//    self.refreshControl.delegate = self;
     
     [self createPresentControllerButton];
     [self createTransition];
     [self updateUserScore];
- 
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDasTable) name:@"reload_data" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableview) name:@"justReloadTheTable" object:nil];
+}
+
+
+
+-(void)viewDidAppear:(BOOL)animated {
+    
+    [self.tableView reloadData];
+}
+
+-(void)reloadDasTable {
+    
+    [self.tableView reloadData];
+    [self queryForHomePic];
+    [self countUsers];
+
 }
 
 -(void)updateUserScore {
@@ -154,18 +171,7 @@
 }
 
 -(void)showScore {
-    
-    [self.view shake:12   // 10 times
-           withDelta:5    // 5 points wide
-            andSpeed:0.05 // 30ms per shake
-     ];
-    
-}
-
--(void)refreshYo {
-    
-    [self queryForHomePic];
-    
+    [self.view shake:12 withDelta:5 andSpeed:0.05];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -237,13 +243,21 @@
         cell2 = [[UnlockTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier2];
     }
     
+    NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
+    NSString *userSchool  = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    NSString *userStatus  = [[NSUserDefaults standardUserDefaults] objectForKey:@"userStatus"];
+    
     if (indexPath.section == 0) {
     
-        NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-        cell.homeName.text = userSchool;
-        
-        
         if (indexPath.row == 0) {
+            
+            if (![universityStatus isEqualToString:@"approved"]) {
+                cell.homeName.text = [NSString stringWithFormat:@"%@ 🔒", userSchool];
+            } else if (![userStatus isEqualToString:@"approved"]) {
+                cell.homeName.text = [NSString stringWithFormat:@"%@ 🔒", userSchool];
+            } else {
+                cell.homeName.text = userSchool;
+            }
             
             cell.homeStoryImage.layer.cornerRadius = cell.homeStoryImage.frame.size.width / 2;
             cell.homeStoryImage.clipsToBounds = YES;
@@ -258,30 +272,60 @@
         }
         
         if (indexPath.row == 1) {
+        
+            NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+            int userCount = [[self.university objectForKey:@"registeredUserCount"] intValue];
+            int userThreshold = [[self.university objectForKey:@"userThreshold"] intValue];
+            int remainingCount = userThreshold - userCount;
+            cell2.inviteLabel.text = [NSString stringWithFormat:@"%d more students to unlock %@.",remainingCount, [userSchool lowercaseString]];
             
             cell2.inviteButton.layer.cornerRadius = 5.0;
             cell2.separatorInset = UIEdgeInsetsMake(0.f, 10000.0f, 0.f, 0.0f);
             
             return cell2;
         }
-        
         return cell;
-        
     }
     
     return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
+    NSString *userStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"userStatus"];
     
     if (indexPath.row == 0) {
         
-        HomeTableCell *cell = (HomeTableCell *) [tableView cellForRowAtIndexPath:indexPath];
-        self.transition.animatedView = cell.homeStoryImage;
-        ViewContentViewController *pmvc = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewContent"];
-        pmvc.modalPresentationStyle = UIModalPresentationCustom;
-        pmvc.transitioningDelegate = self;
-        [self presentViewController:pmvc animated:YES completion:nil];
+        if (![universityStatus isEqualToString:@"approved"]) {
+            
+            int userCount = [[self.university objectForKey:@"registeredUserCount"] intValue];
+            int userThreshold = [[self.university objectForKey:@"userThreshold"] intValue];
+            int remainingCount = userThreshold - userCount;
+            
+            NSString *title = [NSString stringWithFormat:@"%@ locked", [userSchool capitalizedString]];
+            NSString *message = [NSString stringWithFormat:@"%d more students needed to unlock. Invite your friends and spread the word.", remainingCount];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Cancel", @"Invite friends", nil];
+            alert.tag = 200;
+            alert.delegate = self;
+            [alert show];
+
+        }
+        
+        else if (![userStatus isEqualToString:@"approved"]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Account pending" message:@"Check your email and activate your account to unlock. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+            [alert show];
+        } else {
+            
+            HomeTableCell *cell = (HomeTableCell *) [tableView cellForRowAtIndexPath:indexPath];
+            self.transition.animatedView = cell.homeStoryImage;
+            ViewContentViewController *pmvc = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewContent"];
+            pmvc.modalPresentationStyle = UIModalPresentationCustom;
+            pmvc.transitioningDelegate = self;
+            [self presentViewController:pmvc animated:YES completion:nil];
+        }
     }
 }
 
@@ -318,8 +362,6 @@
     
     [self updateUserScore];
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-    NSLog(@"User School: %@", school);
-    
     
     PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
     [query orderByDescending:@"createdAt"];
@@ -330,16 +372,8 @@
             
             self.home = object;
             [self.tableView reloadData];
-
             [self performSelector:@selector(endRefresh) withObject:nil afterDelay:1.15];
             
-        }
-        
-        if (self.home == nil) {
-            NSLog(@"NiLLLLL");
-        }
-        
-        if (error) {
         }
     }];
     return nil;
@@ -348,34 +382,129 @@
 ///************************************
 
 
-
-- (void)createPresentControllerButton {
+-(void)countUsers {
     
-    self.presentControllerButton = [[UIButton alloc] initWithFrame:CGRectMake(32, CGRectGetHeight(self.view.frame)-74, 50, 50)];
+    NSString *userSchool = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"] lowercaseString];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Universities"];
+    [query whereKey:@"universityName" equalTo:[userSchool capitalizedString]];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        if (error) {
+            //[ProgressHUD showError:@"Network Error"];
+        } else {
+            self.university = object;
+            int userCount = [[self.university objectForKey:@"registeredUserCount"] intValue];
+            int userThreshold = [[self.university objectForKey:@"userThreshold"] intValue];
+            [self.tableView reloadData];
+            
+            if (userCount >= userThreshold) {
+                
+                [self updateUserStatus];
+                    
+            } else {
+                
+            }
+        }
+    }];
 }
 
-- (void)createTransition {
+-(void)updateUserStatus {
     
-    self.transition = [[JTMaterialTransition alloc] initWithAnimatedView:self.presentControllerButton];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
+    [query whereKey:@"userId" equalTo:userId];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        if (error) {
+        } else {
+            self.currentUser = object;
+            [self.currentUser setObject:@"approved" forKey:@"universityStatus"];
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                
+                if (error) {
+                    
+                } else {
+                    [ProgressHUD dismiss];
+                    [[NSUserDefaults standardUserDefaults] setObject:@"approved" forKey:@"universityStatus"];
+                    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:100] forKey:@"localUserScore"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [self.tableView reloadData];
+                }
+            }];
+
+        }
+    }];
+}
+
+
+//**********************************
+
+-(void)askUserForPush {
+    
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1"] isEqualToString:@"YES"]) {
+        
+    } else {
+        
+        [self performSelector:@selector(showAlert) withObject:nil afterDelay:1.0];
+    }
+}
+
+-(void)showAlert {
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    NSString *message = [NSString stringWithFormat:@"Want to get notified when %@ is unlocked?", school];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable notifications" message:message delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Yeah", nil];
+    [alertView show];
+    
+    alertView.tag = 101;
+    alertView.delegate = self;
     
 }
 
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
-                                                                  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
-    self.transition.reverse = NO;
-    return self.transition;
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger) buttonIndex {
+    
+    if (alertView.tag == 101) {
+        
+        if (buttonIndex == 0) {
+            
+        } else {
+            
+            [self askToEnablePush];
+        }
+    } else if (alertView.tag == 200) {
+        
+        if (buttonIndex == 0) {
+            
+            NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
+            if ([universityStatus isEqualToString:@"pending"]) {
+                [self askUserForPush];
+            }
+            
+        } else {
+            
+            [self inviteButtonTapped:self];
+        }
+    }
 }
 
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+-(void)askToEnablePush {
     
-    self.transition.reverse = YES;
-    return self.transition;
+    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appD askUserToEnablePushInAppDelgate];
+    
 }
+
+//**********************************
 
 
 - (IBAction)inviteButtonTapped:(id)sender {
     
-    NSString* newString = @"Hey, download Spotshot to unlock our school.";
+    NSString *link = [[NSUserDefaults standardUserDefaults] objectForKey:@"appLink"];
+    NSString* newString = [NSString stringWithFormat:@"Hey, download Stories to unlock our school: %@", link];
     
     NSArray *objectsToShare = @[newString];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
@@ -390,13 +519,30 @@
                                    UIActivityTypePostToVimeo];
     
     activityVC.excludedActivityTypes = excludeActivities;
-    activityVC.title = @"the";
     [self presentViewController:activityVC animated:YES completion:^{
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-        
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     }];
+}
 
+
+- (void)createPresentControllerButton {
+    self.presentControllerButton = [[UIButton alloc] initWithFrame:CGRectMake(32, CGRectGetHeight(self.view.frame)-74, 50, 50)];
+}
+- (void)createTransition {
+    self.transition = [[JTMaterialTransition alloc] initWithAnimatedView:self.presentControllerButton];
+}
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
+                                                                  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+    self.transition.reverse = NO;
+    return self.transition;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    
+    self.transition.reverse = YES;
+    return self.transition;
 }
 
 @end

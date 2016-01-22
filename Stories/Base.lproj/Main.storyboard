@@ -67,15 +67,15 @@
                                 <rect key="frame" x="0.0" y="230" width="320" height="220"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Uqr-gk-6Y7" id="B5D-2a-qyb">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="219.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="220"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLh-4v-RMQ">
                                             <rect key="frame" x="59" y="118" width="202" height="48"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="202" id="JMv-j9-fze"/>
-                                                <constraint firstAttribute="height" constant="48" id="cmK-bd-0UI"/>
+                                                <constraint firstAttribute="width" constant="202" id="MbM-GZ-WVF"/>
+                                                <constraint firstAttribute="height" constant="48" id="lOu-95-I2a"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16.75"/>
                                             <state key="normal" title="invite friends">
@@ -87,22 +87,22 @@
                                                 <action selector="inviteButtonTapped:" destination="QQL-Ut-0Fc" eventType="touchUpInside" id="jei-WG-J7o"/>
                                             </connections>
                                         </button>
-                                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="644 more students needed to unlock your school." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6YN-62-Ezo">
-                                            <rect key="frame" x="46" y="65" width="228" height="49"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="644 students needed to unlock your school." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6YN-62-Ezo">
+                                            <rect key="frame" x="52" y="66" width="215" height="49"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="228" id="VY3-l3-N7m"/>
-                                                <constraint firstAttribute="height" constant="49" id="qm8-MZ-gsI"/>
+                                                <constraint firstAttribute="width" constant="215" id="9ZY-rj-Xr2"/>
+                                                <constraint firstAttribute="height" constant="49" id="Oov-V6-3CO"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17.25"/>
                                             <color key="textColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="6YN-62-Ezo" firstAttribute="centerX" secondItem="lLh-4v-RMQ" secondAttribute="centerX" id="2cA-aC-Gin"/>
-                                        <constraint firstItem="6YN-62-Ezo" firstAttribute="top" secondItem="B5D-2a-qyb" secondAttribute="topMargin" constant="57" id="Jyl-X7-zHn"/>
-                                        <constraint firstItem="lLh-4v-RMQ" firstAttribute="top" secondItem="6YN-62-Ezo" secondAttribute="bottom" constant="4" id="LZ3-a6-X8R"/>
-                                        <constraint firstItem="lLh-4v-RMQ" firstAttribute="centerX" secondItem="B5D-2a-qyb" secondAttribute="centerX" id="VDs-H3-Yno"/>
+                                        <constraint firstItem="6YN-62-Ezo" firstAttribute="top" secondItem="B5D-2a-qyb" secondAttribute="topMargin" constant="58" id="HMM-Yx-dOb"/>
+                                        <constraint firstItem="6YN-62-Ezo" firstAttribute="centerX" secondItem="B5D-2a-qyb" secondAttribute="centerX" id="aBe-9x-opV"/>
+                                        <constraint firstItem="6YN-62-Ezo" firstAttribute="centerX" secondItem="lLh-4v-RMQ" secondAttribute="centerX" id="pxd-KO-PhF"/>
+                                        <constraint firstItem="lLh-4v-RMQ" firstAttribute="top" secondItem="6YN-62-Ezo" secondAttribute="bottom" constant="3" id="yRa-pQ-irj"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -440,7 +440,7 @@
                                                         <constraint firstAttribute="height" constant="51" id="zmR-2D-RZk"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="16"/>
-                                                    <state key="normal" title="request invite">
+                                                    <state key="normal" title="submit">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
@@ -636,10 +636,22 @@
                                 <rect key="frame" x="13" y="13" width="12" height="12"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <button opaque="NO" alpha="0.75" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0bP-4G-BXn">
+                                <rect key="frame" x="294" y="10" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="Pnd-I3-DeY"/>
+                                    <constraint firstAttribute="width" constant="20" id="PxZ-kN-Asb"/>
+                                </constraints>
+                                <state key="normal" image="flag.png"/>
+                                <connections>
+                                    <action selector="flagButtonTapped:" destination="Djf-X4-j2I" eventType="touchUpInside" id="8yn-PO-7Mx"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="a4e-bj-xhI" firstAttribute="top" secondItem="kgM-Td-sXp" secondAttribute="top" id="6uf-dL-1UU"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0bP-4G-BXn" secondAttribute="trailing" constant="-14" id="TmC-Me-bwE"/>
                             <constraint firstAttribute="trailingMargin" secondItem="a4e-bj-xhI" secondAttribute="trailing" constant="-21" id="dRn-RP-bNq"/>
                             <constraint firstItem="a4e-bj-xhI" firstAttribute="bottom" secondItem="zUQ-km-KWN" secondAttribute="top" id="mbH-hw-FQe"/>
                             <constraint firstItem="a4e-bj-xhI" firstAttribute="leading" secondItem="kgM-Td-sXp" secondAttribute="leading" id="wJ4-Tb-hQK"/>
@@ -648,6 +660,7 @@
                     <navigationItem key="navigationItem" id="JFj-QV-idD"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="flagButton" destination="0bP-4G-BXn" id="2Si-ss-Oxs"/>
                         <outlet property="imageView" destination="a4e-bj-xhI" id="brM-Pv-2iD"/>
                         <outlet property="progressView" destination="YgG-RD-hyq" id="jbK-nH-pEA"/>
                         <outlet property="progressViewTwo" destination="PtC-a7-lek" id="ZjG-fa-gLE"/>
@@ -733,5 +746,6 @@
     <resources>
         <image name="blueBo" width="64" height="64"/>
         <image name="blueBox.png" width="50" height="50"/>
+        <image name="flag.png" width="40" height="40"/>
     </resources>
 </document>

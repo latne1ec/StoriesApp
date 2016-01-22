@@ -7,6 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2052E5261C502A1300B6CF60 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5251C502A1300B6CF60 /* Default-568h@2x.png */; };
+		2052E5281C5085AD00B6CF60 /* blueRed1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5271C5085AD00B6CF60 /* blueRed1.cisf */; };
+		2052E52A1C50864300B6CF60 /* blueRed1.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5291C50864300B6CF60 /* blueRed1.1.cisf */; };
+		2052E52C1C50869A00B6CF60 /* blueRed1.2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E52B1C50869A00B6CF60 /* blueRed1.2.cisf */; };
+		2052E52E1C50873C00B6CF60 /* blueRed1.3.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E52D1C50873C00B6CF60 /* blueRed1.3.cisf */; };
+		2052E5301C50881F00B6CF60 /* blueRed1.4.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E52F1C50881F00B6CF60 /* blueRed1.4.cisf */; };
+		2052E5321C508DF000B6CF60 /* blueRed1.5.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5311C508DF000B6CF60 /* blueRed1.5.cisf */; };
+		2052E5341C508E8800B6CF60 /* blueRed1.6.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5331C508E8800B6CF60 /* blueRed1.6.cisf */; };
+		2052E5361C508EEE00B6CF60 /* blueRed1.7.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5351C508EEE00B6CF60 /* blueRed1.7.cisf */; };
+		2052E5381C508F3D00B6CF60 /* blueRed1.8.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5371C508F3D00B6CF60 /* blueRed1.8.cisf */; };
+		2052E53A1C50922100B6CF60 /* blueRed3.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5391C50922100B6CF60 /* blueRed3.cisf */; };
+		2052E53C1C50942300B6CF60 /* blueRed3.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E53B1C50942300B6CF60 /* blueRed3.1.cisf */; };
+		2052E53E1C50948F00B6CF60 /* blueRed3.2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E53D1C50948F00B6CF60 /* blueRed3.2.cisf */; };
+		2052E5401C5094EC00B6CF60 /* blueRed3.3.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E53F1C5094EC00B6CF60 /* blueRed3.3.cisf */; };
+		2052E5421C5095D600B6CF60 /* blueRed3.4.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5411C5095D600B6CF60 /* blueRed3.4.cisf */; };
+		2052E5441C50961A00B6CF60 /* blueRed3.5.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5431C50961A00B6CF60 /* blueRed3.5.cisf */; };
+		2052E5461C50965D00B6CF60 /* blueRed3.6.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5451C50965D00B6CF60 /* blueRed3.6.cisf */; };
+		2052E5481C5096A500B6CF60 /* blueRed3.7.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5471C5096A500B6CF60 /* blueRed3.7.cisf */; };
+		2052E54A1C50996000B6CF60 /* blueRed3.8.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5491C50996000B6CF60 /* blueRed3.8.cisf */; };
+		2052E54D1C509D3200B6CF60 /* test1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E54C1C509D3200B6CF60 /* test1.cisf */; };
+		2052E54F1C509F4800B6CF60 /* test1.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E54E1C509F4800B6CF60 /* test1.1.cisf */; };
+		2052E5511C509FF000B6CF60 /* test1.2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5501C509FF000B6CF60 /* test1.2.cisf */; };
+		2052E5531C50A03600B6CF60 /* test1.3.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5521C50A03600B6CF60 /* test1.3.cisf */; };
+		2052E5551C50A09400B6CF60 /* test1.4.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5541C50A09400B6CF60 /* test1.4.cisf */; };
+		2052E5571C50A0E500B6CF60 /* test1.5.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5561C50A0E500B6CF60 /* test1.5.cisf */; };
+		2052E5591C50A12E00B6CF60 /* test1.6.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5581C50A12E00B6CF60 /* test1.6.cisf */; };
+		2052E55B1C50A57C00B6CF60 /* fade1.0.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E55A1C50A57C00B6CF60 /* fade1.0.cisf */; };
+		2052E55D1C50A61100B6CF60 /* vibrant.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E55C1C50A61100B6CF60 /* vibrant.cisf */; };
+		2052E55F1C50A6AB00B6CF60 /* vibrant2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E55E1C50A6AB00B6CF60 /* vibrant2.cisf */; };
+		2052E5611C50A70300B6CF60 /* vibrant2.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5601C50A70300B6CF60 /* vibrant2.1.cisf */; };
 		206641331C4C455C008AC9AA /* OldVideo in Resources */ = {isa = PBXBuildFile; fileRef = 206641321C4C455C008AC9AA /* OldVideo */; };
 		208017561C48037500600365 /* camBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 208017551C48037500600365 /* camBlue@2x.png */; };
 		208017581C484CE800600365 /* blackScreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 208017571C484CE800600365 /* blackScreen@2x.png */; };
@@ -152,14 +182,67 @@
 		20D7DE7B1C45D9C2002099A8 /* CERoundProgressLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DE781C45D9C1002099A8 /* CERoundProgressLayer.m */; };
 		20D7DE7C1C45D9C2002099A8 /* CERoundProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DE7A1C45D9C2002099A8 /* CERoundProgressView.m */; };
 		20D7DE7F1C45FF9F002099A8 /* camButtonBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DE7E1C45FF9F002099A8 /* camButtonBottom@2x.png */; };
-		20D7DE811C462C12002099A8 /* cancelNew@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DE801C462C12002099A8 /* cancelNew@2x.png */; };
 		20D7DE8C1C46B61F002099A8 /* StatusTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DE8B1C46B61F002099A8 /* StatusTableViewController.m */; };
 		20D7DE8F1C46CBAE002099A8 /* UnlockTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DE8E1C46CBAE002099A8 /* UnlockTableCell.m */; };
 		20D7DE911C470343002099A8 /* black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DE901C470343002099A8 /* black@2x.png */; };
 		20D7DE931C472348002099A8 /* camPurp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DE921C472348002099A8 /* camPurp@2x.png */; };
+		20F553031C4DBCD7001CA4C2 /* iphone4Black.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553021C4DBCD7001CA4C2 /* iphone4Black.png */; };
+		20F553051C4DBDC5001CA4C2 /* 6plusBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553041C4DBDC5001CA4C2 /* 6plusBlack.png */; };
+		20F553071C4E98B6001CA4C2 /* flag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553061C4E98B6001CA4C2 /* flag@2x.png */; };
+		20F553091C4ED5C6001CA4C2 /* OldCameraCreateUser in Resources */ = {isa = PBXBuildFile; fileRef = 20F553081C4ED5C6001CA4C2 /* OldCameraCreateUser */; };
+		20F5530B1C4ED6BF001CA4C2 /* OldVerifyEmail in Resources */ = {isa = PBXBuildFile; fileRef = 20F5530A1C4ED6BF001CA4C2 /* OldVerifyEmail */; };
+		20F5530D1C4EF73B001CA4C2 /* OldAppDelegate in Resources */ = {isa = PBXBuildFile; fileRef = 20F5530C1C4EF73B001CA4C2 /* OldAppDelegate */; };
+		20F5531F1C4FEA54001CA4C2 /* random8.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5531E1C4FEA54001CA4C2 /* random8.cisf */; };
+		20F553211C4FEB5D001CA4C2 /* random9.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553201C4FEB5D001CA4C2 /* random9.cisf */; };
+		20F553231C4FEBE4001CA4C2 /* random10.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553221C4FEBE4001CA4C2 /* random10.cisf */; };
+		20F553291C4FF00D001CA4C2 /* random13.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553281C4FF00D001CA4C2 /* random13.cisf */; };
+		20F5532B1C4FF10F001CA4C2 /* random10.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5532A1C4FF10F001CA4C2 /* random10.1.cisf */; };
+		20F5532D1C4FF1F2001CA4C2 /* random10.2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5532C1C4FF1F2001CA4C2 /* random10.2.cisf */; };
+		20F5532F1C4FF260001CA4C2 /* random10.3.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5532E1C4FF260001CA4C2 /* random10.3.cisf */; };
+		20F553311C4FF2A5001CA4C2 /* random10.4.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553301C4FF2A5001CA4C2 /* random10.4.cisf */; };
+		20F553331C4FF31B001CA4C2 /* random10.5.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553321C4FF31B001CA4C2 /* random10.5.cisf */; };
+		20F553351C4FF386001CA4C2 /* random10.6.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553341C4FF386001CA4C2 /* random10.6.cisf */; };
+		20F553371C4FF408001CA4C2 /* random10.7.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553361C4FF408001CA4C2 /* random10.7.cisf */; };
+		20F553391C4FF477001CA4C2 /* random11.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F553381C4FF477001CA4C2 /* random11.cisf */; };
+		20F5533B1C4FF653001CA4C2 /* random12.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5533A1C4FF653001CA4C2 /* random12.cisf */; };
+		20F5533D1C4FF6EE001CA4C2 /* random12.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5533C1C4FF6EE001CA4C2 /* random12.1.cisf */; };
+		20F5533F1C4FF7DE001CA4C2 /* random12.2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 20F5533E1C4FF7DE001CA4C2 /* random12.2.cisf */; };
+		20F553431C4FFDAF001CA4C2 /* flash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553411C4FFDAF001CA4C2 /* flash@2x.png */; };
+		20F553441C4FFDAF001CA4C2 /* flashSelectedTwo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553421C4FFDAF001CA4C2 /* flashSelectedTwo@2x.png */; };
+		20F553461C50097A001CA4C2 /* cancelNew@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553451C50097A001CA4C2 /* cancelNew@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2052E5251C502A1300B6CF60 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		2052E5271C5085AD00B6CF60 /* blueRed1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.cisf; sourceTree = "<group>"; };
+		2052E5291C50864300B6CF60 /* blueRed1.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.1.cisf; sourceTree = "<group>"; };
+		2052E52B1C50869A00B6CF60 /* blueRed1.2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.2.cisf; sourceTree = "<group>"; };
+		2052E52D1C50873C00B6CF60 /* blueRed1.3.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.3.cisf; sourceTree = "<group>"; };
+		2052E52F1C50881F00B6CF60 /* blueRed1.4.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.4.cisf; sourceTree = "<group>"; };
+		2052E5311C508DF000B6CF60 /* blueRed1.5.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.5.cisf; sourceTree = "<group>"; };
+		2052E5331C508E8800B6CF60 /* blueRed1.6.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.6.cisf; sourceTree = "<group>"; };
+		2052E5351C508EEE00B6CF60 /* blueRed1.7.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.7.cisf; sourceTree = "<group>"; };
+		2052E5371C508F3D00B6CF60 /* blueRed1.8.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed1.8.cisf; sourceTree = "<group>"; };
+		2052E5391C50922100B6CF60 /* blueRed3.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.cisf; sourceTree = "<group>"; };
+		2052E53B1C50942300B6CF60 /* blueRed3.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.1.cisf; sourceTree = "<group>"; };
+		2052E53D1C50948F00B6CF60 /* blueRed3.2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.2.cisf; sourceTree = "<group>"; };
+		2052E53F1C5094EC00B6CF60 /* blueRed3.3.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.3.cisf; sourceTree = "<group>"; };
+		2052E5411C5095D600B6CF60 /* blueRed3.4.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.4.cisf; sourceTree = "<group>"; };
+		2052E5431C50961A00B6CF60 /* blueRed3.5.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.5.cisf; sourceTree = "<group>"; };
+		2052E5451C50965D00B6CF60 /* blueRed3.6.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.6.cisf; sourceTree = "<group>"; };
+		2052E5471C5096A500B6CF60 /* blueRed3.7.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.7.cisf; sourceTree = "<group>"; };
+		2052E5491C50996000B6CF60 /* blueRed3.8.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = blueRed3.8.cisf; sourceTree = "<group>"; };
+		2052E54C1C509D3200B6CF60 /* test1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.cisf; sourceTree = "<group>"; };
+		2052E54E1C509F4800B6CF60 /* test1.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.1.cisf; sourceTree = "<group>"; };
+		2052E5501C509FF000B6CF60 /* test1.2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.2.cisf; sourceTree = "<group>"; };
+		2052E5521C50A03600B6CF60 /* test1.3.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.3.cisf; sourceTree = "<group>"; };
+		2052E5541C50A09400B6CF60 /* test1.4.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.4.cisf; sourceTree = "<group>"; };
+		2052E5561C50A0E500B6CF60 /* test1.5.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.5.cisf; sourceTree = "<group>"; };
+		2052E5581C50A12E00B6CF60 /* test1.6.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = test1.6.cisf; sourceTree = "<group>"; };
+		2052E55A1C50A57C00B6CF60 /* fade1.0.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = fade1.0.cisf; sourceTree = "<group>"; };
+		2052E55C1C50A61100B6CF60 /* vibrant.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = vibrant.cisf; sourceTree = "<group>"; };
+		2052E55E1C50A6AB00B6CF60 /* vibrant2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = vibrant2.cisf; sourceTree = "<group>"; };
+		2052E5601C50A70300B6CF60 /* vibrant2.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = vibrant2.1.cisf; sourceTree = "<group>"; };
 		206641321C4C455C008AC9AA /* OldVideo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OldVideo; sourceTree = "<group>"; };
 		208017551C48037500600365 /* camBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camBlue@2x.png"; sourceTree = "<group>"; };
 		208017571C484CE800600365 /* blackScreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackScreen@2x.png"; sourceTree = "<group>"; };
@@ -394,13 +477,36 @@
 		20D7DE791C45D9C2002099A8 /* CERoundProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CERoundProgressView.h; sourceTree = "<group>"; };
 		20D7DE7A1C45D9C2002099A8 /* CERoundProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CERoundProgressView.m; sourceTree = "<group>"; };
 		20D7DE7E1C45FF9F002099A8 /* camButtonBottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camButtonBottom@2x.png"; sourceTree = "<group>"; };
-		20D7DE801C462C12002099A8 /* cancelNew@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancelNew@2x.png"; sourceTree = "<group>"; };
 		20D7DE8A1C46B61F002099A8 /* StatusTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusTableViewController.h; path = ../StatusTableViewController.h; sourceTree = "<group>"; };
 		20D7DE8B1C46B61F002099A8 /* StatusTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusTableViewController.m; path = ../StatusTableViewController.m; sourceTree = "<group>"; };
 		20D7DE8D1C46CBAE002099A8 /* UnlockTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnlockTableCell.h; sourceTree = "<group>"; };
 		20D7DE8E1C46CBAE002099A8 /* UnlockTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnlockTableCell.m; sourceTree = "<group>"; };
 		20D7DE901C470343002099A8 /* black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black@2x.png"; sourceTree = "<group>"; };
 		20D7DE921C472348002099A8 /* camPurp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camPurp@2x.png"; sourceTree = "<group>"; };
+		20F553021C4DBCD7001CA4C2 /* iphone4Black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone4Black.png; sourceTree = "<group>"; };
+		20F553041C4DBDC5001CA4C2 /* 6plusBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 6plusBlack.png; sourceTree = "<group>"; };
+		20F553061C4E98B6001CA4C2 /* flag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flag@2x.png"; sourceTree = "<group>"; };
+		20F553081C4ED5C6001CA4C2 /* OldCameraCreateUser */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OldCameraCreateUser; sourceTree = "<group>"; };
+		20F5530A1C4ED6BF001CA4C2 /* OldVerifyEmail */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OldVerifyEmail; sourceTree = "<group>"; };
+		20F5530C1C4EF73B001CA4C2 /* OldAppDelegate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OldAppDelegate; sourceTree = "<group>"; };
+		20F5531E1C4FEA54001CA4C2 /* random8.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random8.cisf; sourceTree = "<group>"; };
+		20F553201C4FEB5D001CA4C2 /* random9.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random9.cisf; sourceTree = "<group>"; };
+		20F553221C4FEBE4001CA4C2 /* random10.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.cisf; sourceTree = "<group>"; };
+		20F553281C4FF00D001CA4C2 /* random13.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random13.cisf; sourceTree = "<group>"; };
+		20F5532A1C4FF10F001CA4C2 /* random10.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.1.cisf; sourceTree = "<group>"; };
+		20F5532C1C4FF1F2001CA4C2 /* random10.2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.2.cisf; sourceTree = "<group>"; };
+		20F5532E1C4FF260001CA4C2 /* random10.3.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.3.cisf; sourceTree = "<group>"; };
+		20F553301C4FF2A5001CA4C2 /* random10.4.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.4.cisf; sourceTree = "<group>"; };
+		20F553321C4FF31B001CA4C2 /* random10.5.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.5.cisf; sourceTree = "<group>"; };
+		20F553341C4FF386001CA4C2 /* random10.6.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.6.cisf; sourceTree = "<group>"; };
+		20F553361C4FF408001CA4C2 /* random10.7.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random10.7.cisf; sourceTree = "<group>"; };
+		20F553381C4FF477001CA4C2 /* random11.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random11.cisf; sourceTree = "<group>"; };
+		20F5533A1C4FF653001CA4C2 /* random12.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random12.cisf; sourceTree = "<group>"; };
+		20F5533C1C4FF6EE001CA4C2 /* random12.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random12.1.cisf; sourceTree = "<group>"; };
+		20F5533E1C4FF7DE001CA4C2 /* random12.2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = random12.2.cisf; sourceTree = "<group>"; };
+		20F553411C4FFDAF001CA4C2 /* flash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flash@2x.png"; sourceTree = "<group>"; };
+		20F553421C4FFDAF001CA4C2 /* flashSelectedTwo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashSelectedTwo@2x.png"; sourceTree = "<group>"; };
+		20F553451C50097A001CA4C2 /* cancelNew@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancelNew@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -474,6 +580,7 @@
 		20D7DC301C3EDC04002099A8 = {
 			isa = PBXGroup;
 			children = (
+				2052E5251C502A1300B6CF60 /* Default-568h@2x.png */,
 				20D7DC3B1C3EDC04002099A8 /* Stories */,
 				20D7DC3A1C3EDC04002099A8 /* Products */,
 				20D7DC541C3EDD99002099A8 /* Frameworks */,
@@ -510,15 +617,66 @@
 		20D7DC3C1C3EDC04002099A8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2052E5601C50A70300B6CF60 /* vibrant2.1.cisf */,
+				2052E55E1C50A6AB00B6CF60 /* vibrant2.cisf */,
+				2052E55C1C50A61100B6CF60 /* vibrant.cisf */,
+				2052E55A1C50A57C00B6CF60 /* fade1.0.cisf */,
+				2052E5581C50A12E00B6CF60 /* test1.6.cisf */,
+				2052E5561C50A0E500B6CF60 /* test1.5.cisf */,
+				2052E5541C50A09400B6CF60 /* test1.4.cisf */,
+				2052E5521C50A03600B6CF60 /* test1.3.cisf */,
+				2052E5501C509FF000B6CF60 /* test1.2.cisf */,
+				2052E54E1C509F4800B6CF60 /* test1.1.cisf */,
+				2052E54C1C509D3200B6CF60 /* test1.cisf */,
+				2052E5491C50996000B6CF60 /* blueRed3.8.cisf */,
+				2052E5471C5096A500B6CF60 /* blueRed3.7.cisf */,
+				2052E5451C50965D00B6CF60 /* blueRed3.6.cisf */,
+				2052E5431C50961A00B6CF60 /* blueRed3.5.cisf */,
+				2052E5411C5095D600B6CF60 /* blueRed3.4.cisf */,
+				2052E53F1C5094EC00B6CF60 /* blueRed3.3.cisf */,
+				2052E53D1C50948F00B6CF60 /* blueRed3.2.cisf */,
+				2052E53B1C50942300B6CF60 /* blueRed3.1.cisf */,
+				2052E5371C508F3D00B6CF60 /* blueRed1.8.cisf */,
+				2052E5351C508EEE00B6CF60 /* blueRed1.7.cisf */,
+				2052E5331C508E8800B6CF60 /* blueRed1.6.cisf */,
+				2052E5311C508DF000B6CF60 /* blueRed1.5.cisf */,
+				2052E52F1C50881F00B6CF60 /* blueRed1.4.cisf */,
+				2052E52D1C50873C00B6CF60 /* blueRed1.3.cisf */,
+				2052E52B1C50869A00B6CF60 /* blueRed1.2.cisf */,
+				2052E5291C50864300B6CF60 /* blueRed1.1.cisf */,
+				2052E5271C5085AD00B6CF60 /* blueRed1.cisf */,
+				20F553451C50097A001CA4C2 /* cancelNew@2x.png */,
+				20F553411C4FFDAF001CA4C2 /* flash@2x.png */,
+				20F553421C4FFDAF001CA4C2 /* flashSelectedTwo@2x.png */,
+				20F5533E1C4FF7DE001CA4C2 /* random12.2.cisf */,
+				20F5533C1C4FF6EE001CA4C2 /* random12.1.cisf */,
+				20F5533A1C4FF653001CA4C2 /* random12.cisf */,
+				20F553381C4FF477001CA4C2 /* random11.cisf */,
+				20F553361C4FF408001CA4C2 /* random10.7.cisf */,
+				20F553341C4FF386001CA4C2 /* random10.6.cisf */,
+				20F553321C4FF31B001CA4C2 /* random10.5.cisf */,
+				20F553301C4FF2A5001CA4C2 /* random10.4.cisf */,
+				20F5532E1C4FF260001CA4C2 /* random10.3.cisf */,
+				20F5532C1C4FF1F2001CA4C2 /* random10.2.cisf */,
+				20F5532A1C4FF10F001CA4C2 /* random10.1.cisf */,
+				20F553281C4FF00D001CA4C2 /* random13.cisf */,
+				20F553221C4FEBE4001CA4C2 /* random10.cisf */,
+				20F553201C4FEB5D001CA4C2 /* random9.cisf */,
+				20F5531E1C4FEA54001CA4C2 /* random8.cisf */,
+				20F5530C1C4EF73B001CA4C2 /* OldAppDelegate */,
+				20F5530A1C4ED6BF001CA4C2 /* OldVerifyEmail */,
+				20F553081C4ED5C6001CA4C2 /* OldCameraCreateUser */,
 				20D7DD961C41A63A002099A8 /* Welcome */,
 				20D7DE531C4417D6002099A8 /* Old Camera */,
+				20F553061C4E98B6001CA4C2 /* flag@2x.png */,
+				20F553041C4DBDC5001CA4C2 /* 6plusBlack.png */,
+				20F553021C4DBCD7001CA4C2 /* iphone4Black.png */,
 				208017611C4886C000600365 /* camBlueNew@2x.png */,
 				208017591C484D5F00600365 /* blackScreen6@2x.png */,
 				208017571C484CE800600365 /* blackScreen@2x.png */,
 				208017551C48037500600365 /* camBlue@2x.png */,
 				20D7DE921C472348002099A8 /* camPurp@2x.png */,
 				20D7DE901C470343002099A8 /* black@2x.png */,
-				20D7DE801C462C12002099A8 /* cancelNew@2x.png */,
 				20D7DE7E1C45FF9F002099A8 /* camButtonBottom@2x.png */,
 				20D7DE731C45B92D002099A8 /* blueBkg@2x.png */,
 				20D7DE6C1C45920E002099A8 /* snapVideoSelected@2x.png */,
@@ -880,6 +1038,7 @@
 		20D7DE531C4417D6002099A8 /* Old Camera */ = {
 			isa = PBXGroup;
 			children = (
+				2052E5391C50922100B6CF60 /* blueRed3.cisf */,
 				208017651C48BB3900600365 /* blueBox@2x.png */,
 				20D7DD041C418C6C002099A8 /* VideoCameraController.h */,
 				20D7DD051C418C6C002099A8 /* VideoCameraController.m */,
@@ -959,31 +1118,84 @@
 			buildActionMask = 2147483647;
 			files = (
 				20D7DE761C45BDA7002099A8 /* ReplayStuff in Resources */,
+				20F553211C4FEB5D001CA4C2 /* random9.cisf in Resources */,
+				2052E5591C50A12E00B6CF60 /* test1.6.cisf in Resources */,
 				20D7DE661C449382002099A8 /* a_filter.cisf in Resources */,
+				2052E5321C508DF000B6CF60 /* blueRed1.5.cisf in Resources */,
+				2052E52C1C50869A00B6CF60 /* blueRed1.2.cisf in Resources */,
+				20F5532F1C4FF260001CA4C2 /* random10.3.cisf in Resources */,
 				20D7DE7F1C45FF9F002099A8 /* camButtonBottom@2x.png in Resources */,
+				2052E5441C50961A00B6CF60 /* blueRed3.5.cisf in Resources */,
 				20D7DCF31C4164AE002099A8 /* dasMenu@2x.png in Resources */,
 				20D7DC4C1C3EDC04002099A8 /* LaunchScreen.storyboard in Resources */,
+				20F5533B1C4FF653001CA4C2 /* random12.cisf in Resources */,
+				20F553441C4FFDAF001CA4C2 /* flashSelectedTwo@2x.png in Resources */,
+				2052E5481C5096A500B6CF60 /* blueRed3.7.cisf in Resources */,
+				2052E5261C502A1300B6CF60 /* Default-568h@2x.png in Resources */,
 				20D7DD291C418D73002099A8 /* TSMessagesDefaultDesign.json in Resources */,
 				206641331C4C455C008AC9AA /* OldVideo in Resources */,
+				20F553311C4FF2A5001CA4C2 /* random10.4.cisf in Resources */,
+				20F5530D1C4EF73B001CA4C2 /* OldAppDelegate in Resources */,
+				2052E52E1C50873C00B6CF60 /* blueRed1.3.cisf in Resources */,
 				2080175A1C484D5F00600365 /* blackScreen6@2x.png in Resources */,
 				20D7DCF11C4164AE002099A8 /* addDos@2x.png in Resources */,
 				20D7DC491C3EDC04002099A8 /* Assets.xcassets in Resources */,
 				20D7DCF51C4164AE002099A8 /* snapPic2@2x.png in Resources */,
+				2052E55F1C50A6AB00B6CF60 /* vibrant2.cisf in Resources */,
 				20D7DD871C418FD5002099A8 /* Ressources.bundle in Resources */,
+				2052E5401C5094EC00B6CF60 /* blueRed3.3.cisf in Resources */,
+				2052E52A1C50864300B6CF60 /* blueRed1.1.cisf in Resources */,
+				20F553231C4FEBE4001CA4C2 /* random10.cisf in Resources */,
+				20F5532B1C4FF10F001CA4C2 /* random10.1.cisf in Resources */,
+				2052E5341C508E8800B6CF60 /* blueRed1.6.cisf in Resources */,
+				20F553331C4FF31B001CA4C2 /* random10.5.cisf in Resources */,
 				20D7DE581C448851002099A8 /* instantBright.cisf in Resources */,
+				20F5533F1C4FF7DE001CA4C2 /* random12.2.cisf in Resources */,
+				20F5533D1C4FF6EE001CA4C2 /* random12.1.cisf in Resources */,
 				208017661C48BB3900600365 /* blueBox@2x.png in Resources */,
+				20F553091C4ED5C6001CA4C2 /* OldCameraCreateUser in Resources */,
 				20D7DE6D1C45920E002099A8 /* snapVideoSelected@2x.png in Resources */,
+				2052E5301C50881F00B6CF60 /* blueRed1.4.cisf in Resources */,
 				20D7DD131C418D08002099A8 /* ProgressHUD.bundle in Resources */,
+				20F553431C4FFDAF001CA4C2 /* flash@2x.png in Resources */,
+				20F553291C4FF00D001CA4C2 /* random13.cisf in Resources */,
+				20F553351C4FF386001CA4C2 /* random10.6.cisf in Resources */,
+				20F553371C4FF408001CA4C2 /* random10.7.cisf in Resources */,
+				2052E54D1C509D3200B6CF60 /* test1.cisf in Resources */,
+				2052E5281C5085AD00B6CF60 /* blueRed1.cisf in Resources */,
 				20D7DE911C470343002099A8 /* black@2x.png in Resources */,
+				2052E5531C50A03600B6CF60 /* test1.3.cisf in Resources */,
 				20D7DD941C419816002099A8 /* dooo.png in Resources */,
 				20D7DE551C443307002099A8 /* Misc in Resources */,
+				2052E5361C508EEE00B6CF60 /* blueRed1.7.cisf in Resources */,
 				208017621C4886C000600365 /* camBlueNew@2x.png in Resources */,
+				2052E53C1C50942300B6CF60 /* blueRed3.1.cisf in Resources */,
 				20D7DCF21C4164AE002099A8 /* cancelbutton@2x.png in Resources */,
+				20F5532D1C4FF1F2001CA4C2 /* random10.2.cisf in Resources */,
 				208017581C484CE800600365 /* blackScreen@2x.png in Resources */,
+				2052E5551C50A09400B6CF60 /* test1.4.cisf in Resources */,
+				2052E5571C50A0E500B6CF60 /* test1.5.cisf in Resources */,
+				2052E55D1C50A61100B6CF60 /* vibrant.cisf in Resources */,
+				2052E54A1C50996000B6CF60 /* blueRed3.8.cisf in Resources */,
+				20F553461C50097A001CA4C2 /* cancelNew@2x.png in Resources */,
+				20F553071C4E98B6001CA4C2 /* flag@2x.png in Resources */,
+				2052E5511C509FF000B6CF60 /* test1.2.cisf in Resources */,
 				20D7DC471C3EDC04002099A8 /* Main.storyboard in Resources */,
-				20D7DE811C462C12002099A8 /* cancelNew@2x.png in Resources */,
+				20F5530B1C4ED6BF001CA4C2 /* OldVerifyEmail in Resources */,
+				2052E53A1C50922100B6CF60 /* blueRed3.cisf in Resources */,
+				2052E5461C50965D00B6CF60 /* blueRed3.6.cisf in Resources */,
+				2052E5611C50A70300B6CF60 /* vibrant2.1.cisf in Resources */,
+				20F5531F1C4FEA54001CA4C2 /* random8.cisf in Resources */,
+				20F553031C4DBCD7001CA4C2 /* iphone4Black.png in Resources */,
+				2052E53E1C50948F00B6CF60 /* blueRed3.2.cisf in Resources */,
+				2052E55B1C50A57C00B6CF60 /* fade1.0.cisf in Resources */,
+				2052E54F1C509F4800B6CF60 /* test1.1.cisf in Resources */,
+				20F553391C4FF477001CA4C2 /* random11.cisf in Resources */,
 				208017561C48037500600365 /* camBlue@2x.png in Resources */,
+				2052E5421C5095D600B6CF60 /* blueRed3.4.cisf in Resources */,
+				20F553051C4DBDC5001CA4C2 /* 6plusBlack.png in Resources */,
 				20D7DE931C472348002099A8 /* camPurp@2x.png in Resources */,
+				2052E5381C508F3D00B6CF60 /* blueRed1.8.cisf in Resources */,
 				20D7DE741C45B92D002099A8 /* blueBkg@2x.png in Resources */,
 				20D7DCF41C4164AE002099A8 /* flipCamTho@2x.png in Resources */,
 			);
@@ -1123,6 +1335,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1145,6 +1358,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1166,6 +1380,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1181,6 +1396,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1200,7 +1416,7 @@
 				INFOPLIST_FILE = Stories/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.stories.Stories;
+				PRODUCT_BUNDLE_IDENTIFIER = com.storiesapp.Stories;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -1220,7 +1436,7 @@
 				INFOPLIST_FILE = Stories/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.stories.Stories;
+				PRODUCT_BUNDLE_IDENTIFIER = com.storiesapp.Stories;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

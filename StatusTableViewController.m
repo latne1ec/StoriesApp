@@ -7,11 +7,9 @@
 //
 
 #import "StatusTableViewController.h"
+#import "AppDelegate.h"
 
 @interface StatusTableViewController ()
-
-@property (nonatomic, strong) UIApplication *application;
-
 
 @end
 
@@ -20,12 +18,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.application = [UIApplication sharedApplication];
-    
     self.inviteFriendsButton.layer.cornerRadius = 4;
-    
     [self countUsers];
-
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -33,11 +28,13 @@
     self.navigationItem.hidesBackButton = YES;
     [self.navigationController.navigationBar setHidden:YES];
     
+    [self askUserForPush];
+    
 }
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askedToEnablePush"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
@@ -64,7 +61,6 @@
     }
 }
 
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -81,7 +77,6 @@
     if (indexPath.row == 1) return _secondCell;
     
     return nil;
-
 }
 
 - (IBAction)inviteButtonTapped:(id)sender {
@@ -109,38 +104,21 @@
         }];
 }
 
+-(void)askUserForPush {
+    
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1"] isEqualToString:@"YES"]) {
+        
+    } else {
+    
+        [self performSelector:@selector(showAlert) withObject:nil afterDelay:1.0];
+    }
+}
+
 -(void)askToEnablePush {
     
-    NSLog(@"Called from VC");
-    //    UIApplication *application = [UIApplication sharedApplication];
-    
-    
-    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
-                                                    UIUserNotificationTypeBadge |
-                                                    UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
-                                                                             categories:nil];
-    [self.application registerUserNotificationSettings:settings];
-    [self.application registerForRemoteNotifications];
-}
+    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appD askUserToEnablePushInAppDelgate];
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    
-    // Store the deviceToken in the current installation and save it to Parse.
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation setDeviceTokenFromData:deviceToken];
-    currentInstallation.channels = @[ @"global" ];
-    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error) {
-            
-        } else {
-        }
-    }];
-}
-
--(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    
-    NSLog(@"Error registering for push notifications: %@", error);
 }
 
 -(void)countUsers {
@@ -155,11 +133,10 @@
             [ProgressHUD showError:@"Network Error"];
         } else {
             PFObject *school = object;
-            int userCount = [[school objectForKey:@"userCount"] intValue];
+            int userCount = [[school objectForKey:@"registeredUserCount"] intValue];
             int userThreshold = [[school objectForKey:@"userThreshold"] intValue];
             int remainingCount = userThreshold - userCount;
             self.userCountLabel.text = [NSString stringWithFormat:@"%d more students needed to unlock %@.",remainingCount, userSchool];
-            
             
             if (userCount >= userThreshold) {
                 
@@ -172,7 +149,7 @@
                     self.lockLabel.text = @"🔓";
                     [ProgressHUD show:nil];
                     self.userCountLabel.text = [NSString stringWithFormat:@"%d more students needed to unlock %@.",0, userSchool];
-                    [self performSelector:@selector(doThis) withObject:nil afterDelay:1.5];
+                    [self performSelector:@selector(doThis) withObject:nil afterDelay:1.25];
                     
                 }
             } else {
@@ -181,17 +158,6 @@
             }
         }
     }];
-}
-
--(void)askUserForPush {
-    
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askedToEnablePush"] isEqualToString:@"YES"]) {
-        
-    } else {
-        
-        [self performSelector:@selector(showAlert) withObject:nil afterDelay:1.0];
-    }
-    
 }
 
 -(void)doThis {

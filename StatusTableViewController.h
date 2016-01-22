@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 #import "ProgressHUD.h"
 
-@interface StatusTableViewController : UITableViewController
+@interface StatusTableViewController : UITableViewController 
 
 @property (weak, nonatomic) IBOutlet UITableViewCell *firstCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *secondCell;

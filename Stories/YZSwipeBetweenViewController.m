@@ -17,6 +17,7 @@
 #import <Parse/Parse.h>
 #import "WelcomeViewController.h"
 #import "ViewContentViewController.h"
+#import "StoriesTableViewController.h"
 
 @interface YZSwipeBetweenViewController ()
 
@@ -26,6 +27,7 @@
 @property (nonatomic, assign) CGFloat lastContentOffset;
 
 @property (nonatomic, strong) ViewContentViewController *vcvc;
+@property (nonatomic, strong) StoriesTableViewController *storiesTable;
 
 
 @end
@@ -56,6 +58,8 @@ typedef enum ScrollDirection {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setupViewControllersForScrollView];
+    
+    self.storiesTable = [self.storyboard instantiateViewControllerWithIdentifier:@"MainTable"];
     
     self.scrollView.delegate = self;
     
@@ -159,8 +163,7 @@ typedef enum ScrollDirection {
 
 -(void)viewWillAppear:(BOOL)animated {
     
-    NSLog(@"There");
-    [UIApplication sharedApplication].statusBarHidden = YES;
+    //[UIApplication sharedApplication].statusBarHidden = YES;
     
 }
 
@@ -187,7 +190,6 @@ typedef enum ScrollDirection {
     
     for (UIViewController *vc in self.viewControllers) {
         
-        NSLog(@"Called");
         CGRect frame = vc.view.frame;
         frame.origin.x = currentOriginX;
         vc.view.frame = frame;
@@ -311,15 +313,17 @@ typedef enum ScrollDirection {
     [self.searchBar resignFirstResponder];
     [self.view endEditing:YES];
     
+    //[self.storiesTable.tableView reloadData];
+    
+    
+    
         
    // if ([PFUser currentUser]) {
         
         // NSLog(@"WE HAVE A USER");
         
         self.scrollView.scrollEnabled = YES;
-        
-        mvc = [self.storyboard instantiateViewControllerWithIdentifier:@"MainStories"];
-        
+    
         
         [UIApplication sharedApplication].statusBarHidden = NO;
         
@@ -409,7 +413,7 @@ typedef enum ScrollDirection {
     
     if([UIScreen mainScreen].bounds.size.height <= 568.0) {
         
-        NSLog(@"HERE: %f", scrollView.contentOffset.x);
+        //NSLog(@"HERE: %f", scrollView.contentOffset.x);
         if (scrollView.contentOffset.x >319) {
             
             [UIApplication sharedApplication].statusBarHidden = YES;
@@ -418,7 +422,7 @@ typedef enum ScrollDirection {
         
     } else {
         
-        NSLog(@"HERE 6: %f", scrollView.contentOffset.x);
+        //NSLog(@"HERE 6: %f", scrollView.contentOffset.x);
         if (scrollView.contentOffset.x >375) {
             
             [UIApplication sharedApplication].statusBarHidden = YES;

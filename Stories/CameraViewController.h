@@ -33,6 +33,7 @@
 @property (nonatomic, strong) IBOutlet UIButton *cameraButton;
 @property (nonatomic, strong) IBOutlet UIButton *menu;
 @property (nonatomic, strong) IBOutlet UIButton *selfieButton;
+@property (nonatomic, strong) IBOutlet UIButton *flashButton;
 @property (strong, nonatomic) IBOutlet UIProgressView *videoProgress;
 @property (nonatomic, strong) IBOutlet UIButton *flash;
 @property(nonatomic,strong) UIView *imageSelectedView;

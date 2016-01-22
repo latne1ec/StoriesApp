@@ -58,6 +58,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *countDownLabel;
 @property (nonatomic, strong) NSMutableArray *videoArray;
 @property (nonatomic, strong) NSMutableArray *imageArray;
+@property (weak, nonatomic) IBOutlet UIButton *flagButton;
 
+- (IBAction)flagButtonTapped:(id)sender;
 
 @end
