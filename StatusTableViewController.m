@@ -124,7 +124,7 @@
 -(void)countUsers {
     
     NSString *userSchool = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"] lowercaseString];
-    NSLog(@"School : %@", userSchool);
+   // NSLog(@"School : %@", userSchool);
     
     PFQuery *query = [PFQuery queryWithClassName:@"Universities"];
     [query whereKey:@"universityName" equalTo:[userSchool capitalizedString]];

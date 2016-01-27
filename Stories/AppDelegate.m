@@ -30,8 +30,6 @@
     [PFImageView class];
     
     if([UIScreen mainScreen].bounds.size.height <= 568.0) {
-        
-        
         NSShadow *shadow = [[NSShadow alloc] init];
         shadow.shadowColor = [UIColor clearColor];
         shadow.shadowOffset = CGSizeMake(0, .0);
@@ -39,11 +37,7 @@
                                                               [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
                                                               shadow, NSShadowAttributeName,
                                                               [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26.5], NSFontAttributeName, nil]];
-    }
-    
-    else {
-        
-        
+    } else {
         NSShadow *shadow = [[NSShadow alloc] init];
         shadow.shadowColor = [UIColor clearColor];
         shadow.shadowOffset = CGSizeMake(0, .0);
@@ -53,22 +47,17 @@
                                                               [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
     }
     
-    
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.02"] isEqualToString:@"YES"]) {
         //do something
     } else {
         
-        NSString *userId = [[NSUUID UUID] UUIDString];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:userId forKey:@"userId"];
         [[NSUserDefaults standardUserDefaults] setInteger:98 forKey:@"localUserScore"];
         [[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCount"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1"];
-        [[NSUserDefaults standardUserDefaults] setObject:userId forKey:@"userId"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.02"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    
+        
     self.swipeBetweenVC = [YZSwipeBetweenViewController new];
     [self setupRootViewControllerForWindow];
     self.window.rootViewController = self.swipeBetweenVC;
@@ -133,9 +122,9 @@
     currentInstallation.channels = @[ @"global", userSchool ];
     [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (error) {
-            NSLog(@"Error: %@", error);
+            //NSLog(@"Error: %@", error);
         } else {
-            NSLog(@"Saved Sucessfully");
+            //NSLog(@"Saved Sucessfully");
         }
     }];
 }

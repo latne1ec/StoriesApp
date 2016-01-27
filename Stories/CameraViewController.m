@@ -18,9 +18,7 @@
 #import "Reachability.h"
 #import "StoriesTableViewController.h"
 
-
 #define kVideoPreset AVCaptureSessionPresetHigh
-
 
 @interface CameraViewController () {
     SCRecorder *_recorder;
@@ -33,7 +31,6 @@
 @property (nonatomic) float keyboardOriginY;
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic) BOOL accepted;
-
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIVisualEffect *blurEffect;
 
@@ -72,7 +69,6 @@
     
     if ([[Reachability reachabilityForInternetConnection]currentReachabilityStatus]==NotReachable) {
         //connection unavailable
-        
         UIView *badEmail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         [self.view addSubview:badEmail];
         badEmail.backgroundColor = [UIColor clearColor];
@@ -106,9 +102,9 @@
         if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"localUser"] isEqualToString:@"YES"]) {
             
             //User already created, find them
-            NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+            NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
             PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
-            [query whereKey:@"userId" equalTo:userId];
+            [query whereKey:@"objectId" equalTo:userObjectId];
             [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
                 if (error) {
                     //NSLog(@"ERROR: %@", error);
@@ -151,12 +147,10 @@
         } else {
             
             //Create User
-            NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
             PFObject *newUser = [PFObject objectWithClassName:@"CustomUser"];
-            [newUser setObject:userId forKey:@"userId"];
             [newUser setObject:@"" forKey:@"userSchool"];
             [newUser incrementKey:@"userScore" byAmount:[NSNumber numberWithInt:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue]]];
-            [newUser incrementKey:@"runCount" byAmount:[NSNumber numberWithInt:2]];
+            [newUser incrementKey:@"runCount" byAmount:[NSNumber numberWithInt:1]];
             [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
                     
@@ -208,8 +202,6 @@
             }];
         }
     }
-    
-    
     
     self.capturePhotoButton.alpha = 0.0;
     self.device = AVCaptureDevicePositionBack;
@@ -375,7 +367,6 @@
 
 -(void)appClosed{
     
-    NSLog(@"App Closed");
     [ProgressHUD dismiss];
     [UIApplication sharedApplication].statusBarHidden = YES;
     
@@ -384,7 +375,6 @@
 -(void)appWillResign {
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"localUser"] isEqualToString:@"YES"]) {
-        
         if (self.currentUser != nil) {
             int currentUserScore = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
             int currentStoryViewCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCount"] intValue];
@@ -456,11 +446,11 @@
 
     if (recognizer.state == UIGestureRecognizerStateBegan) {
 
-        [UIView animateWithDuration:0.07 animations:^{
-            self.menu.transform = CGAffineTransformMakeScale(1.30, 1.30);
+        [UIView animateWithDuration:0.076 animations:^{
+            self.menu.transform = CGAffineTransformMakeScale(1.32, 1.32);
 
         } completion:^(BOOL finished) {
-            self.menu.transform = CGAffineTransformMakeScale(1.26, 1.26);
+            self.menu.transform = CGAffineTransformMakeScale(1.28, 1.28);
 
         }];
     }
@@ -592,6 +582,8 @@
     
     [_recorder stopRunning];
     
+    [self.flashButton setSelected:YES];
+    
     [UIView animateWithDuration:0.04 animations:^{
         self.cameraButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
     } completion:nil];
@@ -682,6 +674,13 @@ replacementString:(NSString *)string{
     
 }
 
+-(BOOL)textFieldShouldReturn:(UITextField*)textField; {
+    
+    [caption resignFirstResponder];
+    
+    return YES;
+}
+
 -(void)setKeyboardFrame {
     
     [UIView animateWithDuration:0.06 animations:^{
@@ -707,9 +706,7 @@ replacementString:(NSString *)string{
 /////PHOTO CAPTION
 ///********************************************************************
 
-
 #pragma mark - Handle
-
 
 - (void)showVideo {
     EditVideoViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"EditVideo"];
@@ -905,6 +902,12 @@ replacementString:(NSString *)string{
         [_recorder capturePhoto:^(NSError *error, UIImage *image) {
             if (image != nil) {
 
+                if (self.flashButton.selected) {
+                    
+                } else {
+                    [self performSelector:@selector(switchFlash:) withObject:nil afterDelay:0.1];
+                }
+                    
                 [self bounce];
                 
                 //////IF SELFIE TAKEN
@@ -1094,7 +1097,13 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     _uploadRequest.bucket = @"storiescontentbucket";
     _uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
 
-    NSString * uuidStr = [[NSUUID UUID] UUIDString];
+    int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
+    
+
+    NSString *randomId = [[NSUUID UUID] UUIDString];
+    
+    NSString * uuidStr = [NSString stringWithFormat:@"%@-%d-%@", self.currentUser.objectId, i, randomId];
+    
     NSString *textBody = @"posts/PIC_KEY-image.png";
     NSString* newString = [textBody stringByReplacingOccurrencesOfString:@"PIC_KEY" withString:uuidStr];
 
@@ -1116,8 +1125,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
             //NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            [ProgressHUD showError:@"Network Error"];
-
+            [ProgressHUD showError:@"network error"];
 
         }
 
@@ -1158,6 +1166,8 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
             [ProgressHUD dismiss];
             
+            [self checkIfUserEnabledPush];
+            
             //Increment Score
             int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
             [[NSUserDefaults standardUserDefaults] setInteger:i+1 forKey:@"localUserScore"];
@@ -1168,9 +1178,55 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
         }
         else {
 
-            [ProgressHUD showError:@"Network Error"];
+            [ProgressHUD showError:@"network error"];
         }
     }];
+}
+
+-(void)checkIfUserEnabledPush {
+
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.02"] isEqualToString:@"YES"]) {
+        
+    } else {
+        
+        [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.2];
+    }
+}
+
+-(void)showAlert {
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.02"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    //NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    NSString *message = [NSString stringWithFormat:@"Want to get notified when your post is published?"];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable notifications" message:message delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Yeah", nil];
+    [alertView show];
+    
+    alertView.tag = 101;
+    alertView.delegate = self;
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger) buttonIndex {
+    
+    if (alertView.tag == 101) {
+        
+        if (buttonIndex == 0) {
+            
+        } else {
+            
+            [self askToEnablePush];
+        }
+    }
+}
+
+-(void)askToEnablePush {
+    
+    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appD askUserToEnablePushInAppDelgate];
+    
 }
 
 
@@ -1204,10 +1260,10 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
 -(void)getUser {
     
-    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+    NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
     
     PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
-    [query whereKey:@"userId" equalTo:userId];
+    [query whereKey:@"objectId" equalTo:userObjectId];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if (error) {
             
@@ -1216,7 +1272,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
                 [self showNoInternetError];
             }
         } else {
-            
+            //NSLog(@"Got User: %@", object);
             self.currentUser = object;
             
             NSString *userSchool = [object objectForKey:@"userSchool"];

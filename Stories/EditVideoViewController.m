@@ -212,8 +212,9 @@
     
     CGPoint translation = [gestureRecognizer locationInView:self.view];
     
-    if(translation.y < caption.frame.size.height/2){
-        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  caption.frame.size.height/2);
+    if(translation.y < caption.frame.size.height/2+280){
+        NSLog(@"HEre;");
+        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  caption.frame.size.height/2+280);
     } else if(self.view.frame.size.height < translation.y + caption.frame.size.height/2){
         caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  self.view.frame.size.height - caption.frame.size.height/2);
     } else {
@@ -250,6 +251,13 @@ replacementString:(NSString *)string{
     caption.frame = CGRectMake(0,self.view.frame.size.height/2+60,self.view.frame.size.width,40);
     [UIView commitAnimations];
     
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField*)textField; {
+    
+    [caption resignFirstResponder];
+    
+    return YES;
 }
 
 -(void)setKeyboardFrame {
@@ -411,10 +419,14 @@ replacementString:(NSString *)string{
     _uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
     
     
-    NSString * uuidStr = [[NSUUID UUID] UUIDString];
+    int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
+    
+    NSString *randomId = [[NSUUID UUID] UUIDString];
+    
+    NSString * uuidStr = [NSString stringWithFormat:@"%@-%d-%@", self.currentUser.objectId, i, randomId];
+    
     NSString *textBody = @"posts/PIC_KEY.mp4";
     NSString* newString = [textBody stringByReplacingOccurrencesOfString:@"PIC_KEY" withString:uuidStr];
-    
     
     _uploadRequest.key = newString;
     //_uploadRequest.key = @"photos/image.png";
@@ -437,7 +449,7 @@ replacementString:(NSString *)string{
             
             //NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            [ProgressHUD showError:@"Network Error"];
+            [ProgressHUD showError:@"network error"];
             
             
         }
@@ -483,7 +495,10 @@ replacementString:(NSString *)string{
     _uploadRequest.bucket = @"storiescontentbucket";
     _uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
     
-    NSString * uuidStr = [[NSUUID UUID] UUIDString];
+    NSString *randomId = [[NSUUID UUID] UUIDString];
+    int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
+    NSString * uuidStr = [NSString stringWithFormat:@"%@-%d-%@", self.currentUser.objectId, i, randomId];
+    
     NSString *textBody = @"posts/PIC_KEY-image.png";
     NSString* newString = [textBody stringByReplacingOccurrencesOfString:@"PIC_KEY" withString:uuidStr];
     
@@ -505,7 +520,7 @@ replacementString:(NSString *)string{
             
            // NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            [ProgressHUD showError:@"Network Error"];
+            [ProgressHUD showError:@"network error"];
             
             
         }

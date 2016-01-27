@@ -37,6 +37,8 @@
 		2052E55D1C50A61100B6CF60 /* vibrant.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E55C1C50A61100B6CF60 /* vibrant.cisf */; };
 		2052E55F1C50A6AB00B6CF60 /* vibrant2.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E55E1C50A6AB00B6CF60 /* vibrant2.cisf */; };
 		2052E5611C50A70300B6CF60 /* vibrant2.1.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5601C50A70300B6CF60 /* vibrant2.1.cisf */; };
+		2052E5651C554DD100B6CF60 /* mute.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2052E5621C554DD000B6CF60 /* mute.caf */; };
+		2052E5661C554DD100B6CF60 /* SharkfoodMuteSwitchDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2052E5641C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.m */; };
 		206641331C4C455C008AC9AA /* OldVideo in Resources */ = {isa = PBXBuildFile; fileRef = 206641321C4C455C008AC9AA /* OldVideo */; };
 		208017561C48037500600365 /* camBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 208017551C48037500600365 /* camBlue@2x.png */; };
 		208017581C484CE800600365 /* blackScreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 208017571C484CE800600365 /* blackScreen@2x.png */; };
@@ -243,6 +245,9 @@
 		2052E55C1C50A61100B6CF60 /* vibrant.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = vibrant.cisf; sourceTree = "<group>"; };
 		2052E55E1C50A6AB00B6CF60 /* vibrant2.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = vibrant2.cisf; sourceTree = "<group>"; };
 		2052E5601C50A70300B6CF60 /* vibrant2.1.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = vibrant2.1.cisf; sourceTree = "<group>"; };
+		2052E5621C554DD000B6CF60 /* mute.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = mute.caf; sourceTree = "<group>"; };
+		2052E5631C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharkfoodMuteSwitchDetector.h; sourceTree = "<group>"; };
+		2052E5641C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharkfoodMuteSwitchDetector.m; sourceTree = "<group>"; };
 		206641321C4C455C008AC9AA /* OldVideo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OldVideo; sourceTree = "<group>"; };
 		208017551C48037500600365 /* camBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camBlue@2x.png"; sourceTree = "<group>"; };
 		208017571C484CE800600365 /* blackScreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackScreen@2x.png"; sourceTree = "<group>"; };
@@ -698,6 +703,9 @@
 		20D7DC531C3EDD95002099A8 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				2052E5621C554DD000B6CF60 /* mute.caf */,
+				2052E5631C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.h */,
+				2052E5641C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.m */,
 				208017631C48943F00600365 /* Reachability */,
 				20D7DE7D1C45E9A3002099A8 /* CERoundProgressView */,
 				20D7DD951C419C1E002099A8 /* JTMaterial */,
@@ -1196,6 +1204,7 @@
 				20F553051C4DBDC5001CA4C2 /* 6plusBlack.png in Resources */,
 				20D7DE931C472348002099A8 /* camPurp@2x.png in Resources */,
 				2052E5381C508F3D00B6CF60 /* blueRed1.8.cisf in Resources */,
+				2052E5651C554DD100B6CF60 /* mute.caf in Resources */,
 				20D7DE741C45B92D002099A8 /* blueBkg@2x.png in Resources */,
 				20D7DCF41C4164AE002099A8 /* flipCamTho@2x.png in Resources */,
 			);
@@ -1260,6 +1269,7 @@
 				20D7DE2F1C436B1A002099A8 /* SCFilter.m in Sources */,
 				20D7DE341C436B1A002099A8 /* SCImageView.m in Sources */,
 				20D7DD261C418D73002099A8 /* HexColor.m in Sources */,
+				2052E5661C554DD100B6CF60 /* SharkfoodMuteSwitchDetector.m in Sources */,
 				20D7DE391C436B1A002099A8 /* SCProcessingQueue.m in Sources */,
 				20D7DD141C418D08002099A8 /* ProgressHUD.m in Sources */,
 				20D7DCFB1C4166EB002099A8 /* YZSwipeBetweenViewController.m in Sources */,

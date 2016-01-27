@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <PArse/Parse.h>
+#import <Parse/Parse.h>
 #import "ProgressHUD.h"
 #import "SCVideoPlayerView.h"
 #import "CERoundProgressView.h"
@@ -45,6 +45,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *tapTap;
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UILabel *subtitleLabel;
+@property (strong, nonatomic) IBOutlet UILabel *subtitleLabelTwo;
 @property (nonatomic, strong) NSTimer *skipTimer;
 @property (nonatomic, strong) NSTimer *dasTimer;
 @property (nonatomic, strong) NSTimer *handleTapTimer;

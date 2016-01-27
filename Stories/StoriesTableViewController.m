@@ -18,7 +18,7 @@
 #import "AppDelegate.h"
 #import "CameraViewController.h"
 
-@interface StoriesTableViewController () <SSARefreshControlDelegate> {
+@interface StoriesTableViewController ()  {
     
     CLLocationManager *locationManager;
     CLGeocoder *geocoder;
@@ -60,6 +60,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     [self queryForHomePic];
     
@@ -120,9 +121,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDasTable) name:@"reload_data" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableview) name:@"justReloadTheTable" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeHomePic) name:@"change_home_pic" object:nil];
 }
 
-
+-(void)changeHomePic {
+    //NSLog(@"Called");
+    [self queryForHomePic];
+}
 
 -(void)viewDidAppear:(BOOL)animated {
     
@@ -160,12 +166,6 @@
 //*********************************************
 
 
-- (void)beganRefreshing {
-    
-    [self queryForHomePic];
-    
-}
-
 -(void)reloadTableview {
     [self.tableView reloadData];
 }
@@ -192,7 +192,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     
 }
-
 
 #pragma mark - Table view data source
 
@@ -223,7 +222,6 @@
     if (section == 0) {
         
         return 1;
-
     }
     return 0;
 }
@@ -345,9 +343,7 @@
     
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:1];
-    
 }
-
 
 -(void)endRefresh {
     
@@ -410,10 +406,10 @@
 
 -(void)updateUserStatus {
     
-    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
+    NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
     
     PFQuery *query = [PFQuery queryWithClassName:@"CustomUser"];
-    [query whereKey:@"userId" equalTo:userId];
+    [query whereKey:@"objectId" equalTo:userObjectId];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if (error) {
         } else {
@@ -431,7 +427,6 @@
                     [self.tableView reloadData];
                 }
             }];
-
         }
     }];
 }
@@ -441,7 +436,7 @@
 
 -(void)askUserForPush {
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.02"] isEqualToString:@"YES"]) {
         
     } else {
         
@@ -451,7 +446,7 @@
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.02"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
@@ -504,7 +499,7 @@
 - (IBAction)inviteButtonTapped:(id)sender {
     
     NSString *link = [[NSUserDefaults standardUserDefaults] objectForKey:@"appLink"];
-    NSString* newString = [NSString stringWithFormat:@"Hey, download Stories to unlock our school: %@", link];
+    NSString* newString = [NSString stringWithFormat:@"%@", link];
     
     NSArray *objectsToShare = @[newString];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];

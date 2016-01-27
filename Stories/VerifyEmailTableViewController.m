@@ -42,8 +42,7 @@
             self.acceptableEmailAddress = config[@"acceptableEmailAddress"];
             NSString *link = config[@"appLink"];
             [[NSUserDefaults standardUserDefaults] setObject:link forKey:@"appLink"];
-            NSLog(@"Link: %@", link);
-            
+            //NSLog(@"Link: %@", link);
         }
     }];
 }
@@ -112,7 +111,7 @@
     self.userschool = [string capitalizedString];
     
     if ([aString rangeOfString:@".edu"].location == NSNotFound) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email" message:@"Please enter a valid .edu email address" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email" message:@"Enter a valid .edu email address" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
         [alert show];
         return;
     }
@@ -123,7 +122,7 @@
     }
     
     if (![self.acceptableEmailAddress containsObject:self.userschool]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"Stories isn't available there right now." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"Stories isn't available at your university right now." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
             [alert show];
             return;
         
@@ -151,33 +150,73 @@
         [user setObject:@"pending" forKey:@"universityStatus"];
         [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
-                NSLog(@"Error %@", error);
+                //NSLog(@"Error %@", error);
                 [ProgressHUD dismiss];
             } else {
                 
-                [PFCloud callFunctionInBackground:@"sendEmailVerification" withParameters:@{ @"emailAddress": emailAddress, @"userId": userObjectId } block:^(id  _Nullable object, NSError * _Nullable error) {
+                NSString *urlString = [NSString stringWithFormat:@"http://storiesss.com/verify.php?user_id=%@&email_address=%@&user_school=%@", userObjectId, emailAddress, self.userschool];
+                NSURL *url = [NSURL URLWithString:urlString];
+                
+                NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
+                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+                
+                [request setHTTPMethod:@"POST"];
+                NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (error) {
-                        [ProgressHUD showError:@"Network Error"];
-                        NSLog(@"Error: %@", error);
+                        //NSLog(@"Error: %@", error);
+                        [self tryMailgun:emailAddress :userObjectId];
+                        
                     } else {
+                        
+                        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        //NSLog(@"Response: %@", responseString);
+                        
                         [ProgressHUD dismiss];
-                        NSLog(@"Success!");
-                        [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.6];
-                        [self.emailTextfield resignFirstResponder];
-                        [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
-                        [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        //NSLog(@"Success!");
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.6];
+                            [self.emailTextfield resignFirstResponder];
+                            [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
+                            [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
 
+                        });
                     }
                 }];
+                
+                [postDataTask resume];
+                
             }
         }];
     }
 }
 
+-(void)tryMailgun: (NSString *)emailAddress : (NSString *)userObjectId {
+    
+        [PFCloud callFunctionInBackground:@"sendEmailVerification" withParameters:@{ @"emailAddress": emailAddress, @"userId": userObjectId } block:^(id  _Nullable object, NSError * _Nullable error) {
+            if (error) {
+                [ProgressHUD showError:@"network error"];
+                //NSLog(@"Error: %@", error);
+            } else {
+                [ProgressHUD dismiss];
+                //NSLog(@"Success!");
+                [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.6];
+                [self.emailTextfield resignFirstResponder];
+                [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+            }
+        }];
+    
+}
+
+
 -(void)showAlert {
     
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Please check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
         [alertView show];
 
         alertView.tag = 101;

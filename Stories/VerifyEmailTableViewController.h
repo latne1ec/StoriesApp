@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 
-@interface VerifyEmailTableViewController : UITableViewController <UIAlertViewDelegate, UITextFieldDelegate>
+@interface VerifyEmailTableViewController : UITableViewController <UIAlertViewDelegate, UITextFieldDelegate, NSURLSessionDelegate>
 
 
 @property (weak, nonatomic) IBOutlet UITableViewCell *firstCell;

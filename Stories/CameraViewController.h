@@ -13,7 +13,7 @@
 #import <Parse/Parse.h>
 
 
-@interface CameraViewController : UIViewController <SCRecorderDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, SCRecorderToolsViewDelegate>
+@interface CameraViewController : UIViewController <SCRecorderDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, SCRecorderToolsViewDelegate, UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *recordView;
 @property (weak, nonatomic) IBOutlet UIButton *stopButton;

@@ -49,6 +49,11 @@ self.avPlayerLayerTwo.frame = self.view.layer.bounds;
 self.avPlayerLayerTwo.videoGravity = AVLayerVideoGravityResizeAspectFill;
 [self.view.layer addSublayer:self.avPlayerLayerTwo];
 
+//    [self.avPlayerTwo addObserver:self
+//                    forKeyPath:@"currentItem"
+//                       options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+//                       context:CurrentItemObservationContext];
+
 
 
 _firstObjectVideo = NO;
@@ -941,5 +946,135 @@ self.subtitleLabel.alpha = 0.0;
 [self dismissViewControllerAnimated:NO completion:nil];
 
 }
+
+//- (void)observeValueForKeyPath:(NSString*) path
+//                      ofObject:(id)object
+//                        change:(NSDictionary*)change
+//                       context:(void*)context {
+//
+//    if (videoCount % 2 == 0) {
+//
+//        if (context == CurrentItemObservationContext) {
+//            AVPlayerItem *item = [change objectForKey:NSKeyValueChangeNewKey];
+//            if (item != (id)[NSNull null]) {
+//                [self makeSkipable];
+//                NSLog(@"Player One Replaced");
+//            }
+//        }
+//
+//    } else {
+//
+//        if (context == CurrentItemObservationContext) {
+//            AVPlayerItem *item = [change objectForKey:NSKeyValueChangeNewKey];
+//            if (item != (id)[NSNull null]) {
+//                [self makeSkipable];
+//                NSLog(@"Player Two Replaced");
+//            }
+//        }
+//
+//    }
+//}
+
+-(void)downloadVids {
+
+self.playerItemArray = [[NSMutableArray alloc] init];
+
+for (PFObject *object in self.contentArray) {
+
+NSString *postType = [object valueForKey:@"postType"];
+
+if ([postType isEqualToString:@"video"]) {
+NSString *urlString = [object objectForKey:@"videoUrl"];
+NSURL *url = [NSURL URLWithString:urlString];
+
+AVAsset *asset = [AVAsset assetWithURL:url];
+
+NSArray *keys = [NSArray arrayWithObject:@"duration"];
+[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+
+AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+//NSLog(@"Item: %@", item);
+[self.playerItemArray addObject:item];
+}];
+}
+}
+}
+
+
+
+
+-(void)preloadVideoPlayer {
+
+if (videoCount == self.videoArray.count) {
+
+} else {
+
+if (videoCount % 2 == 0) {
+//Even
+NSLog(@"Preloading One");
+NSString *nextUrlString = [self.videoArray objectAtIndex:videoCount];
+NSURL *url = [NSURL URLWithString:nextUrlString];
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+self.avAsset = [AVAsset assetWithURL:url];
+self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
+
+dispatch_async(dispatch_get_main_queue(), ^{
+
+//if (_playerOneReady) {
+[self.avPlayer replaceCurrentItemWithPlayerItem:self.avPlayerItem];
+//                        _playerOneReady = NO;
+//                    } else {
+//                    }
+});
+});
+
+} else {
+//Oddf
+NSLog(@"Preloading Two");
+NSString *nextUrlString = [self.videoArray objectAtIndex:videoCount];
+NSURL *url = [NSURL URLWithString:nextUrlString];
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+self.avAssetTwo = [AVAsset assetWithURL:url];
+self.avPlayerItemTwo = [AVPlayerItem playerItemWithAsset:self.avAssetTwo];
+
+dispatch_async(dispatch_get_main_queue(), ^{
+//if (_playerTwoReady) {
+[self.avPlayerTwo replaceCurrentItemWithPlayerItem:self.avPlayerItemTwo];
+//                        _playerTwoReady = NO;
+//                    } else {
+//                    }
+});
+});
+}
+}
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+
+
+if (videoCount % 2 == 0) {
+if (context == CurrentItemObservationContext) {
+NSLog(@"Player One Ready");
+_playerOneReady = YES;
+} else {
+[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+} else {
+if (context == CurrentItemObservationContext) {
+NSLog(@"Player Two Ready");
+_playerTwoReady = YES;
+} else {
+[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+}
+
+}
+
 
 @end
