@@ -37,11 +37,9 @@
 @property (nonatomic, strong) PFObject *searchedStory;
 @property (nonatomic, readonly) NSUInteger currentIndex;
 @property (nonatomic, strong) UIButton *camButtonBottom;
-
 @property (nonatomic, strong) PFObject *currentUser;
 @property (nonatomic, strong) PFObject *university;
-
-
+@property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapp;

@@ -121,9 +121,42 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDasTable) name:@"reload_data" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableview) name:@"justReloadTheTable" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeHomePic) name:@"change_home_pic" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLoader) name:@"show_loader" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideLoader) name:@"hide_loader" object:nil];
+    
+    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.indicator.frame = CGRectMake(9.4, 9.4, 30.0, 30.0);
+    self.indicator.layer.cornerRadius = self.indicator.frame.size.width / 2;
+    //self.indicator.center = cell.homeStoryImage.center;
+    self.indicator.layer.speed = 1.5;
+    self.indicator.alpha = 0.725;
+    [self.indicator setHidden:YES];
+    self.indicator.hidden = YES;
+    
 }
+
+-(void)showLoader {
+    
+    self.tableView.allowsSelection = NO;
+    HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    cell.homeStoryImage.alpha = 0.65;
+    [self.indicator setHidden:NO];
+    [self.indicator startAnimating];
+}
+
+-(void)hideLoader {
+    
+    self.tableView.allowsSelection = YES;
+    HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    cell.homeStoryImage.alpha = 1.0;
+    [self.indicator setHidden:YES];
+    [self.indicator stopAnimating];
+    self.tableView.allowsSelection = YES;
+    [self.tableView reloadData];
+}
+
 
 -(void)changeHomePic {
     //NSLog(@"Called");
@@ -257,6 +290,8 @@
                 cell.homeName.text = userSchool;
             }
             
+            [cell.homeStoryImage addSubview:self.indicator];
+            
             cell.homeStoryImage.layer.cornerRadius = cell.homeStoryImage.frame.size.width / 2;
             cell.homeStoryImage.clipsToBounds = YES;
             
@@ -266,6 +301,7 @@
             } else {
                 
                 [cell.homeStoryImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@""]];
+                [cell.homeStoryImage bringSubviewToFront:self.indicator];
             }
         }
         
@@ -436,7 +472,7 @@
 
 -(void)askUserForPush {
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.02"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.04"] isEqualToString:@"YES"]) {
         
     } else {
         
@@ -446,7 +482,7 @@
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.02"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.04"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];

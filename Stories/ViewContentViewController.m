@@ -41,7 +41,6 @@ int canSkip;
 
 static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -58,16 +57,15 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     [self.view addGestureRecognizer:swipe];
     
-    
     self.yzBaby = [[YZSwipeBetweenViewController alloc] init];
     self.delegate = self.yzBaby;
     
-//    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-//    self.indicator.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-//    self.indicator.center = self.view.center;
-//    [self.indicator setHidden:NO];
-//    [self.indicator startAnimating];
-//    [self.view addSubview:self.indicator];
+    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.indicator.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+    self.indicator.center = self.view.center;
+    [self.indicator setHidden:NO];
+    [self.indicator startAnimating];
+    [self.view addSubview:self.indicator];
     
     self.subtitleLabel = [[UILabel alloc] init];
     self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 40);
@@ -311,7 +309,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         
         if (currentIndex+1 >= self.contentArray.count) {
             
-            [self goHome:self];
+            [self goHomeNotAnimated];
             
         } else {
             
@@ -398,7 +396,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                if (finished) {
 
                                    [self addCaption];
-                                   [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.172];
+                                   [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.075];
                                    //[self makeSkipable];
                                }
                                
@@ -518,7 +516,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [self.manager downloadImageWithURL:url options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     }
-                           completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                        completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
 
                                self.imageView.image = images;
                                self.subtitleLabel.hidden = YES;
@@ -533,7 +531,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                 [self playDasVideo];
                                 [self preloadVideoPlayer];
                                 //[self makeSkipable];
-                                [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.172];
+                                [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.16];
                                }
                                
                            }];
@@ -706,6 +704,8 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             
         } else {
             
+            [self.indicator stopAnimating];
+            [self.indicator setHidden:YES];
             if (objects.count == 0) {
                 
                 currentIndex = 0;
@@ -720,9 +720,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             skipIndex = 0;
             
             PFObject *lastObject = [self.contentArray lastObject];
-            
-            [self.indicator setHidden:YES];
-            [self.indicator stopAnimating];
             
             if ([lastObject.objectId isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:@"lastSeenContentId"]]) {
                 

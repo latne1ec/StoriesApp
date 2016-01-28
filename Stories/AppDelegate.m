@@ -13,7 +13,6 @@
 
 @interface AppDelegate ()
 
-
 @end
 
 @implementation AppDelegate
@@ -47,13 +46,13 @@
                                                               [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
     }
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.02"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.04"] isEqualToString:@"YES"]) {
         //do something
     } else {
         
         [[NSUserDefaults standardUserDefaults] setInteger:98 forKey:@"localUserScore"];
         [[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCount"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.02"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.04"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -66,7 +65,6 @@
     [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:1 animated:NO];
 
     [self.window makeKeyAndVisible];
-    
     
     
     AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1

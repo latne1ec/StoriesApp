@@ -42,7 +42,6 @@
 
 #pragma mark - UIViewController
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -144,6 +143,7 @@
                     }
                 }
             }];
+            
         } else {
             
             //Create User
@@ -244,8 +244,6 @@
     //_recorder.fastRecordMethodEnabled = true;
     _recorder.mirrorOnFrontCamera = YES;
 
-    
-    
     _recorder.delegate = self;
     _recorder.autoSetVideoOrientation = NO;
     
@@ -329,13 +327,10 @@
     [self.selfieButton addTarget:self action:@selector(handleReverseCameraTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.selfieButton];
     
-    
     [self.videoProgress setTransform:CGAffineTransformMakeScale(1.0, 20.0)];
     
-
     [self.videoProgress setTransform:CGAffineTransformMakeScale(1.0, 20.0)];
     [self.videoProgress setProgress:0.f];
-    
     
     UILongPressGestureRecognizer *longPressTwo = [[UILongPressGestureRecognizer alloc] init];
     longPressTwo.delegate = self;
@@ -1037,7 +1032,11 @@ replacementString:(NSString *)string{
 
 -(void)uploadPhoto {
 
-    [ProgressHUD show:nil Interaction:NO];
+    //[ProgressHUD show:nil Interaction:NO];
+    
+    //Show Loader
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"show_loader" object:self];
+    
     [self ScrollToHomeView];
     
     if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
@@ -1125,6 +1124,8 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
             //NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
             [ProgressHUD showError:@"network error"];
 
         }
@@ -1135,6 +1136,9 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [self uploadToParse];
             [ProgressHUD dismiss];
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
+
         }
         return nil;
     }];
@@ -1177,7 +1181,8 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
         }
         else {
-
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
             [ProgressHUD showError:@"network error"];
         }
     }];
@@ -1185,7 +1190,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
 -(void)checkIfUserEnabledPush {
 
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.02"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.04"] isEqualToString:@"YES"]) {
         
     } else {
         
@@ -1195,7 +1200,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.02"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.04"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     //NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];

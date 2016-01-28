@@ -373,7 +373,8 @@ replacementString:(NSString *)string{
 
 - (void)saveToCameraRoll {
     
-        [ProgressHUD show:nil Interaction:NO];
+        //[ProgressHUD show:nil Interaction:NO];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"show_loader" object:self];
         [self ScrollToHomeView];
         [_player pause];
         [self.navigationController popViewControllerAnimated:NO];
@@ -386,6 +387,7 @@ replacementString:(NSString *)string{
             if (error == nil) {
             } else {
                 [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                
             }
         };
         
@@ -449,8 +451,9 @@ replacementString:(NSString *)string{
             
             //NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
             [ProgressHUD showError:@"network error"];
-            
             
         }
         
@@ -520,8 +523,9 @@ replacementString:(NSString *)string{
             
            // NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
             [ProgressHUD showError:@"network error"];
-            
             
         }
         
@@ -530,10 +534,12 @@ replacementString:(NSString *)string{
            // NSLog(@"AWS Pic URL: %@", _awsPicUrl);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [self uploadToParse];
-            [ProgressHUD dismiss];
+            //[ProgressHUD dismiss];
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
+
         }
         return nil;
-        
         
     }];
 }
@@ -571,17 +577,18 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     [userPhoto setObject:@"video" forKey:@"postType"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
     [userPhoto setObject:self.currentUser forKey:@"user"];
-       [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {
-            
             //Increment User Score
             int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
             [[NSUserDefaults standardUserDefaults] setInteger:i+1 forKey:@"localUserScore"];
             
         }
         else {
-            
+            //Hide Loader
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
+            [ProgressHUD showError:@"network error"];
         }
     }];
 }
