@@ -1,0 +1,19 @@
+if (CMTimeGetSeconds(_recorder.session.currentSegmentDuration) <= CMTimeGetSeconds(minLength)) {
+NSLog(@"Less than 1 seconds");
+[_recorder pause];
+if (_recordSession != nil) {
+_recorder.session = nil;
+[_recorder.session cancelSession:nil];
+[_recordSession cancelSession:nil];
+}
+self.videoProgress.hidden = YES;
+self.cameraButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
+[self.cameraButton setHighlighted:NO];
+self.menu.hidden = NO;
+self.flashButton.hidden = NO;
+self.selfieButton.hidden = NO;
+[self.videoProgress setProgress:0.f animated:NO];
+self.videoProgress.hidden = YES;
+[self updateTimeRecordedLabel];
+[self capturePhoto:self];
+} else {

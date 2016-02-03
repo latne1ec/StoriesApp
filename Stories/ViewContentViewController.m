@@ -128,8 +128,12 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     _playerOneReady = YES;
     _playerTwoReady = YES;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appClosed) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
-
+-(void)appClosed {
+    [ProgressHUD dismiss];
+    [UIApplication sharedApplication].statusBarHidden = YES;
+}
 -(void)setupTapTimer {
     
     PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
@@ -178,6 +182,10 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [self.replayButton addTarget:self action:@selector(replayShow) forControlEvents:UIControlEventTouchUpInside];
     self.replayView.alpha = 0;
     [self.replayView addSubview:self.replayButton];
+    
+    UITapGestureRecognizer *replayTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(replayShow)];
+    replayTap.numberOfTapsRequired = 1;
+    [self.replayView addGestureRecognizer:replayTap];
     
     [UIView animateWithDuration:0.16 delay:0.09 options:0 animations:^{
         self.replayView.alpha = 1.0;
@@ -386,6 +394,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     }
                            completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
 
+                                                              
                                self.imageView.image = images;
                                self.imageView.hidden = NO;
                                [CATransaction setDisableActions:YES];
@@ -396,7 +405,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                if (finished) {
 
                                    [self addCaption];
-                                   [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.075];
+                                   [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.125];
                                    //[self makeSkipable];
                                }
                                
@@ -531,7 +540,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                 [self playDasVideo];
                                 [self preloadVideoPlayer];
                                 //[self makeSkipable];
-                                [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.16];
+                                [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.155];
                                }
                                
                            }];

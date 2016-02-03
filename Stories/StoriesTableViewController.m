@@ -33,7 +33,9 @@
 @property (nonatomic, strong) NSDictionary *dasDic;
 @property (nonatomic, strong) NSMutableArray *dicArray;
 @property (nonatomic, strong) MainStoriesViewController *daMvc;
-@property (nonatomic, strong) SSARefreshControl *refreshControl;
+//@property (nonatomic, strong) SSARefreshControl *refreshControl;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+
 
 @end
 
@@ -48,6 +50,8 @@
 @synthesize searchedStory;
 @synthesize currentIndex;
 
+bool uploadingPost;
+
 
 -(BOOL)prefersStatusBarHidden {
     
@@ -61,6 +65,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
+        NSShadow *shadow = [[NSShadow alloc] init];
+        shadow.shadowColor = [UIColor clearColor];
+        shadow.shadowOffset = CGSizeMake(0, .0);
+        [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
+                                                              shadow, NSShadowAttributeName,
+                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26.5], NSFontAttributeName, nil]];
+    } else {
+        NSShadow *shadow = [[NSShadow alloc] init];
+        shadow.shadowColor = [UIColor clearColor];
+        shadow.shadowOffset = CGSizeMake(0, .0);
+        [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
+                                                              shadow, NSShadowAttributeName,
+                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
+    }
+
+    
+    
+    uploadingPost = false;
     
     [self queryForHomePic];
     
@@ -113,7 +138,6 @@
     [self.navigationController setNavigationBarHidden:NO];
     self.tableView.tableFooterView = [UIView new];
     
-    
     [self createPresentControllerButton];
     [self createTransition];
     [self updateUserScore];
@@ -135,10 +159,15 @@
     [self.indicator setHidden:YES];
     self.indicator.hidden = YES;
     
+//    self.refreshControl = [[UIRefreshControl alloc] init];
+//    [self.refreshControl addTarget:self action:@selector(queryForHomePic) forControlEvents:UIControlEventValueChanged];
+//    [self.tableView addSubview:self.refreshControl];
+        
 }
 
 -(void)showLoader {
     
+    uploadingPost = true;
     self.tableView.allowsSelection = NO;
     HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     cell.homeStoryImage.alpha = 0.65;
@@ -148,6 +177,7 @@
 
 -(void)hideLoader {
     
+    uploadingPost = false;
     self.tableView.allowsSelection = YES;
     HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     cell.homeStoryImage.alpha = 1.0;
@@ -215,9 +245,8 @@
     self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBarHidden = NO;
     [self.navigationController setNavigationBarHidden:NO];
-    
+    [self.tableView reloadData];
 }
-
 
 -(void)viewWillDisappear:(BOOL)animated {
     
@@ -278,6 +307,8 @@
     NSString *userSchool  = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
     NSString *userStatus  = [[NSUserDefaults standardUserDefaults] objectForKey:@"userStatus"];
     
+    NSString *lastSeenContentId  = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastSeenContentId"];
+    
     if (indexPath.section == 0) {
     
         if (indexPath.row == 0) {
@@ -295,6 +326,14 @@
             cell.homeStoryImage.layer.cornerRadius = cell.homeStoryImage.frame.size.width / 2;
             cell.homeStoryImage.clipsToBounds = YES;
             
+            if (uploadingPost) {
+                [self.indicator setHidden:NO];
+                [self.indicator startAnimating];
+            } else {
+                [self.indicator setHidden:YES];
+                [self.indicator stopAnimating];
+            }
+            
             NSString *urlString = [self.home objectForKey:@"imageUrl"];
             if (urlString == nil) {
                 
@@ -302,6 +341,12 @@
                 
                 [cell.homeStoryImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@""]];
                 [cell.homeStoryImage bringSubviewToFront:self.indicator];
+            
+                if ([self.home.objectId isEqualToString:lastSeenContentId]) {
+                    //NSLog(@"No new posts");
+                    cell.homeStoryImage.alpha = 0.60;
+                    cell.homeName.alpha = 0.60;
+                }
             }
         }
         
@@ -323,6 +368,7 @@
     
     return nil;
 }
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -351,6 +397,7 @@
         else if (![userStatus isEqualToString:@"approved"]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Account pending" message:@"Check your email and activate your account to unlock. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
             [alert show];
+            
         } else {
             
             HomeTableCell *cell = (HomeTableCell *) [tableView cellForRowAtIndexPath:indexPath];
@@ -358,7 +405,7 @@
             ViewContentViewController *pmvc = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewContent"];
             pmvc.modalPresentationStyle = UIModalPresentationCustom;
             pmvc.transitioningDelegate = self;
-            [self presentViewController:pmvc animated:YES completion:nil];
+            [self presentViewController:pmvc animated:NO completion:nil];
         }
     }
 }
@@ -404,8 +451,10 @@
             
             self.home = object;
             [self.tableView reloadData];
-            [self performSelector:@selector(endRefresh) withObject:nil afterDelay:1.15];
+            [self performSelector:@selector(endRefresh) withObject:nil afterDelay:0.650];
             
+        } if (error) {
+            [self.refreshControl endRefreshing];
         }
     }];
     return nil;
@@ -472,7 +521,7 @@
 
 -(void)askUserForPush {
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.04"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.0.0"] isEqualToString:@"YES"]) {
         
     } else {
         
@@ -482,7 +531,7 @@
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.04"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.0.0"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
@@ -551,6 +600,7 @@
     
     activityVC.excludedActivityTypes = excludeActivities;
     [self presentViewController:activityVC animated:YES completion:^{
+        
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];

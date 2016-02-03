@@ -1077,4 +1077,26 @@ _playerTwoReady = YES;
 }
 
 
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//
+//    if (videoCount % 2 == 0) {
+//
+//        if (object == self.avPlayer && [keyPath isEqualToString:@"status"]) {
+//            if (self.avPlayer.status == AVPlayerStatusReadyToPlay) {
+//                //NSLog(@"Player One Ready");
+//            } else if (self.avPlayer.status == AVPlayerStatusFailed) {
+//
+//            }
+//        }
+//
+//    } else {
+//
+//        if (self.avPlayerTwo.status == AVPlayerStatusReadyToPlay) {
+//            //NSLog(@"Player Two Ready");
+//        } else if (self.avPlayerTwo.status == AVPlayerStatusFailed) {
+//
+//        }
+//    }
+//}
+
 @end

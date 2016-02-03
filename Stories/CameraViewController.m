@@ -291,7 +291,7 @@
     //[self.cameraButton addGestureRecognizer:self.camTap];
     
     UILongPressGestureRecognizer *camPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(recordVideo:)];
-    camPress.minimumPressDuration = 0.20;
+    camPress.minimumPressDuration = 0.410;
     camPress.delegate = self;
     
     [self.cameraButton addGestureRecognizer:camPress];
@@ -326,11 +326,17 @@
     [self.selfieButton setImage:[UIImage imageNamed:@"flipCamTho"] forState:UIControlStateNormal];
     [self.selfieButton addTarget:self action:@selector(handleReverseCameraTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.selfieButton];
+
+    self.videoProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(-1, 0, self.view.frame.size.width, 20)];
     
+    [self.videoProgress setTintColor:[UIColor colorWithRed:0.929 green:0.365 blue:0.376 alpha:1]];
+    [self.videoProgress setTrackTintColor:[UIColor clearColor]];
     [self.videoProgress setTransform:CGAffineTransformMakeScale(1.0, 20.0)];
     
     [self.videoProgress setTransform:CGAffineTransformMakeScale(1.0, 20.0)];
     [self.videoProgress setProgress:0.f];
+
+    
     
     UILongPressGestureRecognizer *longPressTwo = [[UILongPressGestureRecognizer alloc] init];
     longPressTwo.delegate = self;
@@ -375,6 +381,7 @@
             int currentStoryViewCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCount"] intValue];
             [self.currentUser setObject:[NSNumber numberWithInt:currentUserScore] forKey:@"userScore"];
             [self.currentUser setObject:[NSNumber numberWithInt:currentStoryViewCount] forKey:@"storyViewCount"];
+            [self.currentUser setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"appVersion"] forKey:@"appVersion"];
             [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 if (error) {
                     
@@ -406,7 +413,7 @@
         
         [self.cameraButton removeGestureRecognizer:self.camTap];
         
-        [UIView animateWithDuration:0.06 delay:0.02 options:0 animations:^{
+        [UIView animateWithDuration:0.085 delay:0.02 options:0 animations:^{
             [self.cameraButton setHighlighted:YES];
             self.cameraButton.transform = CGAffineTransformMakeScale(1.135, 1.135);
         } completion:^(BOOL finished) {
@@ -523,6 +530,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reload_data" object:self];
         [self viewDidLoad];
     }
+    
+
     
     [self prepareSession];
     [self updateTimeRecordedLabel];
@@ -1033,6 +1042,7 @@ replacementString:(NSString *)string{
 -(void)uploadPhoto {
 
     //[ProgressHUD show:nil Interaction:NO];
+    //NSLog(@"Here: 1");
     
     //Show Loader
     [[NSNotificationCenter defaultCenter] postNotificationName:@"show_loader" object:self];
@@ -1058,35 +1068,50 @@ replacementString:(NSString *)string{
 
 
     UIImage *finalImage = myNewImage;
-
-
-    if (finalImage.size.width > 140) finalImage = ResizePhoto(finalImage, 225, 400); //300 x 400 -- 240 x 430
+    
+    finalImage = resizeDasPic(finalImage);
+    
+    //if (finalImage.size.width > 140) finalImage = ResizePhoto(finalImage, 320, 568); //300 x 400 -- 240 x 430
 
     // Upload image******************************************
 
-    NSData *imageData = UIImagePNGRepresentation(finalImage);
+    //NSData *imageData = UIImagePNGRepresentation(finalImage);
+    NSData *imageData = UIImageJPEGRepresentation(finalImage, 0.84);
     [self uploadToS3:imageData];
 
     [self.filterSwitcherView setFilters:nil];
+    //NSLog(@"Here: 2");
 
 }
 
-UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
+//UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
+//
+//    CGSize size = CGSizeMake(width, height);
+//    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+//    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+//    image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    return image;
+//}
 
-    CGSize size = CGSizeMake(width, height);
-    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+
+UIImage* resizeDasPic(UIImage *image) {
+    
+    float heightFactor = 960/image.size.height;
+    CGSize size = CGSizeApplyAffineTransform(image.size, CGAffineTransformMakeScale(heightFactor, heightFactor));
+    
+    UIGraphicsBeginImageContext(size);
     [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
-    image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return image;
+    
+    return finalImage;
 }
 
 -(void)uploadToS3:(NSData *)imgdata {
 
-    //[self ScrollToHomeView];
-    //NSLog(@"upload to S3 yooo");
     [self.imageSelectedView removeFromSuperview];
-    [self.filterSwitcherView setFilters:nil];
 
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"image.png"];
     [imgdata writeToFile:path atomically:YES];
@@ -1103,11 +1128,11 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     
     NSString * uuidStr = [NSString stringWithFormat:@"%@-%d-%@", self.currentUser.objectId, i, randomId];
     
-    NSString *textBody = @"posts/PIC_KEY-image.png";
+    NSString *textBody = @"posts/PIC_KEY-image.jpeg";
     NSString* newString = [textBody stringByReplacingOccurrencesOfString:@"PIC_KEY" withString:uuidStr];
 
     _uploadRequest.key = newString;
-    _uploadRequest.contentType = @"image/png";
+    _uploadRequest.contentType = @"image/jpeg";
     _uploadRequest.body = url;
 
     NSString *daAwsRegion = @"http://d267cblbp4esvr.cloudfront.net/";
@@ -1135,6 +1160,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
             //NSLog(@"AWS URL: %@", _awsPicUrl);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [self uploadToParse];
+            //NSLog(@"Here: 4");
             [ProgressHUD dismiss];
             //Hide Loader
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
@@ -1171,6 +1197,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
             [ProgressHUD dismiss];
             
             [self checkIfUserEnabledPush];
+            //NSLog(@"Here: 5");
             
             //Increment Score
             int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
@@ -1190,7 +1217,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
 -(void)checkIfUserEnabledPush {
 
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.04"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.0.0"] isEqualToString:@"YES"]) {
         
     } else {
         
@@ -1200,7 +1227,7 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.04"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.0.0"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     //NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
@@ -1240,11 +1267,10 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
         [UIView animateWithDuration:0.08 animations:^{
-            //NSLog(@"Started");
+
             self.closeButton.transform = CGAffineTransformMakeScale(1.4, 1.4);
             
         } completion:^(BOOL finished) {
-            //NSLog(@"FINISHED");
             
         }];
     }
@@ -1252,11 +1278,9 @@ UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         
         [UIView animateWithDuration:0.07 animations:^{
-            ///NSLog(@"Started");
             self.closeButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
             
         } completion:^(BOOL finished) {
-            //NSLog(@"FINISHED");
             [self cancelSelectedPhoto:self];
             [self cancelTextCaption];
         }];

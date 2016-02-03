@@ -79,7 +79,6 @@
     cancelButtonPress.delegate = (id)self;
     cancelButtonPress.minimumPressDuration = 0.01;
     [self.closeButton addGestureRecognizer:cancelButtonPress];
-
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] init];
     longPress.delegate = self;
@@ -213,7 +212,7 @@
     CGPoint translation = [gestureRecognizer locationInView:self.view];
     
     if(translation.y < caption.frame.size.height/2+280){
-        NSLog(@"HEre;");
+        //NSLog(@"HEre;");
         caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  caption.frame.size.height/2+280);
     } else if(self.view.frame.size.height < translation.y + caption.frame.size.height/2){
         caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  self.view.frame.size.height - caption.frame.size.height/2);
@@ -479,12 +478,17 @@ replacementString:(NSString *)string{
     
     //NSLog(@"Thumbnail: %@", thumbnail);
     
+    thumbnail = resizeDasPicTwo(thumbnail);
     
-    if (thumbnail.size.width > 140) thumbnail = ResizePhotoTwo(thumbnail, 225, 400); //300 x 400 -- 240 x 430
+    
+    //if (thumbnail.size.width > 140) thumbnail = ResizePhotoTwo(thumbnail, 225, 400); //300 x 400 -- 240 x 430
+    
+    //if (thumbnail.size.width > 140) thumbnail = ResizePhotoTwo(thumbnail, 320, 568); //300 x 400 -- 240 x 430
     
     // Upload image******************************************
     
-    NSData *imageData = UIImagePNGRepresentation(thumbnail);
+    //NSData *imageData = UIImagePNGRepresentation(thumbnail);
+    NSData *imageData = UIImageJPEGRepresentation(thumbnail, 0.75);
     [self uploadThumbnailToS3:imageData];
 }
 
@@ -542,6 +546,21 @@ replacementString:(NSString *)string{
         return nil;
         
     }];
+}
+
+UIImage* resizeDasPicTwo(UIImage *image) {
+    
+    float heightFactor = 960/image.size.height;
+    CGSize size = CGSizeApplyAffineTransform(image.size, CGAffineTransformMakeScale(heightFactor, heightFactor));
+    
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    NSLog(@"final image height: %f", finalImage.size.height);
+    return finalImage;
 }
 
 UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {

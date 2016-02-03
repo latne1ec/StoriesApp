@@ -28,32 +28,15 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     [PFImageView class];
     
-    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
-        NSShadow *shadow = [[NSShadow alloc] init];
-        shadow.shadowColor = [UIColor clearColor];
-        shadow.shadowOffset = CGSizeMake(0, .0);
-        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                              [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
-                                                              shadow, NSShadowAttributeName,
-                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26.5], NSFontAttributeName, nil]];
-    } else {
-        NSShadow *shadow = [[NSShadow alloc] init];
-        shadow.shadowColor = [UIColor clearColor];
-        shadow.shadowOffset = CGSizeMake(0, .0);
-        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                              [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
-                                                              shadow, NSShadowAttributeName,
-                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
-    }
-    
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.04"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.0.0"] isEqualToString:@"YES"]) {
         //do something
     } else {
         
         [[NSUserDefaults standardUserDefaults] setInteger:98 forKey:@"localUserScore"];
         [[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCount"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.04"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.0.0"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchool"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"1.0.0" forKey:@"appVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
         
@@ -77,7 +60,7 @@
     return YES;
 }
 
-- (void)setupRootViewControllerForWindow{
+- (void)setupRootViewControllerForWindow {
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UINavigationController *navCon1 = [storyboard instantiateViewControllerWithIdentifier:@"CameraNav"];

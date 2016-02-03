@@ -341,7 +341,7 @@ typedef enum ScrollDirection {
         
         else {
             
-            self.scrollView.bounces = YES;
+            //self.scrollView.bounces = YES;
             
         }
         
@@ -354,16 +354,7 @@ typedef enum ScrollDirection {
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
     
-    
-    
-    //NSLog(canscroll ? @"Yes" : @"No");
-    
-    
-    //if (![PFUser currentUser]) {
-        
-        //self.scrollView.scrollEnabled = NO;
-        
-    //}
+
     
     self.scrollView.scrollEnabled = YES;
     
