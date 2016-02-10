@@ -72,7 +72,7 @@ bool uploadingPost;
         [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                               [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
                                                               shadow, NSShadowAttributeName,
-                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:26.5], NSFontAttributeName, nil]];
+                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:27.5], NSFontAttributeName, nil]];
     } else {
         NSShadow *shadow = [[NSShadow alloc] init];
         shadow.shadowColor = [UIColor clearColor];
@@ -80,10 +80,8 @@ bool uploadingPost;
         [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                               [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1], NSForegroundColorAttributeName,
                                                               shadow, NSShadowAttributeName,
-                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:28], NSFontAttributeName, nil]];
+                                                              [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size:29], NSFontAttributeName, nil]];
     }
-
-    
     
     uploadingPost = false;
     
@@ -91,7 +89,6 @@ bool uploadingPost;
     
     NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
     if ([universityStatus isEqualToString:@"approved"]) {
-        
     } else {
        [self countUsers];
     }
@@ -143,10 +140,8 @@ bool uploadingPost;
     [self updateUserScore];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDasTable) name:@"reload_data" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableview) name:@"justReloadTheTable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeHomePic) name:@"change_home_pic" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLoader) name:@"show_loader" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideLoader) name:@"hide_loader" object:nil];
     
@@ -180,7 +175,7 @@ bool uploadingPost;
     uploadingPost = false;
     self.tableView.allowsSelection = YES;
     HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    cell.homeStoryImage.alpha = 1.0;
+    cell.homeStoryImage.alpha = 0.94;
     [self.indicator setHidden:YES];
     [self.indicator stopAnimating];
     self.tableView.allowsSelection = YES;
@@ -189,7 +184,7 @@ bool uploadingPost;
 
 
 -(void)changeHomePic {
-    //NSLog(@"Called");
+
     [self queryForHomePic];
 }
 
@@ -325,6 +320,7 @@ bool uploadingPost;
             
             cell.homeStoryImage.layer.cornerRadius = cell.homeStoryImage.frame.size.width / 2;
             cell.homeStoryImage.clipsToBounds = YES;
+            cell.homeStoryImage.alpha = 0.96;
             
             if (uploadingPost) {
                 [self.indicator setHidden:NO];
@@ -431,7 +427,7 @@ bool uploadingPost;
 -(void)endRefresh {
     
     [self.refreshControl endRefreshing];
-    
+    [self.tableView reloadData];
 }
 
 ///************************************
@@ -441,11 +437,12 @@ bool uploadingPost;
     
     [self updateUserScore];
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-    
+    NSString *userSchoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
+        
     PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
     [query orderByDescending:@"createdAt"];
     [query whereKey:@"postStatus" equalTo:@"approved"];
-    [query whereKey:@"userSchool" equalTo:school];
+    [query whereKey:@"userSchoolId" equalTo:userSchoolId];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!error) {
             
@@ -476,7 +473,23 @@ bool uploadingPost;
             self.university = object;
             int userCount = [[self.university objectForKey:@"registeredUserCount"] intValue];
             int userThreshold = [[self.university objectForKey:@"userThreshold"] intValue];
-            [self.tableView reloadData];
+            
+            NSString *schoolId = object.objectId;
+            
+            NSString *userSchoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
+
+            
+            if ([userSchoolId isEqualToString:@"Unknown"]) {
+                [[NSUserDefaults standardUserDefaults] setObject:schoolId forKey:@"userSchoolId"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [self queryForHomePic];
+
+            } else {
+                [[NSUserDefaults standardUserDefaults] setObject:schoolId forKey:@"userSchoolId"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+            }
+            
             
             if (userCount >= userThreshold) {
                 
@@ -521,7 +534,7 @@ bool uploadingPost;
 
 -(void)askUserForPush {
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.0.0"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.1.1"] isEqualToString:@"YES"]) {
         
     } else {
         
@@ -531,7 +544,7 @@ bool uploadingPost;
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.0.0"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.1.1"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];

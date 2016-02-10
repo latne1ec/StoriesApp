@@ -149,9 +149,7 @@ typedef enum ScrollDirection {
 
 
 -(void)methodToShowViewOnTop{
-    
-    NSLog(@"ACTIVEEEE");
-    
+        
     UIImageView *imageView = (UIImageView *)[UIApplication.sharedApplication.keyWindow.subviews.lastObject viewWithTag:101];
     [imageView removeFromSuperview];
     [self reloadInputViews];

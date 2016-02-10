@@ -48,7 +48,9 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     _firstObjectVideo = NO;
     
-    [self queryForMedia];
+    //[self queryForMedia];
+    
+    [self performSelector:@selector(queryForMedia) withObject:nil afterDelay:0.560];
     
     self.view.backgroundColor = [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1];
     
@@ -60,16 +62,9 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     self.yzBaby = [[YZSwipeBetweenViewController alloc] init];
     self.delegate = self.yzBaby;
     
-    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    self.indicator.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-    self.indicator.center = self.view.center;
-    [self.indicator setHidden:NO];
-    [self.indicator startAnimating];
-    [self.view addSubview:self.indicator];
-    
     self.subtitleLabel = [[UILabel alloc] init];
     self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 40);
-    self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+    self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.525];
     self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.93];
     self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
     [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
@@ -89,7 +84,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     self.progressView.startAngle = (3.0*M_PI)/2.0;
     self.progressView.hidden = YES;
     
-    self.progressViewTwo.trackColor = [UIColor whiteColor];
+    self.progressViewTwo.trackColor = [UIColor colorWithWhite:1.0 alpha:0.92];
     self.progressViewTwo.startAngle = (3.0*M_PI)/2.0;
     self.progressViewTwo.hidden = YES;
     
@@ -129,6 +124,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     _playerTwoReady = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appClosed) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
 }
 -(void)appClosed {
     [ProgressHUD dismiss];
@@ -147,7 +143,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             tempIndex = 0;
             self.handleTapTimer = [NSTimer timerWithTimeInterval:[self playerItemDuration] target:self selector:@selector(handleSingleTap) userInfo:nil repeats:YES];
             [[NSRunLoop currentRunLoop] addTimer:self.handleTapTimer forMode:NSDefaultRunLoopMode];
-       }
+        }
         
     } else {
         self.handleTapTimer = [NSTimer timerWithTimeInterval:7.0 target:self selector:@selector(handleSingleTap) userInfo:nil repeats:YES];
@@ -205,7 +201,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     currentSkipCount = 0;
     self.countDownLabel.text = @"";
     
-    [self.contentArray removeAllObjects];
+    //[self.contentArray removeAllObjects];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.replayView removeFromSuperview];
@@ -248,6 +244,13 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 -(void)viewDidAppear:(BOOL)animated {
     
+    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.indicator.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+    self.indicator.center = self.view.center;
+    [self.indicator setHidden:NO];
+    [self.indicator startAnimating];
+    [self.view addSubview:self.indicator];
+
 }
 
 -(void)addTapTapRecoginzer {
@@ -263,7 +266,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
-   
+    
     //[self.avPlayer removeObserver:self forKeyPath:@"currentItem"];
     //[self.avPlayerTwo removeObserver:self forKeyPath:@"currentItem"];
     //[self.avPlayer removeObserver:self forKeyPath:@"status"];
@@ -283,7 +286,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 
 -(void)handleSingleTap {
-   
+    
     if (canSkip == 1) {
         
     } else {
@@ -300,7 +303,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         } else {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-
+                
                 int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCount"] intValue];
                 [[NSUserDefaults standardUserDefaults] setInteger:i+1 forKey:@"storyViewCount"];
                 
@@ -370,7 +373,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             //NSLog(@"TEMP INDEX CALLED");
             
         } else {
-
+            
         }
         [self showVideoImageTemporarily];
         
@@ -387,44 +390,43 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     NSString *urlString = [currentContent objectForKey:@"imageUrl"];
     NSURL *url = [NSURL URLWithString:urlString];
-
+    
     
     [self.manager downloadImageWithURL:url options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     }
-                           completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-
-                                                              
-                               self.imageView.image = images;
-                               self.imageView.hidden = NO;
-                               [CATransaction setDisableActions:YES];
-                               self.avPlayerLayer.hidden = YES;
-                               self.avPlayerLayerTwo.hidden = YES;
-                               [self.view bringSubviewToFront:self.imageView];
-                               
-                               if (finished) {
-
-                                   [self addCaption];
-                                   [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.125];
-                                   //[self makeSkipable];
-                               }
-                               
-                               self.progressViewTwo.hidden = NO;
-                               [self.view bringSubviewToFront:self.progressViewTwo];
-                               
-                               self.progressView.hidden = NO;
-                               [self.view bringSubviewToFront:self.progressView];
-                               [self.view bringSubviewToFront:self.flagButton];
-                               
-                               double percentageTwo;
-                               percentageTwo = 100.0*7;
-                               double time = 7.00;
-                               
-                               self.progressViewTwo.animationDuration = time;
-                               self.progressViewTwo.progress = 0;
-                               self.progressViewTwo.progress = percentageTwo/100;
-                               
-                           }];
+                             completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                 
+                                 self.imageView.image = images;
+                                 self.imageView.hidden = NO;
+                                 [CATransaction setDisableActions:YES];
+                                 self.avPlayerLayer.hidden = YES;
+                                 self.avPlayerLayerTwo.hidden = YES;
+                                 [self.view bringSubviewToFront:self.imageView];
+                                 
+                                 if (finished) {
+                                     
+                                     [self addCaption];
+                                     [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.125];
+                                     //[self makeSkipable];
+                                 }
+                                 
+                                 self.progressViewTwo.hidden = NO;
+                                 [self.view bringSubviewToFront:self.progressViewTwo];
+                                 
+                                 self.progressView.hidden = NO;
+                                 [self.view bringSubviewToFront:self.progressView];
+                                 [self.view bringSubviewToFront:self.flagButton];
+                                 
+                                 double percentageTwo;
+                                 percentageTwo = 100.0*7;
+                                 double time = 7.00;
+                                 
+                                 self.progressViewTwo.animationDuration = time;
+                                 self.progressViewTwo.progress = 0;
+                                 self.progressViewTwo.progress = percentageTwo/100;
+                                 
+                             }];
 }
 
 -(void)addCaption {
@@ -451,11 +453,9 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 }
 
 -(void)playDasVideo {
-    //NSLog(@"Playing vid");
+
     if (videoCount % 2 == 0) {
         // even
-        //NSLog(@"Player One");
-        
         [CATransaction setDisableActions:YES];
         self.avPlayerLayerTwo.hidden = YES;
         [self.view bringSubviewToFront:self.playerOneView];
@@ -467,10 +467,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         [self.view bringSubviewToFront:self.flagButton];
         
     } else {
-        
         //Odd
-        //NSLog(@"Player Two");
-        
         [CATransaction setDisableActions:YES];
         self.avPlayerLayer.hidden = YES;
         [self.view bringSubviewToFront:self.playerTwoView];
@@ -482,9 +479,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         [self.view bringSubviewToFront:self.flagButton];
         
     }
-    
     videoCount = videoCount + 1;
-
 }
 
 -(void)makeSkipable {
@@ -518,32 +513,30 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 -(void)showVideoImageTemporarily {
     
     PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
-    //SDWebImageManager *managerOne = [SDWebImageManager sharedManager];
     NSString *urlString = [currentContent objectForKey:@"imageUrl"];
     NSURL *url = [NSURL URLWithString:urlString];
     
     [self.manager downloadImageWithURL:url options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     }
-                        completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-
-                               self.imageView.image = images;
-                               self.subtitleLabel.hidden = YES;
-                               self.imageView.hidden = NO;
-                               [CATransaction setDisableActions:YES];
-                               self.avPlayerLayer.hidden = YES;
-                               self.avPlayerLayerTwo.hidden = YES;
-                               [self.view bringSubviewToFront:self.imageView];
-                               
-                               if (finished) {
-                                [self addVideoCaption];
-                                [self playDasVideo];
-                                [self preloadVideoPlayer];
-                                //[self makeSkipable];
-                                [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.155];
-                               }
-                               
-                           }];
+                             completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                 
+                                 self.imageView.image = images;
+                                 self.subtitleLabel.hidden = YES;
+                                 self.imageView.hidden = NO;
+                                 [CATransaction setDisableActions:YES];
+                                 self.avPlayerLayer.hidden = YES;
+                                 self.avPlayerLayerTwo.hidden = YES;
+                                 [self.view bringSubviewToFront:self.imageView];
+                                 
+                                 if (finished) {
+                                     [self addVideoCaption];
+                                     [self playDasVideo];
+                                     [self preloadVideoPlayer];
+                                     //[self makeSkipable];
+                                     [self performSelector:@selector(makeSkipable) withObject:nil afterDelay:0.135];
+                                 }
+                             }];
 }
 
 -(void)showIfFirstObjectIsVideo {
@@ -551,7 +544,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
     NSString *urlString = [currentContent objectForKey:@"videoUrl"];
     NSURL *url = [NSURL URLWithString:urlString];
-
+    
     self.avAsset = [AVAsset assetWithURL:url];
     self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
     [self.avPlayer replaceCurrentItemWithPlayerItem:self.avPlayerItem];
@@ -581,7 +574,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     percentageTwo = 100.0*7;
     
     AVPlayerItem *playerItem = [self.avPlayer currentItem];
-
+    
     if (playerItem == nil) {
         
     }
@@ -597,7 +590,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 }
 
 - (double)playerItemDuration {
-
+    
     if (videoCount % 2 == 0) {
         AVPlayerItem *playerItem = [self.avPlayer currentItem];
         if (playerItem.status == AVPlayerItemStatusReadyToPlay) {
@@ -643,11 +636,15 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                 NSString *nextUrlString = [self.videoArray objectAtIndex:videoCount];
                 NSURL *url = [NSURL URLWithString:nextUrlString];
                 
+//                self.avAsset = [AVAsset assetWithURL:url];
+//                [self.avAsset loadValuesAsynchronouslyForKeys:@[@"duration"] completionHandler:^{
+//                    self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
+//                    [self.avPlayer replaceCurrentItemWithPlayerItem:self.avPlayerItem];
+//                }];
+                
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    
                     self.avAsset = [AVAsset assetWithURL:url];
                     self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
-                    
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.avPlayer replaceCurrentItemWithPlayerItem:self.avPlayerItem];
                     });
@@ -662,11 +659,15 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                 NSString *nextUrlString = [self.videoArray objectAtIndex:videoCount];
                 NSURL *url = [NSURL URLWithString:nextUrlString];
                 
+//                self.avAssetTwo = [AVAsset assetWithURL:url];
+//                [self.avAssetTwo loadValuesAsynchronouslyForKeys:@[@"duration"] completionHandler:^{
+//                    self.avPlayerItemTwo = [AVPlayerItem playerItemWithAsset:self.avAssetTwo];
+//                    [self.avPlayerTwo replaceCurrentItemWithPlayerItem:self.avPlayerItemTwo];
+//                }];
+                
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    
                     self.avAssetTwo = [AVAsset assetWithURL:url];
                     self.avPlayerItemTwo = [AVPlayerItem playerItemWithAsset:self.avAssetTwo];
-                    
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.avPlayerTwo replaceCurrentItemWithPlayerItem:self.avPlayerItemTwo];
                     });
@@ -684,16 +685,13 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             if (self.avPlayer.status == AVPlayerStatusReadyToPlay) {
                 //NSLog(@"Player One Ready");
             } else if (self.avPlayer.status == AVPlayerStatusFailed) {
-                
             }
         }
-        
     } else {
         
         if (self.avPlayerTwo.status == AVPlayerStatusReadyToPlay) {
             //NSLog(@"Player Two Ready");
         } else if (self.avPlayerTwo.status == AVPlayerStatusFailed) {
-            
         }
     }
 }
@@ -701,10 +699,11 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 -(void)queryForMedia {
     
     NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    NSString *userSchoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
     
     PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
     [query whereKey:@"postStatus" equalTo:@"approved"];
-    [query whereKey:@"userSchool" equalTo:userSchool];
+    [query whereKey:@"userSchoolId" equalTo:userSchoolId];
     [query orderByDescending:@"createdAt"];
     [query setLimit:118];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -715,6 +714,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             
             [self.indicator stopAnimating];
             [self.indicator setHidden:YES];
+            
             if (objects.count == 0) {
                 
                 currentIndex = 0;
@@ -760,7 +760,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                         [self addTapTapRecoginzer];
                         [self checkIfFirstObjectIsVideo];
                         
-                        
                         return;
                     }
                 }
@@ -777,42 +776,43 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 -(void)replayQuery {
     
-    _currentlyQuerying = true;
+//    _currentlyQuerying = true;
+//    
+//    [self.videoArray removeAllObjects];
+//    
+//    NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+//    
+//    PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
+//    [query whereKey:@"postStatus" equalTo:@"approved"];
+//    [query whereKey:@"userSchool" equalTo:userSchool];
+//    [query orderByDescending:@"createdAt"];
+//    [query setLimit:118];
+//    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+//        if (error) {
+//        } else {
+//            
+//            if (objects.count == 0) {
+//                
+//                currentIndex = 0;
+//                [self showReplayView];
+//                return;
+//            }
+//            _currentlyQuerying = false;
+//            self.contentArray = [objects mutableCopy];
+//            NSArray* reversedArray = [[self.contentArray reverseObjectEnumerator] allObjects];
+//            self.contentArray = [reversedArray mutableCopy];
     
-    [self.videoArray removeAllObjects];
-    
-    NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-    
-    PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
-    [query whereKey:@"postStatus" equalTo:@"approved"];
-    [query whereKey:@"userSchool" equalTo:userSchool];
-    [query orderByDescending:@"createdAt"];
-    [query setLimit:118];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if (error) {
-        } else {
-            
-            if (objects.count == 0) {
-                
-                currentIndex = 0;
-                [self showReplayView];
-                return;
-            }
-            _currentlyQuerying = false;
-            self.contentArray = [objects mutableCopy];
-            NSArray* reversedArray = [[self.contentArray reverseObjectEnumerator] allObjects];
-            self.contentArray = [reversedArray mutableCopy];
-            
             currentIndex = 0;
             videoCount = 0;
             [self displayContent];
             [self downloadImages];
+            //[self downloadVideos];
             [self getVideos];
             [self addTapTapRecoginzer];
             [self checkIfFirstObjectIsVideo];
-
-        }
-    }];
+            
+        //}
+    //}];
 }
 
 -(void)checkIfFirstObjectIsVideo {
@@ -862,6 +862,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         
         if ([managerTwo cachedImageExistsForURL:url]) {
             imageCount = imageCount + 1;
+
             
         } else {
             
@@ -870,10 +871,35 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                    completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                        
                                        imageCount = imageCount + 1;
+                                       NSLog(@"Images: %@", images);
                                        
                                    }];
         }
     }
+}
+
+-(void)downloadVideos {
+    
+    self.playerItemArray = [[NSMutableArray alloc] init];
+    
+     for (PFObject *object in self.contentArray) {
+         NSString *urlString = [object objectForKey:@"imageUrl"];
+         NSURL *url = [NSURL URLWithString:urlString];
+         
+         AVAsset *asset = [AVAsset assetWithURL:url];
+         
+         if (asset == nil) {
+             
+         } else {
+             
+             [asset loadValuesAsynchronouslyForKeys:@[@"duration"] completionHandler:^{
+                 AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+                 
+                 [self.playerItemArray addObject:item];
+                 //NSLog(@"Added");
+             }];
+         }
+     }
 }
 
 -(IBAction)goHome:(id)sender {
@@ -898,7 +924,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 }
 
 - (IBAction)flagButtonTapped:(id)sender {
-     PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
+    PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
     [self.view makeToast:@"Post flagged" duration:1.25 position:CSToastPositionTop title:nil];
     [currentContent incrementKey:@"flagCount"];
     [currentContent saveEventually];

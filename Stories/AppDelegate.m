@@ -28,15 +28,16 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     [PFImageView class];
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.0.0"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.1.1"] isEqualToString:@"YES"]) {
         //do something
     } else {
         
         [[NSUserDefaults standardUserDefaults] setInteger:98 forKey:@"localUserScore"];
         [[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCount"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.0.0"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.1.1"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchool"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"1.0.0" forKey:@"appVersion"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchoolId"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"1.1.1" forKey:@"appVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
         
@@ -48,7 +49,6 @@
     [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:1 animated:NO];
 
     [self.window makeKeyAndVisible];
-    
     
     AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
                                                                                                     identityPoolId:@"us-east-1:071bc929-229a-4a61-8e99-063d4b14083e"];
@@ -75,7 +75,6 @@
     
     UIApplication *application = [UIApplication sharedApplication];
     
-    
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
                                                         UIUserNotificationTypeBadge |
@@ -90,8 +89,8 @@
                                                          UIRemoteNotificationTypeAlert |
                                                          UIRemoteNotificationTypeSound)];
     }
-    
 }
+
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
@@ -103,9 +102,7 @@
     currentInstallation.channels = @[ @"global", userSchool ];
     [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (error) {
-            //NSLog(@"Error: %@", error);
         } else {
-            //NSLog(@"Saved Sucessfully");
         }
     }];
 }

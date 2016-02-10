@@ -19,6 +19,7 @@
 
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSMutableArray *acceptableEmailAddress;
+@property (nonatomic, strong) PFObject *previouslyCreatedUser;
 
 @end
 
@@ -30,9 +31,7 @@
     _appDelegate = [[UIApplication sharedApplication] delegate];
     
     self.blueButton.layer.cornerRadius = 4;
-    
     self.emailTextfield.delegate = self;
-    
     self.acceptableEmailAddress = [[NSMutableArray alloc] init];
     
     [PFConfig getConfigInBackgroundWithBlock:^(PFConfig * _Nullable config, NSError * _Nullable error) {
@@ -42,7 +41,6 @@
             self.acceptableEmailAddress = config[@"acceptableEmailAddress"];
             NSString *link = config[@"appLink"];
             [[NSUserDefaults standardUserDefaults] setObject:link forKey:@"appLink"];
-            //NSLog(@"Link: %@", link);
         }
     }];
 }
@@ -50,7 +48,7 @@
 -(BOOL)textFieldShouldReturn:(UITextField*)textField; {
     
     if([self.emailTextfield isFirstResponder]){
-        [self buttonTapped:self];
+        [self checkIfEmailAlreadyExists:self];
     }
     return YES;
 }
@@ -70,6 +68,7 @@
 -(void)viewWillDisappear:(BOOL)animated {
     
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"change_home_pic" object:self];
 }
 
 #pragma mark - Table view data source
@@ -91,10 +90,80 @@
     return nil;
 }
 
+- (IBAction)checkIfEmailAlreadyExists:(id)sender {
+    
+    [ProgressHUD show:nil Interaction:NO];
+    [self.emailTextfield resignFirstResponder];
+    NSString *email = self.emailTextfield.text;
+    
+    if ([email rangeOfString:@"example"].location != NSNotFound) {
+        [self buttonTapped:self];
+        return;
+    }
+    
+    PFQuery *q = [PFQuery queryWithClassName:@"CustomUser"];
+    [q whereKey:@"emailAddress" equalTo:email];
+    [q getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        
+        if (object == nil) {
+            //NSLog(@"Email Doesn't exist");
+            [self buttonTapped:self];//??
+            
+        } else {
+            
+            if ([[object objectForKey:@"hasLoggedIn"] isEqualToString:@"YES"]) {
+                //show some popup that says a user already exists for that email
+                [ProgressHUD dismiss];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"That email address is already in use." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+                [alert show];
+                
+            } else {
+                //user already verified there account, give them access!
+                self.previouslyCreatedUser = object;
+                [self allowUserToEnter];
+            }
+        }
+    }];
+}
+
+-(void)allowUserToEnter {
+    
+    NSString *userSchool = [self.previouslyCreatedUser objectForKey:@"userSchool"];
+    NSString *userSchoolId = [self.previouslyCreatedUser objectForKey:@"userSchoolId"];
+    NSString *userObjectId = self.previouslyCreatedUser.objectId;
+    
+    //[self incrementSchoolUserCount];
+    [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
+    [[NSUserDefaults standardUserDefaults] setObject:userObjectId forKey:@"userObjectId"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"approved" forKey:@"userStatus"];
+    [[NSUserDefaults standardUserDefaults] setObject:userSchoolId forKey:@"userSchoolId"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasLoggedIn"];
+    [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self.currentUser deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            
+        } else {
+            
+            //NSLog(@"success!!!");
+            CameraViewController *cvc = [self.storyboard instantiateViewControllerWithIdentifier:@"Camera"];
+            cvc.currentUser = self.previouslyCreatedUser;
+            [self performSelector:@selector(dismissDasView) withObject:nil afterDelay:0.75];
+        }
+    }];
+}
+
+-(void)dismissDasView {
+    
+    [ProgressHUD dismiss];
+    [self dismissViewControllerAnimated:NO completion:nil];
+}
+
 - (IBAction)buttonTapped:(id)sender {
     
     NSString * aString = self.emailTextfield.text;
-    
     NSMutableString *substrings = [NSMutableString new];
     NSScanner *scanner = [NSScanner scannerWithString:aString];
     [scanner scanUpToString:@"@" intoString:nil]; // Scan all characters before #
@@ -113,26 +182,24 @@
     if ([aString rangeOfString:@".edu"].location == NSNotFound) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email" message:@"Enter a valid .edu email address" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
         [alert show];
+        [ProgressHUD dismiss];
         return;
     }
-    
     if (self.acceptableEmailAddress.count == 0) {
         NSString *plainEdu = @".edu";
         [self.acceptableEmailAddress addObject:plainEdu];
     }
-    
     if (![self.acceptableEmailAddress containsObject:self.userschool]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"Stories isn't available at your university right now." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
             [alert show];
+        [ProgressHUD dismiss];
             return;
-        
     } else {
             
         [self incrementSchoolUserCount];
         [[NSUserDefaults standardUserDefaults] setObject:self.userschool forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        [ProgressHUD show:nil Interaction:NO];
+  
         NSString *emailAddress = self.emailTextfield.text;
         NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
         
@@ -150,7 +217,6 @@
         [user setObject:@"pending" forKey:@"universityStatus"];
         [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
-                //NSLog(@"Error %@", error);
                 [ProgressHUD dismiss];
             } else {
                 
@@ -168,8 +234,8 @@
                         
                     } else {
                         
-                        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                        //NSLog(@"Response: %@", responseString);
+                       //NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                       //NSLog(@"Response: %@", responseString);
                         
                         [ProgressHUD dismiss];
                         //NSLog(@"Success!");
@@ -187,7 +253,6 @@
                 }];
                 
                 [postDataTask resume];
-                
             }
         }];
     }
@@ -207,15 +272,13 @@
                 [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-
             }
         }];
-    
 }
-
 
 -(void)showAlert {
     
+    [ProgressHUD dismiss];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
         [alertView show];
 
@@ -231,7 +294,6 @@
         if (buttonIndex == 0) {
             
             [self dismissViewControllerAnimated:YES completion:nil];
-                
         }
     }
 }

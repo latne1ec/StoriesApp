@@ -53,6 +53,7 @@
                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
                                             [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
                                             ];
+
         _player.SCImageView = self.filterSwitcherView;
         [self.filterSwitcherView addObserver:self forKeyPath:@"selectedFilter" options:NSKeyValueObservingOptionNew context:nil];
     } else {
@@ -111,6 +112,9 @@
     
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(keyboardOnScreen:) name:UIKeyboardDidShowNotification object:nil];
+    
+    //NSLog(@"Duraition: %f", CMTimeGetSeconds(_recordSession.duration));
+    
     
 }
 
@@ -247,7 +251,7 @@ replacementString:(NSString *)string{
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.15];
     [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:caption cache:YES];
-    caption.frame = CGRectMake(0,self.view.frame.size.height/2+60,self.view.frame.size.width,40);
+    caption.frame = CGRectMake(0,self.view.frame.size.height/2+31,self.view.frame.size.width,40);
     [UIView commitAnimations];
     
 }
@@ -559,7 +563,7 @@ UIImage* resizeDasPicTwo(UIImage *image) {
     UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    NSLog(@"final image height: %f", finalImage.size.height);
+    //NSLog(@"final image height: %f", finalImage.size.height);
     return finalImage;
 }
 
@@ -577,7 +581,7 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
 -(void)uploadToParse {
     
     NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-
+    NSString *schoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
     
     PFObject *userPhoto = [PFObject objectWithClassName:@"UserContent"];
     [userPhoto setObject:_awsVideoUrl forKey:@"videoUrl"];
@@ -595,6 +599,7 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     [userPhoto setObject:@"pending" forKey:@"postStatus"];
     [userPhoto setObject:@"video" forKey:@"postType"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
+    [userPhoto setObject:schoolId forKey:@"userSchoolId"];
     [userPhoto setObject:self.currentUser forKey:@"user"];
     [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         

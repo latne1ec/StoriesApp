@@ -1,0 +1,82 @@
+-(void)preloadVideoPlayer {
+
+if (videoCount == self.videoArray.count) {
+
+} else {
+
+if (videoCount % 2 == 0) {
+//Even
+
+if (videoCount > self.videoArray.count) {
+
+} else {
+NSString *nextUrlString = [self.videoArray objectAtIndex:videoCount];
+NSURL *url = [NSURL URLWithString:nextUrlString];
+
+//                self.avAsset = [AVAsset assetWithURL:url];
+//                [self.avAsset loadValuesAsynchronouslyForKeys:@[@"duration"] completionHandler:^{
+//                    self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
+//                    [self.avPlayer replaceCurrentItemWithPlayerItem:self.avPlayerItem];
+//                }];
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+NSLog(@"1 here");
+self.avAsset = [AVAsset assetWithURL:url];
+self.avPlayerItem = [AVPlayerItem playerItemWithAsset:self.avAsset];
+NSLog(@"2 here");
+dispatch_async(dispatch_get_main_queue(), ^{
+[self.avPlayer replaceCurrentItemWithPlayerItem:self.avPlayerItem];
+});
+});
+}
+
+} else {
+//Odd
+
+if (videoCount > self.videoArray.count) {
+
+} else {
+NSString *nextUrlString = [self.videoArray objectAtIndex:videoCount];
+NSURL *url = [NSURL URLWithString:nextUrlString];
+self.avAssetTwo = [AVAsset assetWithURL:url];
+
+//                [self.avAssetTwo loadValuesAsynchronouslyForKeys:@[@"duration"] completionHandler:^{
+//                    self.avPlayerItemTwo = [AVPlayerItem playerItemWithAsset:self.avAssetTwo];
+//                    [self.avPlayerTwo replaceCurrentItemWithPlayerItem:self.avPlayerItemTwo];
+//                }];
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+NSLog(@"3 here");
+self.avAssetTwo = [AVAsset assetWithURL:url];
+self.avPlayerItemTwo = [AVPlayerItem playerItemWithAsset:self.avAssetTwo];
+NSLog(@"4 here");
+dispatch_async(dispatch_get_main_queue(), ^{
+[self.avPlayerTwo replaceCurrentItemWithPlayerItem:self.avPlayerItemTwo];
+});
+});
+}
+}
+}
+
+}
+
+
+
+//                [self.avAssetTwo loadValuesAsynchronouslyForKeys:@[@"duration"] completionHandler:^{
+//                    self.avPlayerItemTwo = [AVPlayerItem playerItemWithAsset:self.avAssetTwo];
+//                    [self.avPlayerTwo replaceCurrentItemWithPlayerItem:self.avPlayerItemTwo];
+//                }];
+
+
+
+
+
+
+Float64 x = (arc4random() % 100)/100.0f;
+
+Float64 seconds = 3.1f;
+CMTime targetTime = CMTimeMakeWithSeconds(seconds, 60000);
+
+
+
+

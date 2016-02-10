@@ -47,6 +47,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *camTap;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) PFObject *currentUser;
+@property (nonatomic, strong) UIButton *focusIcon;
 
 @property (nonatomic, strong) UIImageView *blackView;
 

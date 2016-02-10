@@ -25,6 +25,7 @@
 
 @property (nonatomic) BOOL status;
 
+- (IBAction)checkIfEmailAlreadyExists:(id)sender;
 
 - (IBAction)buttonTapped:(id)sender;
 
