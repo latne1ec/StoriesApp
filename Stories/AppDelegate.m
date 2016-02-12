@@ -28,16 +28,17 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     [PFImageView class];
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanAppV1.1.1"] isEqualToString:@"YES"]) {
-        //do something
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanApp"] isEqualToString:@"YES"]) {
+
     } else {
         
         [[NSUserDefaults standardUserDefaults] setInteger:98 forKey:@"localUserScore"];
         [[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCount"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanAppV1.1.1"];
+        [[NSUserDefaults standardUserDefaults] setObject:0 forKey:@"storyViewCountReplayed"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasRanApp"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] setObject:@"Unknown" forKey:@"userSchoolId"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"1.1.1" forKey:@"appVersion"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"1.0" forKey:@"appVersion"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
         
@@ -68,7 +69,7 @@
     
     self.swipeBetweenVC.viewControllers = @[navCon2, navCon1];
     self.swipeBetweenVC.initialViewControllerIndex = (NSInteger)self.swipeBetweenVC.viewControllers.count/2;
-
+    
 }
 
 -(void)askUserToEnablePushInAppDelgate {

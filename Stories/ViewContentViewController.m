@@ -50,7 +50,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     //[self queryForMedia];
     
-    [self performSelector:@selector(queryForMedia) withObject:nil afterDelay:0.560];
+    [self performSelector:@selector(queryForMedia) withObject:nil afterDelay:0.50];
     
     self.view.backgroundColor = [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1];
     
@@ -63,11 +63,28 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     self.delegate = self.yzBaby;
     
     self.subtitleLabel = [[UILabel alloc] init];
-    self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 40);
+    
+    if([UIScreen mainScreen].bounds.size.height < 568.0) {
+        self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 36);
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:15]];
+    }
+    else if([UIScreen mainScreen].bounds.size.height == 568.0) {
+        self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 36);
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:15]];
+
+    } else if ([UIScreen mainScreen].bounds.size.height == 667.0) {
+        self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 39);
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
+
+    } else  if ([UIScreen mainScreen].bounds.size.height == 736.0) {
+        self.subtitleLabel.frame = CGRectMake(0,-42, self.view.frame.size.width, 42);
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:17]];
+    }
+
     self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.525];
     self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.93];
     self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
-    [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
+    //[self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
     
     [self.view addSubview:self.subtitleLabel];
     
@@ -171,7 +188,19 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     self.replayButton.frame = CGRectMake(0, 0, 300, 100);
     self.replayButton.center = self.view.center;
     [self.replayButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.replayButton.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:19];
+    
+    
+    if([UIScreen mainScreen].bounds.size.height < 568.0) {
+        self.replayButton.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:17];
+    }
+    else if([UIScreen mainScreen].bounds.size.height == 568.0) {
+        self.replayButton.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:17];
+    } else if ([UIScreen mainScreen].bounds.size.height == 667.0) {
+         self.replayButton.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:18.25];
+    } else  if ([UIScreen mainScreen].bounds.size.height == 736.0) {
+        self.replayButton.titleLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:20.0];
+    }
+
     self.replayButton.titleLabel.numberOfLines = 2;
     [self.replayButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
     [self.replayButton setTitle:@"no new posts 🔄\ntap to replay" forState:UIControlStateNormal];
@@ -295,8 +324,8 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 
-                int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCount"] intValue];
-                [[NSUserDefaults standardUserDefaults] setInteger:i+1 forKey:@"storyViewCount"];
+                int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCountReplayed"] intValue];
+                [[NSUserDefaults standardUserDefaults] setInteger:i+1 forKey:@"storyViewCountReplayed"];
                 
             });
             
@@ -871,7 +900,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                    completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                        
                                        imageCount = imageCount + 1;
-                                       NSLog(@"Images: %@", images);
                                        
                                    }];
         }
@@ -912,6 +940,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [self.handleTapTimer invalidate];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }

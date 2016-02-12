@@ -154,10 +154,7 @@ bool uploadingPost;
     [self.indicator setHidden:YES];
     self.indicator.hidden = YES;
     
-//    self.refreshControl = [[UIRefreshControl alloc] init];
-//    [self.refreshControl addTarget:self action:@selector(queryForHomePic) forControlEvents:UIControlEventValueChanged];
-//    [self.tableView addSubview:self.refreshControl];
-        
+    
 }
 
 -(void)showLoader {
@@ -381,7 +378,7 @@ bool uploadingPost;
             int remainingCount = userThreshold - userCount;
             
             NSString *title = [NSString stringWithFormat:@"%@ locked", [userSchool capitalizedString]];
-            NSString *message = [NSString stringWithFormat:@"%d more students needed to unlock. Invite your friends and spread the word.", remainingCount];
+            NSString *message = [NSString stringWithFormat:@"Only %d more students needed to unlock. Invite your friends and spread the word.", remainingCount];
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Cancel", @"Invite friends", nil];
             alert.tag = 200;
@@ -490,13 +487,11 @@ bool uploadingPost;
 
             }
             
-            
             if (userCount >= userThreshold) {
                 
                 [self updateUserStatus];
                     
             } else {
-                
             }
         }
     }];
@@ -520,8 +515,6 @@ bool uploadingPost;
                 } else {
                     [ProgressHUD dismiss];
                     [[NSUserDefaults standardUserDefaults] setObject:@"approved" forKey:@"universityStatus"];
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:100] forKey:@"localUserScore"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                     [self.tableView reloadData];
                 }
             }];
@@ -534,17 +527,17 @@ bool uploadingPost;
 
 -(void)askUserForPush {
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.1.1"] isEqualToString:@"YES"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.0"] isEqualToString:@"YES"]) {
         
     } else {
         
-        [self performSelector:@selector(showAlert) withObject:nil afterDelay:1.0];
+        [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.1];
     }
 }
 
 -(void)showAlert {
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.1.1"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"askToEnablePushV1.0"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];

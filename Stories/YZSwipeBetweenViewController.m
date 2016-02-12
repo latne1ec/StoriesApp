@@ -259,22 +259,10 @@ typedef enum ScrollDirection {
 
 - (void)scrollToViewControllerAtIndex:(NSInteger)index animated:(BOOL)animated{
     
-    //	if (index >= 0 && index < self.viewControllers.count) {
-    //
-    //        [self.scrollView
-    //		 scrollRectToVisible:[self.viewControllers[index] view].frame
-    //		 animated:animated
-    //		 ];
-    //
-    //	}
-    
-    
     [self.scrollView
      scrollRectToVisible:[self.viewControllers[index] view].frame
      animated:animated
      ];
-    
-    
     
     if (index == 0) {
         
@@ -287,9 +275,6 @@ typedef enum ScrollDirection {
         [UIApplication sharedApplication].statusBarHidden = YES;
         
     }
-    
-    
-    
 }
 
 
@@ -311,20 +296,32 @@ typedef enum ScrollDirection {
     [self.searchBar resignFirstResponder];
     [self.view endEditing:YES];
     
-    //[self.storiesTable.tableView reloadData];
+        
+    self.scrollView.scrollEnabled = YES;
+
     
+    [UIApplication sharedApplication].statusBarHidden = NO;
     
-    
+    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
+
+        if (scrollView.contentOffset.x < 1) {
+            
+            self.scrollView.bounces = YES;
+            NSLog(@"HEre 1");
+        }
         
-   // if ([PFUser currentUser]) {
+        if (scrollView.contentOffset.x > 319) {
+            
+            self.scrollView.bounces = NO;
+            NSLog(@"HEre 2");
+        }
         
-        // NSLog(@"WE HAVE A USER");
+        else {
+            
+        }
+
         
-        self.scrollView.scrollEnabled = YES;
-    
-        
-        [UIApplication sharedApplication].statusBarHidden = NO;
-        
+    } else {
         
         if (scrollView.contentOffset.x < 320) {
             
@@ -337,29 +334,18 @@ typedef enum ScrollDirection {
             self.scrollView.bounces = NO;
         }
         
-        else {
-            
-            //self.scrollView.bounces = YES;
-            
-        }
         
-    //}
-    
-    
+    }
     
     
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
     
-
-    
     self.scrollView.scrollEnabled = YES;
-    
     
     if (canscroll == NO) {
         
-        //NSLog(@"NOPe");
         
         self.scrollView.scrollEnabled = NO;
         [UIApplication sharedApplication].statusBarHidden = YES;
@@ -372,15 +358,9 @@ typedef enum ScrollDirection {
     if (!canscroll) {
         
         self.scrollView.scrollEnabled = YES;
-        
-        
-    }
     
+    }
 }
-
-
-
-
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -390,19 +370,17 @@ typedef enum ScrollDirection {
         
         [UIApplication sharedApplication].statusBarHidden = NO;
         [self setNeedsStatusBarAppearanceUpdate];
-        
-        //NSLog(@"Main");
+        //table
     }
     else if (scrollView.contentOffset.x >=0) {
         
         [UIApplication sharedApplication].statusBarHidden = YES;
-        //NSLog(@"Camera");
+        //camera
     }
     
     
     if([UIScreen mainScreen].bounds.size.height <= 568.0) {
         
-        //NSLog(@"HERE: %f", scrollView.contentOffset.x);
         if (scrollView.contentOffset.x >319) {
             
             [UIApplication sharedApplication].statusBarHidden = YES;
@@ -411,22 +389,12 @@ typedef enum ScrollDirection {
         
     } else {
         
-        //NSLog(@"HERE 6: %f", scrollView.contentOffset.x);
         if (scrollView.contentOffset.x >375) {
             
             [UIApplication sharedApplication].statusBarHidden = YES;
             
         }
     }
-    
-    //NSLog(@"Content Offset: %f", scrollView.contentOffset.x);
-    
-    
-    
 }
-
-
-
-
 
 @end

@@ -582,6 +582,7 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     
     NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
     NSString *schoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
+    NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
     
     PFObject *userPhoto = [PFObject objectWithClassName:@"UserContent"];
     [userPhoto setObject:_awsVideoUrl forKey:@"videoUrl"];
@@ -600,7 +601,10 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     [userPhoto setObject:@"video" forKey:@"postType"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
     [userPhoto setObject:schoolId forKey:@"userSchoolId"];
-    [userPhoto setObject:self.currentUser forKey:@"user"];
+    if (self.currentUser != nil) {
+     [userPhoto setObject:self.currentUser forKey:@"user"];
+    }
+    [userPhoto setObject:userObjectId forKey:@"userObjectId"];
     [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {

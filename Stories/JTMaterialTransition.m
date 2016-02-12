@@ -30,6 +30,7 @@
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
     if(_animatedView){
+        
         NSAssert(_animatedView.superview != nil, @"animatedView must be attached to a superview");
 
         // Get the frame rect in the screen coordinates

@@ -68,7 +68,7 @@
 -(void)viewWillDisappear:(BOOL)animated {
     
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"change_home_pic" object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reload_data" object:self];
 }
 
 #pragma mark - Table view data source
@@ -106,7 +106,7 @@
     [q getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         
         if (object == nil) {
-            //NSLog(@"Email Doesn't exist");
+            //Email doesn't exists in database
             [self buttonTapped:self];//??
             
         } else {
@@ -114,19 +114,21 @@
             if ([[object objectForKey:@"hasLoggedIn"] isEqualToString:@"YES"]) {
                 //show some popup that says a user already exists for that email
                 [ProgressHUD dismiss];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"That email address is already in use." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"That email address is already in use." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
                 [alert show];
                 
             } else {
                 //user already verified there account, give them access!
                 self.previouslyCreatedUser = object;
-                [self allowUserToEnter];
+                [self performSelector:@selector(allowUserToEnter) withObject:nil afterDelay:0.1];
             }
         }
     }];
 }
 
 -(void)allowUserToEnter {
+    
+    NSLog(@"User: %@", self.previouslyCreatedUser);
     
     NSString *userSchool = [self.previouslyCreatedUser objectForKey:@"userSchool"];
     NSString *userSchoolId = [self.previouslyCreatedUser objectForKey:@"userSchoolId"];
@@ -139,20 +141,12 @@
     [[NSUserDefaults standardUserDefaults] setObject:userSchoolId forKey:@"userSchoolId"];
     [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
     [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"hasLoggedIn"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"accountActivated"];
     [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    [self performSelector:@selector(dismissDasView) withObject:nil afterDelay:0.75];
     
-    [self.currentUser deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error) {
-            
-        } else {
-            
-            //NSLog(@"success!!!");
-            CameraViewController *cvc = [self.storyboard instantiateViewControllerWithIdentifier:@"Camera"];
-            cvc.currentUser = self.previouslyCreatedUser;
-            [self performSelector:@selector(dismissDasView) withObject:nil afterDelay:0.75];
-        }
-    }];
 }
 
 -(void)dismissDasView {
@@ -195,7 +189,8 @@
         [ProgressHUD dismiss];
             return;
     } else {
-            
+        
+        
         [self incrementSchoolUserCount];
         [[NSUserDefaults standardUserDefaults] setObject:self.userschool forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -203,7 +198,7 @@
         NSString *emailAddress = self.emailTextfield.text;
         NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
         
-        PFObject *user = self.currentUser;
+        PFObject *user = [PFObject objectWithClassName:@"CustomUser"];
         [user setObject:emailAddress forKey:@"emailAddress"];
         [user setObject:self.userschool forKey:@"userSchool"];
         if ([self.userschool isEqualToString:@"Example"]) {
@@ -220,7 +215,10 @@
                 [ProgressHUD dismiss];
             } else {
                 
-                NSString *urlString = [NSString stringWithFormat:@"http://storiesss.com/verify.php?user_id=%@&email_address=%@&user_school=%@", userObjectId, emailAddress, self.userschool];
+                NSString *parseUserObjectId = user.objectId;
+
+                
+                NSString *urlString = [NSString stringWithFormat:@"http://storiesss.com/verify.php?user_id=%@&email_address=%@&user_school=%@", parseUserObjectId, emailAddress, self.userschool];
                 NSURL *url = [NSURL URLWithString:urlString];
                 
                 NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
@@ -229,24 +227,29 @@
                 [request setHTTPMethod:@"POST"];
                 NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (error) {
-                        //NSLog(@"Error: %@", error);
+
                         [self tryMailgun:emailAddress :userObjectId];
                         
                     } else {
-                        
-                       //NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                       //NSLog(@"Response: %@", responseString);
+                       NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        NSLog(@"Response: %@", responseString);
                         
                         [ProgressHUD dismiss];
-                        //NSLog(@"Success!");
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
-                            [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.6];
                             [self.emailTextfield resignFirstResponder];
+                            NSString *userObjectId = user.objectId;
+                            
+                            CameraViewController *cvc = [self.storyboard instantiateViewControllerWithIdentifier:@"Camera"];
+                            cvc.currentUser = user;
+                            
+                            [[NSUserDefaults standardUserDefaults] setObject:parseUserObjectId forKey:@"userObjectId"];
                             [[NSUserDefaults standardUserDefaults] setInteger:99 forKey:@"localUserScore"];
                             [[NSUserDefaults standardUserDefaults] setObject:@"pending" forKey:@"universityStatus"];
+                            [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"accountActivated"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
+                            [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.6];
 
                         });
                     }
@@ -279,11 +282,11 @@
 -(void)showAlert {
     
     [ProgressHUD dismiss];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
-        [alertView show];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+    [alertView show];
 
-        alertView.tag = 101;
-        alertView.delegate = self;
+    alertView.tag = 101;
+    alertView.delegate = self;
     
 }
 
@@ -293,7 +296,7 @@
         
         if (buttonIndex == 0) {
             
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self dismissViewControllerAnimated:NO completion:nil];
         }
     }
 }

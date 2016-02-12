@@ -42,6 +42,7 @@
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
 
+
 @property (nonatomic, strong) UITapGestureRecognizer *tapp;
 
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;

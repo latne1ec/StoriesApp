@@ -636,11 +636,11 @@
                                 <rect key="frame" x="13" y="13" width="12" height="12"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <button opaque="NO" alpha="0.38" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0bP-4G-BXn">
-                                <rect key="frame" x="291" y="7" width="20" height="20"/>
+                            <button opaque="NO" alpha="0.28000000000000003" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0bP-4G-BXn">
+                                <rect key="frame" x="292" y="9" width="20" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="E2K-dU-bOT"/>
-                                    <constraint firstAttribute="height" constant="20" id="XGa-BT-ZoN"/>
+                                    <constraint firstAttribute="height" constant="20" id="Bde-6K-7fA"/>
+                                    <constraint firstAttribute="width" constant="20" id="V99-ad-8uN"/>
                                 </constraints>
                                 <state key="normal" image="flag.png"/>
                                 <connections>
@@ -651,9 +651,9 @@
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="a4e-bj-xhI" firstAttribute="top" secondItem="kgM-Td-sXp" secondAttribute="top" id="6uf-dL-1UU"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="0bP-4G-BXn" secondAttribute="trailing" constant="-12" id="HAR-Hs-Gzt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="a4e-bj-xhI" secondAttribute="trailing" constant="-21" id="dRn-RP-bNq"/>
                             <constraint firstItem="a4e-bj-xhI" firstAttribute="bottom" secondItem="zUQ-km-KWN" secondAttribute="top" id="mbH-hw-FQe"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0bP-4G-BXn" secondAttribute="trailing" constant="-12" id="uyO-DH-CfY"/>
                             <constraint firstItem="a4e-bj-xhI" firstAttribute="leading" secondItem="kgM-Td-sXp" secondAttribute="leading" id="wJ4-Tb-hQK"/>
                         </constraints>
                     </view>

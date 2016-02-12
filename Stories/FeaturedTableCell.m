@@ -25,8 +25,6 @@
     [super prepareForReuse];
     
     self.featuredStoryImage.tag = 25;
-    
-    
     self.featuredStoryImage.image = [UIImage imageNamed:@"placeholder"];
     
 }

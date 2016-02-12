@@ -45,6 +45,11 @@
 		2033F4DF1C67E0370068D81F /* dope12.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2033F4DE1C67E0370068D81F /* dope12.cisf */; };
 		2033F4EF1C6845350068D81F /* focus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2033F4EE1C6845350068D81F /* focus@2x.png */; };
 		2033F4F71C684D7E0068D81F /* focusCircle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2033F4F61C684D7E0068D81F /* focusCircle@2x.png */; };
+		2033F57F1C6BE8E50068D81F /* OldVerify in Resources */ = {isa = PBXBuildFile; fileRef = 2033F57E1C6BE8E50068D81F /* OldVerify */; };
+		2033F5811C6CDF680068D81F /* iPhone6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2033F5801C6CDF670068D81F /* iPhone6@2x.png */; };
+		2033F5831C6CE0A50068D81F /* iPhone5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2033F5821C6CE0A50068D81F /* iPhone5@2x.png */; };
+		2033F5871C6CE1E70068D81F /* iPhone6Plus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2033F5861C6CE1E70068D81F /* iPhone6Plus@2x.png */; };
+		2033F5891C6CE2740068D81F /* iPhone4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2033F5881C6CE2740068D81F /* iPhone4@2x.png */; };
 		20439D4F1C61AD4600C56E90 /* Camera in Resources */ = {isa = PBXBuildFile; fileRef = 20439D4E1C61AD4600C56E90 /* Camera */; };
 		20439D511C643D9300C56E90 /* random in Resources */ = {isa = PBXBuildFile; fileRef = 20439D501C643D9300C56E90 /* random */; };
 		20439D551C65564600C56E90 /* Anotha View Contnet in Resources */ = {isa = PBXBuildFile; fileRef = 20439D541C65564600C56E90 /* Anotha View Contnet */; };
@@ -295,6 +300,11 @@
 		2033F4DE1C67E0370068D81F /* dope12.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = dope12.cisf; sourceTree = "<group>"; };
 		2033F4EE1C6845350068D81F /* focus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "focus@2x.png"; sourceTree = "<group>"; };
 		2033F4F61C684D7E0068D81F /* focusCircle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "focusCircle@2x.png"; sourceTree = "<group>"; };
+		2033F57E1C6BE8E50068D81F /* OldVerify */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OldVerify; sourceTree = "<group>"; };
+		2033F5801C6CDF670068D81F /* iPhone6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPhone6@2x.png"; path = "Assets.xcassets/LaunchImage.launchimage/iPhone6@2x.png"; sourceTree = "<group>"; };
+		2033F5821C6CE0A50068D81F /* iPhone5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPhone5@2x.png"; sourceTree = "<group>"; };
+		2033F5861C6CE1E70068D81F /* iPhone6Plus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPhone6Plus@2x.png"; sourceTree = "<group>"; };
+		2033F5881C6CE2740068D81F /* iPhone4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPhone4@2x.png"; sourceTree = "<group>"; };
 		20439D4E1C61AD4600C56E90 /* Camera */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Camera; sourceTree = "<group>"; };
 		20439D501C643D9300C56E90 /* random */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = random; sourceTree = "<group>"; };
 		20439D541C65564600C56E90 /* Anotha View Contnet */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Anotha View Contnet"; sourceTree = "<group>"; };
@@ -660,6 +670,7 @@
 			children = (
 				20D7DD9D1C430F1C002099A8 /* VerifyEmailTableViewController.h */,
 				20D7DD9E1C430F1C002099A8 /* VerifyEmailTableViewController.m */,
+				2033F57E1C6BE8E50068D81F /* OldVerify */,
 				20D7DE8A1C46B61F002099A8 /* StatusTableViewController.h */,
 				20D7DE8B1C46B61F002099A8 /* StatusTableViewController.m */,
 			);
@@ -706,6 +717,10 @@
 		20D7DC3C1C3EDC04002099A8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2033F5881C6CE2740068D81F /* iPhone4@2x.png */,
+				2033F5861C6CE1E70068D81F /* iPhone6Plus@2x.png */,
+				2033F5821C6CE0A50068D81F /* iPhone5@2x.png */,
+				2033F5801C6CDF670068D81F /* iPhone6@2x.png */,
 				2033F4F61C684D7E0068D81F /* focusCircle@2x.png */,
 				2033F4EE1C6845350068D81F /* focus@2x.png */,
 				2033F4DE1C67E0370068D81F /* dope12.cisf */,
@@ -1300,8 +1315,10 @@
 				20F5532B1C4FF10F001CA4C2 /* random10.1.cisf in Resources */,
 				2033F4B51C67C0F50068D81F /* transfer12.cisf in Resources */,
 				2033F4DD1C67DFD70068D81F /* dope11.cisf in Resources */,
+				2033F57F1C6BE8E50068D81F /* OldVerify in Resources */,
 				2052E5341C508E8800B6CF60 /* blueRed1.6.cisf in Resources */,
 				20F553331C4FF31B001CA4C2 /* random10.5.cisf in Resources */,
+				2033F5871C6CE1E70068D81F /* iPhone6Plus@2x.png in Resources */,
 				2033F4D51C67D9A00068D81F /* dope7.cisf in Resources */,
 				20D7DE581C448851002099A8 /* instantBright.cisf in Resources */,
 				20F5533F1C4FF7DE001CA4C2 /* random12.2.cisf in Resources */,
@@ -1332,6 +1349,7 @@
 				20D7DE911C470343002099A8 /* black@2x.png in Resources */,
 				2052E5531C50A03600B6CF60 /* test1.3.cisf in Resources */,
 				20D7DD941C419816002099A8 /* dooo.png in Resources */,
+				2033F5811C6CDF680068D81F /* iPhone6@2x.png in Resources */,
 				20D7DE551C443307002099A8 /* Misc in Resources */,
 				2052E5361C508EEE00B6CF60 /* blueRed1.7.cisf in Resources */,
 				208017621C4886C000600365 /* camBlueNew@2x.png in Resources */,
@@ -1348,6 +1366,7 @@
 				2052E55D1C50A61100B6CF60 /* vibrant.cisf in Resources */,
 				2052E54A1C50996000B6CF60 /* blueRed3.8.cisf in Resources */,
 				20F553461C50097A001CA4C2 /* cancelNew@2x.png in Resources */,
+				2033F5831C6CE0A50068D81F /* iPhone5@2x.png in Resources */,
 				20F553071C4E98B6001CA4C2 /* flag@2x.png in Resources */,
 				20F8D66B1C66CF710077F4AB /* MultiplePlayerViews in Resources */,
 				2052E5511C509FF000B6CF60 /* test1.2.cisf in Resources */,
@@ -1367,6 +1386,7 @@
 				2033F4F71C684D7E0068D81F /* focusCircle@2x.png in Resources */,
 				2052E53E1C50948F00B6CF60 /* blueRed3.2.cisf in Resources */,
 				2033F4B91C67C18A0068D81F /* transfer14.cisf in Resources */,
+				2033F5891C6CE2740068D81F /* iPhone4@2x.png in Resources */,
 				2033F4D11C67D8F70068D81F /* dope5.cisf in Resources */,
 				2033F4C71C67C43D0068D81F /* transfer21.cisf in Resources */,
 				2052E55B1C50A57C00B6CF60 /* fade1.0.cisf in Resources */,
@@ -1592,6 +1612,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -1612,6 +1633,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
