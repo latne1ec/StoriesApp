@@ -17,6 +17,10 @@
 #import "UIImageView+WebCache.h"
 #import "AppDelegate.h"
 #import "CameraViewController.h"
+#import <OneSignal/OneSignal.h>
+#import "MyPostsTableCell.h"
+
+
 
 @interface StoriesTableViewController ()  {
     
@@ -35,6 +39,11 @@
 @property (nonatomic, strong) MainStoriesViewController *daMvc;
 //@property (nonatomic, strong) SSARefreshControl *refreshControl;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) OneSignal *oneSignal;
+
+@property (nonatomic, strong) NSMutableArray *content;
+@property (nonatomic, strong) NSMutableArray *myPosts;
+@property (nonatomic, strong) SDWebImageManager *manager;
 
 
 @end
@@ -64,6 +73,11 @@ bool uploadingPost;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.manager = [[SDWebImageManager alloc] init];
+    
+    self.content = [[NSMutableArray alloc] init];
+    
     
     if([UIScreen mainScreen].bounds.size.height <= 568.0) {
         NSShadow *shadow = [[NSShadow alloc] init];
@@ -154,7 +168,10 @@ bool uploadingPost;
     [self.indicator setHidden:YES];
     self.indicator.hidden = YES;
     
+    //[self getMyPosts];
     
+    [self addSubtitle];
+
 }
 
 -(void)showLoader {
@@ -168,7 +185,7 @@ bool uploadingPost;
 }
 
 -(void)hideLoader {
-    
+    [self performSelector:@selector(queryForHomePic) withObject:nil afterDelay:0.10];
     uploadingPost = false;
     self.tableView.allowsSelection = YES;
     HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -177,6 +194,8 @@ bool uploadingPost;
     [self.indicator stopAnimating];
     self.tableView.allowsSelection = YES;
     [self.tableView reloadData];
+    self.subtitleLabel.hidden = YES;
+
 }
 
 
@@ -276,24 +295,34 @@ bool uploadingPost;
     if (section == 0) {
         
         return 1;
+        
+//        if (self.myPosts.count > 0) {
+//            return 2;
+//        } else {
+//         return 1;
+//        }
     }
+    
     return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Home";
-    static NSString *CellIdentifier2 = @"Unlock";
+    static NSString *CellIdentifier2 = @"Me";
     
     HomeTableCell *cell = (HomeTableCell *)[self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[HomeTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         
     }
-    UnlockTableCell *cell2 = (UnlockTableCell *)[self.tableView dequeueReusableCellWithIdentifier:CellIdentifier2];
-    if (cell2 == nil) {
-        cell2 = [[UnlockTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier2];
+    
+    MyPostsTableCell *cell2= (MyPostsTableCell *)[self.tableView dequeueReusableCellWithIdentifier:CellIdentifier2];
+    if (cell == nil) {
+        cell = [[HomeTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        
     }
+    
     
     NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
     NSString *userSchool  = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
@@ -317,7 +346,7 @@ bool uploadingPost;
             
             cell.homeStoryImage.layer.cornerRadius = cell.homeStoryImage.frame.size.width / 2;
             cell.homeStoryImage.clipsToBounds = YES;
-            cell.homeStoryImage.alpha = 0.96;
+            
             
             if (uploadingPost) {
                 [self.indicator setHidden:NO];
@@ -331,12 +360,30 @@ bool uploadingPost;
             if (urlString == nil) {
                 
             } else {
-                
-                [cell.homeStoryImage sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@""]];
+            
+                NSURL *url = [NSURL URLWithString:urlString];
+                [self.manager downloadImageWithURL:url options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                    
+                }
+                                         completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                             if (finished) {
+                                                 cell.homeStoryImage.image = images;
+                                                 cell.homeStoryImage.alpha = 0.96;
+                                                 [self addCaption];
+                                                 if ([self.home.objectId isEqualToString:lastSeenContentId]) {
+                                                     
+                                                     cell.homeStoryImage.alpha = 0.60;
+                                                     cell.homeName.alpha = 0.60;
+                                                 }
+                                             }
+                                             
+                                         }];
+                 
+            //[self addCaption];
                 [cell.homeStoryImage bringSubviewToFront:self.indicator];
             
                 if ([self.home.objectId isEqualToString:lastSeenContentId]) {
-                    //NSLog(@"No new posts");
+
                     cell.homeStoryImage.alpha = 0.60;
                     cell.homeName.alpha = 0.60;
                 }
@@ -345,14 +392,9 @@ bool uploadingPost;
         
         if (indexPath.row == 1) {
         
-            NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-            int userCount = [[self.university objectForKey:@"registeredUserCount"] intValue];
-            int userThreshold = [[self.university objectForKey:@"userThreshold"] intValue];
-            int remainingCount = userThreshold - userCount;
-            cell2.inviteLabel.text = [NSString stringWithFormat:@"%d more students to unlock %@.",remainingCount, [userSchool lowercaseString]];
-            
-            cell2.inviteButton.layer.cornerRadius = 5.0;
-            cell2.separatorInset = UIEdgeInsetsMake(0.f, 10000.0f, 0.f, 0.0f);
+            cell2.myPostImage.layer.cornerRadius = cell.homeStoryImage.frame.size.width / 2;
+            cell2.myPostImage.clipsToBounds = YES;
+            cell2.myPostImage.alpha = 0.96;
             
             return cell2;
         }
@@ -409,7 +451,7 @@ bool uploadingPost;
         return 72.0f;
     }
     if (indexPath.row == 1)   {
-        return 220.0f;
+        return 72.0f;
     }
     
     return 0;
@@ -432,8 +474,8 @@ bool uploadingPost;
 
 - (PFQuery *)queryForHomePic {
     
-    [self updateUserScore];
-    NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
+    //[self updateUserScore];
+    //NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
     NSString *userSchoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
         
     PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
@@ -525,12 +567,12 @@ bool uploadingPost;
 
 //**********************************
 
--(void)askUserForPush {
+-(void)checkIfUserEnabledPush {
     
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.0"] isEqualToString:@"YES"]) {
         
     } else {
-        
+
         [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.1];
     }
 }
@@ -559,7 +601,12 @@ bool uploadingPost;
             
         } else {
             
-            [self askToEnablePush];
+            //[self askToEnablePush];
+            
+            
+            AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appD registerUserForOneSignalPushNotifications];
+            
         }
     } else if (alertView.tag == 200) {
         
@@ -567,7 +614,7 @@ bool uploadingPost;
             
             NSString *universityStatus = [[NSUserDefaults standardUserDefaults] objectForKey:@"universityStatus"];
             if ([universityStatus isEqualToString:@"pending"]) {
-                [self askUserForPush];
+                [self checkIfUserEnabledPush];
             }
             
         } else {
@@ -577,12 +624,12 @@ bool uploadingPost;
     }
 }
 
--(void)askToEnablePush {
-    
-    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appD askUserToEnablePushInAppDelgate];
-    
-}
+//-(void)askToEnablePush {
+//    
+//    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    [appD askUserToEnablePushInAppDelgate];
+//    
+//}
 
 //**********************************
 
@@ -630,6 +677,67 @@ bool uploadingPost;
     
     self.transition.reverse = YES;
     return self.transition;
+}
+
+-(void)addSubtitle {
+    
+    HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    
+    self.subtitleLabel = [[UILabel alloc] init];
+    
+    self.subtitleLabel.frame = CGRectMake(0,0, cell.homeStoryImage.frame.size.width, 5);
+    [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:2.5]];
+    
+    self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.50];
+    self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.98];
+    self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    [cell.homeStoryImage addSubview:self.subtitleLabel];
+    self.subtitleLabel.hidden = YES;
+
+}
+
+-(void)addCaption {
+    
+    HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    
+    CGFloat yOrigin = [[self.home objectForKey:@"captionLocation"] floatValue];
+    float height = 48.0f;
+    
+    CGRect frame = self.subtitleLabel.frame;
+    frame.origin.x = 0;
+    frame.origin.y = yOrigin*height;
+    self.subtitleLabel.frame = frame;
+    
+    self.subtitleLabel.text = [self.home objectForKey:@"contentCaption"];
+    
+    if ([[self.home objectForKey:@"contentCaption"] length] > 0) {
+        
+        self.subtitleLabel.hidden = NO;
+        [cell.homeStoryImage bringSubviewToFront:self.subtitleLabel];
+        
+    } else {
+        self.subtitleLabel.hidden = YES;
+    }
+}
+
+-(void)getMyPosts {
+    
+    NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
+    
+    PFQuery *q = [PFQuery queryWithClassName:@"UserContent"];
+    [q whereKey:@"userObjectId" equalTo:userObjectId];
+    [q findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        if (error) {
+            
+        } else {
+            
+            self.myPosts = [objects mutableCopy];
+            NSArray* reversedArray = [[self.myPosts reverseObjectEnumerator] allObjects];
+            self.myPosts = [reversedArray mutableCopy];
+            [self.tableView reloadData];
+        }
+    }];
 }
 
 @end

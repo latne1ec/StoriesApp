@@ -80,3 +80,41 @@ CMTime targetTime = CMTimeMakeWithSeconds(seconds, 60000);
 
 
 
+-(void)appWillResignActive {
+
+//    PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
+//
+//    if ([[currentContent objectForKey:@"postType"] isEqualToString:@"video"]) {
+//
+//        if (videoCount % 2 == 0) {
+//
+//            [self.avPlayerTwo pause];
+//
+//        } else {
+//
+//            [self.avPlayer pause];
+//        }
+//    }
+}
+
+-(void)appDidBecomeActive {
+
+//    PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
+//
+//    if ([[currentContent objectForKey:@"postType"] isEqualToString:@"video"]) {
+//
+//        if (videoCount % 2 == 0) {
+//
+//            [self.avPlayerTwo play];
+//
+//        } else {
+//
+//            [self.avPlayer play];
+//
+//        }
+//    }
+}
+
+
+
+

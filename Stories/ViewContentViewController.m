@@ -27,12 +27,15 @@
 @property (nonatomic) BOOL playerOneReady;
 @property (nonatomic) BOOL playerTwoReady;
 
+
+
 @end
 
 @implementation ViewContentViewController
 
 int currentIndex;
 int skipIndex;
+int skipCount;
 int tempIndex;
 int videoCount;
 int imageCount;
@@ -44,15 +47,32 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategorySoloAmbient error:nil];
+     
+        self.detector = [SharkfoodMuteSwitchDetector shared];
+        __weak ViewContentViewController* sself = self;
+        self.detector.silentNotify = ^(BOOL silent){
+            if (silent) {
+                NSLog(@"silent");
+                [sself.avPlayer setVolume:0.0];
+                [sself.avPlayerTwo setVolume:0.0];
+            } else {
+                NSLog(@"NOT silent");
+                [sself.avPlayer setVolume:1.0];
+                [sself.avPlayer setVolume:1.0];
+            }
+        };
+    });
+    
     self.manager = [SDWebImageManager sharedManager];
     
     _firstObjectVideo = NO;
     
-    //[self queryForMedia];
+    [self performSelector:@selector(queryForMedia) withObject:nil afterDelay:0.245];
     
-    [self performSelector:@selector(queryForMedia) withObject:nil afterDelay:0.50];
-    
-    self.view.backgroundColor = [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1];
+    self.view.backgroundColor = [UIColor colorWithRed:0.33 green:0.51 blue:0.68 alpha:1.0];
     
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(goHome:)];
     swipe.direction = UISwipeGestureRecognizerDirectionDown;
@@ -66,23 +86,23 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     if([UIScreen mainScreen].bounds.size.height < 568.0) {
         self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 36);
-        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:15]];
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:15.75]];
     }
     else if([UIScreen mainScreen].bounds.size.height == 568.0) {
         self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 36);
-        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:15]];
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:15.75]];
 
     } else if ([UIScreen mainScreen].bounds.size.height == 667.0) {
-        self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 39);
-        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
+        self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 38);
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:16.75]];
 
     } else  if ([UIScreen mainScreen].bounds.size.height == 736.0) {
         self.subtitleLabel.frame = CGRectMake(0,-42, self.view.frame.size.width, 42);
-        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:17]];
+        [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:17.75]];
     }
 
-    self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.525];
-    self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.93];
+    self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.565];
+    self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.995];
     self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
     //[self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
     
@@ -143,10 +163,13 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appClosed) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
 }
+
 -(void)appClosed {
     [ProgressHUD dismiss];
     [UIApplication sharedApplication].statusBarHidden = YES;
 }
+
+
 -(void)setupTapTimer {
     
     PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
@@ -163,7 +186,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         }
         
     } else {
-        self.handleTapTimer = [NSTimer timerWithTimeInterval:7.0 target:self selector:@selector(handleSingleTap) userInfo:nil repeats:YES];
+        self.handleTapTimer = [NSTimer timerWithTimeInterval:6.0 target:self selector:@selector(handleSingleTap) userInfo:nil repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.handleTapTimer forMode:NSDefaultRunLoopMode];
     }
 }
@@ -183,7 +206,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     self.replayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.replayView];
-    self.replayView.backgroundColor = [UIColor colorWithRed:0.322 green:0.545 blue:0.737 alpha:1];
+    self.replayView.backgroundColor = [UIColor colorWithRed:0.33 green:0.51 blue:0.68 alpha:1.0];
     self.replayButton = [[UIButton alloc] init];
     self.replayButton.frame = CGRectMake(0, 0, 300, 100);
     self.replayButton.center = self.view.center;
@@ -259,6 +282,8 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     [super didReceiveMemoryWarning];
     
+    [self downloadImages];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -267,6 +292,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     videoCount = 0;
     imageCount = 0;
     tempIndex = 0;
+    skipCount = 0;
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
 }
@@ -311,10 +337,15 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     self.avPlayer = nil;
     self.avPlayerTwo = nil;
+    self.detector = nil;
+    
 }
 
 
 -(void)handleSingleTap {
+    
+    skipCount = skipCount + 1;
+    
     
     if (canSkip == 1) {
         
@@ -375,7 +406,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                 
                 double percentageTwo;
                 percentageTwo = 100.0*7;
-                double time = 7.00;
+                double time = 6.00;
                 
                 self.progressViewTwo.animationDuration = time;
                 self.progressViewTwo.progress = 0;
@@ -388,7 +419,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     }
 }
 
-
 -(void)displayContent {
     
     canSkip = 1;
@@ -396,14 +426,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     if ([[currentContent objectForKey:@"postType"] rangeOfString:@"video"].location != NSNotFound) {
         
-        if (tempIndex == 1) {
-            
-            videoCount = videoCount +1;
-            //NSLog(@"TEMP INDEX CALLED");
-            
-        } else {
-            
-        }
         [self showVideoImageTemporarily];
         
     } else {
@@ -420,15 +442,15 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     NSString *urlString = [currentContent objectForKey:@"imageUrl"];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    
     [self.manager downloadImageWithURL:url options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
     }
                              completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                  
+                                 NSLog(@"Hi!!");
                                  self.imageView.image = images;
                                  self.imageView.hidden = NO;
-                                 [CATransaction setDisableActions:YES];
+                                 //[CATransaction setDisableActions:YES];
                                  self.avPlayerLayer.hidden = YES;
                                  self.avPlayerLayerTwo.hidden = YES;
                                  [self.view bringSubviewToFront:self.imageView];
@@ -449,7 +471,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                  
                                  double percentageTwo;
                                  percentageTwo = 100.0*7;
-                                 double time = 7.00;
+                                 double time = 6.00;
                                  
                                  self.progressViewTwo.animationDuration = time;
                                  self.progressViewTwo.progress = 0;
@@ -536,7 +558,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     } else {
         self.subtitleLabel.hidden = YES;
     }
-    
 }
 
 -(void)showVideoImageTemporarily {
@@ -636,7 +657,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
             return dur;
         }
     }
-    return 7;
+    return 6;
 }
 
 -(void)tryThis {
@@ -727,9 +748,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 -(void)queryForMedia {
     
-    NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
     NSString *userSchoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
-    
     PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
     [query whereKey:@"postStatus" equalTo:@"approved"];
     [query whereKey:@"userSchoolId" equalTo:userSchoolId];
@@ -805,43 +824,14 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 -(void)replayQuery {
     
-//    _currentlyQuerying = true;
-//    
-//    [self.videoArray removeAllObjects];
-//    
-//    NSString *userSchool = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-//    
-//    PFQuery *query = [PFQuery queryWithClassName:@"UserContent"];
-//    [query whereKey:@"postStatus" equalTo:@"approved"];
-//    [query whereKey:@"userSchool" equalTo:userSchool];
-//    [query orderByDescending:@"createdAt"];
-//    [query setLimit:118];
-//    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-//        if (error) {
-//        } else {
-//            
-//            if (objects.count == 0) {
-//                
-//                currentIndex = 0;
-//                [self showReplayView];
-//                return;
-//            }
-//            _currentlyQuerying = false;
-//            self.contentArray = [objects mutableCopy];
-//            NSArray* reversedArray = [[self.contentArray reverseObjectEnumerator] allObjects];
-//            self.contentArray = [reversedArray mutableCopy];
+    currentIndex = 0;
+    videoCount = 0;
+    [self displayContent];
+    [self downloadImages];
+    [self getVideos];
+    [self addTapTapRecoginzer];
+    [self checkIfFirstObjectIsVideo];
     
-            currentIndex = 0;
-            videoCount = 0;
-            [self displayContent];
-            [self downloadImages];
-            //[self downloadVideos];
-            [self getVideos];
-            [self addTapTapRecoginzer];
-            [self checkIfFirstObjectIsVideo];
-            
-        //}
-    //}];
 }
 
 -(void)checkIfFirstObjectIsVideo {
@@ -891,7 +881,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         
         if ([managerTwo cachedImageExistsForURL:url]) {
             imageCount = imageCount + 1;
-
             
         } else {
             
@@ -924,7 +913,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                  AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
                  
                  [self.playerItemArray addObject:item];
-                 //NSLog(@"Added");
              }];
          }
      }
@@ -958,4 +946,5 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [currentContent incrementKey:@"flagCount"];
     [currentContent saveEventually];
 }
+
 @end

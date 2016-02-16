@@ -52,6 +52,8 @@
 @property (nonatomic, strong) UIView *replayView;
 @property (nonatomic, strong) UIButton *replayButton;
 
+@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactor;
+
 
 @property (weak, nonatomic) IBOutlet CERoundProgressView *progressView;
 

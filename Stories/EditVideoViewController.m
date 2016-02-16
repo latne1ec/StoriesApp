@@ -36,6 +36,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
     _appDelegate = [[UIApplication sharedApplication] delegate];
     
@@ -49,9 +51,9 @@
         
         self.filterSwitcherView.filters = @[
                                             emptyFilter,
-                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
+                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"yellow6" withExtension:@"cisf"]],
+                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"purp5" withExtension:@"cisf"]],
                                             ];
 
         _player.SCImageView = self.filterSwitcherView;
@@ -167,8 +169,8 @@
 }
 
 -(void)ScrollToHomeView {
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:0 animated:NO];
+
+    [self.appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:0 animated:NO];
 }
 
 ///********************************************************************
@@ -198,7 +200,7 @@
     
     // Caption
     caption = [[UITextField alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height/2+80,self.view.frame.size.width,40)];
-    caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.55];
+    caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.585];
     caption.textAlignment = NSTextAlignmentCenter;
     caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -207,7 +209,7 @@
     caption.alpha = 0;
     caption.tintColor = [UIColor whiteColor];
     caption.delegate = self;
-    caption.font = [UIFont fontWithName:@"AppleSDGothicNeo-SemiBold" size:18];
+    caption.font = [UIFont fontWithName:@"AvenirNext-Medium" size:16.5];
     [self.view addSubview:caption];
 }
 
@@ -484,10 +486,7 @@ replacementString:(NSString *)string{
     
     thumbnail = resizeDasPicTwo(thumbnail);
     
-    
     //if (thumbnail.size.width > 140) thumbnail = ResizePhotoTwo(thumbnail, 225, 400); //300 x 400 -- 240 x 430
-    
-    //if (thumbnail.size.width > 140) thumbnail = ResizePhotoTwo(thumbnail, 320, 568); //300 x 400 -- 240 x 430
     
     // Upload image******************************************
     
@@ -563,7 +562,6 @@ UIImage* resizeDasPicTwo(UIImage *image) {
     UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    //NSLog(@"final image height: %f", finalImage.size.height);
     return finalImage;
 }
 
@@ -597,7 +595,7 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
         [userPhoto setObject:caption.text forKey:@"contentCaption"];
         [userPhoto setObject:capLoc forKey:@"captionLocation"];
     }
-    [userPhoto setObject:@"pending" forKey:@"postStatus"];
+    [userPhoto setObject:@"approved" forKey:@"postStatus"];
     [userPhoto setObject:@"video" forKey:@"postType"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
     [userPhoto setObject:schoolId forKey:@"userSchoolId"];
@@ -630,7 +628,6 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
             self.closeButton.transform = CGAffineTransformMakeScale(1.4, 1.4);
             
         } completion:^(BOOL finished) {
-            //NSLog(@"FINISHED");
             
         }];
     }

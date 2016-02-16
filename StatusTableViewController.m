@@ -56,7 +56,7 @@
             
         } else {
             
-            [self askToEnablePush];
+            //[self askToEnablePush];
         }
     }
 }
@@ -114,12 +114,10 @@
     }
 }
 
--(void)askToEnablePush {
-    
-    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appD askUserToEnablePushInAppDelgate];
-
-}
+//-(void)askToEnablePush {
+//    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    [appD askUserToEnablePushInAppDelgate];
+//}
 
 -(void)countUsers {
     

@@ -19,10 +19,11 @@
 @property (nonatomic) BOOL accepted;
 
 
-- (void)setupRootViewControllerForWindow;
-
--(void)askUserToEnablePushInAppDelgate;
-
+-(void)setupRootViewControllerForWindow;
+//-(void)askUserToEnablePushInAppDelgate;
+-(void)setOneSignalTag;
+-(void)registerUserForOneSignalPushNotifications;
+-(void)saveOneSignalPlayerId:(PFObject *)forUser;
 
 @end
 

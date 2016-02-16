@@ -76,11 +76,7 @@ typedef enum ScrollDirection {
     
     
     cat.delegate = self;
-    
-    //NSLog(@"YZ DELEGATE: %@ ", cat.delegate);
-    
-    
-    
+
     
     [self.view setFrame: [self.view bounds]];
     
@@ -290,8 +286,17 @@ typedef enum ScrollDirection {
     
 }
 
+
+
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
+//    if (scrollView.contentOffset.x == self.view.frame.size.width) {
+//        [UIApplication sharedApplication].statusBarHidden = YES;
+//    }
+    
+//    if (scrollView.contentOffset.x == self.view.frame.size.width) {
+//        [UIApplication sharedApplication].statusBarHidden = NO;
+//    }
     
     [self.searchBar resignFirstResponder];
     [self.view endEditing:YES];
@@ -300,20 +305,18 @@ typedef enum ScrollDirection {
     self.scrollView.scrollEnabled = YES;
 
     
-    [UIApplication sharedApplication].statusBarHidden = NO;
+    //[UIApplication sharedApplication].statusBarHidden = NO;
     
     if([UIScreen mainScreen].bounds.size.height <= 568.0) {
 
         if (scrollView.contentOffset.x < 1) {
             
             self.scrollView.bounces = YES;
-            NSLog(@"HEre 1");
         }
         
         if (scrollView.contentOffset.x > 319) {
             
             self.scrollView.bounces = NO;
-            NSLog(@"HEre 2");
         }
         
         else {
@@ -333,11 +336,7 @@ typedef enum ScrollDirection {
             
             self.scrollView.bounces = NO;
         }
-        
-        
     }
-    
-    
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
@@ -360,41 +359,61 @@ typedef enum ScrollDirection {
         self.scrollView.scrollEnabled = YES;
     
     }
+    
+    if (sender.contentOffset.x < self.view.frame.size.width) {
+        [UIApplication sharedApplication].statusBarHidden = NO;
+    }
+    
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    
+    if (scrollView.contentOffset.x == self.view.frame.size.width) {
+        [UIApplication sharedApplication].statusBarHidden = YES;
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+    
 }
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
-    
-    if (scrollView.contentOffset.x < 320) {
-        
+    if (scrollView.contentOffset.x < self.view.frame.size.width) {
         [UIApplication sharedApplication].statusBarHidden = NO;
-        [self setNeedsStatusBarAppearanceUpdate];
-        //table
-    }
-    else if (scrollView.contentOffset.x >=0) {
-        
-        [UIApplication sharedApplication].statusBarHidden = YES;
-        //camera
-    }
-    
-    
-    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
-        
-        if (scrollView.contentOffset.x >319) {
-            
-            [UIApplication sharedApplication].statusBarHidden = YES;
-            
-        }
-        
     } else {
-        
-        if (scrollView.contentOffset.x >375) {
-            
-            [UIApplication sharedApplication].statusBarHidden = YES;
-            
-        }
+        [UIApplication sharedApplication].statusBarHidden = YES;
     }
+    
+//
+//    if (scrollView.contentOffset.x < 320) {
+//        
+//        [UIApplication sharedApplication].statusBarHidden = NO;
+//        [self setNeedsStatusBarAppearanceUpdate];
+//        //table
+//    }
+//    else if (scrollView.contentOffset.x >=0) {
+//        
+//        [UIApplication sharedApplication].statusBarHidden = YES;
+//        //camera
+//    }
+//    
+//    
+//    if([UIScreen mainScreen].bounds.size.height <= 568.0) {
+//        
+//        if (scrollView.contentOffset.x >319) {
+//            
+//            [UIApplication sharedApplication].statusBarHidden = YES;
+//            
+//        }
+//        
+//    } else {
+//        
+//        if (scrollView.contentOffset.x >375) {
+//            
+//            [UIApplication sharedApplication].statusBarHidden = YES;
+//            
+//        }
+//    }
 }
 
 @end

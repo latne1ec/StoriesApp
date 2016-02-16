@@ -17,6 +17,8 @@
 #import "StatusTableViewController.h"
 #import "Reachability.h"
 #import "StoriesTableViewController.h"
+#import <OneSignal/OneSignal.h>
+
 
 #define kVideoPreset AVCaptureSessionPresetHigh
 
@@ -33,6 +35,7 @@
 @property (nonatomic) BOOL accepted;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIVisualEffect *blurEffect;
+@property (strong, nonatomic) OneSignal *oneSignal;
 
 
 @end
@@ -48,6 +51,8 @@ bool captionReady;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
     _accepted = false;
     _appDelegate = [[UIApplication sharedApplication] delegate];
@@ -81,7 +86,6 @@ bool captionReady;
         
     } else {
         
-        NSLog(@"made it");
         //New user, push to verify vc to create new user
         VerifyEmailTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"VerifyEmail"];
         [UIView animateWithDuration:0.32 delay:.85 options:0 animations:^{
@@ -136,6 +140,7 @@ bool captionReady;
     _recorder.delegate = self;
     _recorder.autoSetVideoOrientation = NO;
     
+    
     self.previewView = [[UIView alloc] initWithFrame:self.view.frame];
     
     [self.view addSubview:self.previewView];
@@ -152,7 +157,6 @@ bool captionReady;
     } completion:^(BOOL finished) {
         
     }];
-    
     
     [self.retakeButton addTarget:self action:@selector(handleRetakeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.stopButton addTarget:self action:@selector(handleStopButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -175,7 +179,6 @@ bool captionReady;
     
     NSError *error;
     if (![_recorder prepare:&error]) {
-        //NSLog(@"Prepare error: %@", error.localizedDescription);
     }
     
     self.camTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(capturePhoto:)];
@@ -239,7 +242,6 @@ bool captionReady;
     
     [self.selfieButton addGestureRecognizer:longPressSelfie];
 
-
     self.videoProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(-1, 0, self.view.frame.size.width, 20)];
     
     [self.videoProgress setTintColor:[UIColor colorWithRed:0.929 green:0.365 blue:0.376 alpha:1]];
@@ -292,14 +294,15 @@ bool captionReady;
         if (self.currentUser != nil) {
             
             NSString *userSchoolId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchoolId"];
-            
-            
+        
             int currentUserScore = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
             int currentStoryViewCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCount"] intValue];
             int currentStoryViewCountReplayed = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCountReplayed"] intValue];
+            int userRunCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userRunCount"] intValue];
             [self.currentUser setObject:userSchoolId forKey:@"userSchoolId"];
             [self.currentUser setObject:@"YES" forKey:@"hasLoggedIn"];
             [self.currentUser setObject:[NSNumber numberWithInt:currentUserScore] forKey:@"userScore"];
+            [self.currentUser setObject:[NSNumber numberWithInt:userRunCount] forKey:@"runCount"];
             [self.currentUser setObject:[NSNumber numberWithInt:currentStoryViewCount] forKey:@"storyViewCount"];
             [self.currentUser setObject:[NSNumber numberWithInt:currentStoryViewCountReplayed] forKey:@"storyViewCountReplayed"];
             [self.currentUser setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"appVersion"] forKey:@"appVersion"];
@@ -307,6 +310,7 @@ bool captionReady;
                 if (error) {
                     
                 } else {
+                    NSLog(@"Saved");
                 }
             }];
         }
@@ -416,12 +420,15 @@ bool captionReady;
 
     if (recognizer.state == UIGestureRecognizerStateBegan) {
 
-        [UIView animateWithDuration:0.092 animations:^{
-            self.menu.transform = CGAffineTransformMakeScale(1.32, 1.32);
+        [UIView animateWithDuration:0.1 animations:^{
+            self.menu.transform = CGAffineTransformMakeScale(1.36, 1.36);
 
         } completion:^(BOOL finished) {
-            self.menu.transform = CGAffineTransformMakeScale(1.28, 1.28);
-
+            
+            [UIView animateWithDuration:0.092 animations:^{
+                self.menu.transform = CGAffineTransformMakeScale(1.25, 1.25);
+            } completion:^(BOOL finished) {
+            }];
         }];
     }
 
@@ -481,7 +488,7 @@ bool captionReady;
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         //self.flashButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
         [UIView animateWithDuration:0.09 animations:^{
-            //NSLog(@"ended");
+
             self.flashButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
             
         } completion:^(BOOL finished) {
@@ -492,12 +499,11 @@ bool captionReady;
 
 }
 
-
 -(void)makeUploadButtonBounce:(UILongPressGestureRecognizer *)recognizer {
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
-        [UIView animateWithDuration:0.1 animations:^{
+        [UIView animateWithDuration:0.115 animations:^{
             self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.30, 1.30);
             
         } completion:^(BOOL finished) {
@@ -508,11 +514,13 @@ bool captionReady;
     
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         
-        //self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
-        [UIView animateWithDuration:0.096 animations:^{
+        [self.uploadPhotoButton.layer removeAllAnimations];
+        
+        [UIView animateWithDuration:0.175 delay:0.0 options:0 animations:^{
+            self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
         } completion:^(BOOL finished) {
             [self uploadPhoto];
-            self.uploadPhotoButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
+            [self ScrollToHomeView];
         }];
     }
 }
@@ -534,9 +542,8 @@ bool captionReady;
     
    [UIView animateWithDuration:0.02 animations:^{
        
-       AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-       [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:0 animated:NO];
-
+      [self.appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:0 animated:NO];
+       
    } completion:^(BOOL finished) {
        self.menu.transform = CGAffineTransformMakeScale(1.0, 1.0);
    }];
@@ -553,7 +560,6 @@ bool captionReady;
         [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:100] forKey:@"localUserScore"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         [self viewDidLoad];
-        
     }
     
     [self prepareSession];
@@ -565,7 +571,6 @@ bool captionReady;
         self.cameraButton.transform = CGAffineTransformMakeScale(1.0, 1.0);
     } completion:^(BOOL finished) {
     }];
-
     
     [self.imageSelectedView removeFromSuperview];
     [self.cameraButton addGestureRecognizer:self.camTap];
@@ -596,7 +601,6 @@ bool captionReady;
     CGPoint point = CGPointMake(250, 250);
     [_recorder autoFocusAtPoint:point];
 }
-
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -634,9 +638,9 @@ bool captionReady;
     
     caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
     
-    caption = [[UITextField alloc] initWithFrame:CGRectMake(0,self.capturedImageView.frame.size.height/2+80,self.capturedImageView.frame.size.width,40)];
+    caption = [[UITextField alloc] initWithFrame:CGRectMake(0,self.capturedImageView.frame.size.height/2+80,self.capturedImageView.frame.size.width,38)];
     
-    caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.55];
+    caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.575];
     caption.textAlignment = NSTextAlignmentCenter;
     caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -645,7 +649,7 @@ bool captionReady;
     caption.alpha = 0;
     caption.tintColor = [UIColor whiteColor];
     caption.delegate = self;
-    caption.font = [UIFont fontWithName:@"AppleSDGothicNeo-SemiBold" size:18];
+    caption.font = [UIFont fontWithName:@"AvenirNext-Medium" size:16.5];
     [self.capturedImageView addSubview:caption];
     
 }
@@ -687,7 +691,7 @@ replacementString:(NSString *)string{
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.15];
     [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:caption cache:YES];
-    caption.frame = CGRectMake(0,self.view.frame.size.height/2+31,self.view.frame.size.width,40);
+    caption.frame = CGRectMake(0,self.view.frame.size.height/2+31,self.view.frame.size.width,38);
     //[self setKeyboardFrame];
     [UIView commitAnimations];
     
@@ -703,7 +707,7 @@ replacementString:(NSString *)string{
 -(void)setKeyboardFrame {
     
     [UIView animateWithDuration:0.06 animations:^{
-        caption.frame = CGRectMake(0,_keyboardOriginY-42,self.view.frame.size.width,40);
+        caption.frame = CGRectMake(0,_keyboardOriginY-42,self.view.frame.size.width,38);
     } completion:^(BOOL finished) {
     }];
 }
@@ -901,6 +905,7 @@ replacementString:(NSString *)string{
 }
 
 - (IBAction)bounce {
+    
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.duration = 1.1;
     animationGroup.repeatCount = INFINITY;
@@ -956,9 +961,9 @@ replacementString:(NSString *)string{
                         
                         self.filterSwitcherView.filters = @[
                                                             emptyFilter,
-                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
+                                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"yellow6" withExtension:@"cisf"]],
+                                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"purp5" withExtension:@"cisf"]],
                                                             ];
 
                         [self.capturedImageView addSubview:self.filterSwitcherView];
@@ -976,7 +981,6 @@ replacementString:(NSString *)string{
                     [self.view addSubview:self.imageSelectedView];
                     
                     if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
-                        //NSLog(@"Version: %f", NSFoundationVersionNumber);
                         
                     } else {
 
@@ -990,9 +994,9 @@ replacementString:(NSString *)string{
                         
                         self.filterSwitcherView.filters = @[
                                                             emptyFilter,
-                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
+                                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"yellow6" withExtension:@"cisf"]],
+                                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"purp5" withExtension:@"cisf"]],
                                                             ];
 
                         [self.capturedImageView addSubview:self.filterSwitcherView];
@@ -1037,11 +1041,9 @@ replacementString:(NSString *)string{
     
     
     if (dur >= 7) {
-        //NSLog(@"Time: %f", dur);
         [self saveAndShowSession:_recorder.session];
     }
 }
-
 
 - (IBAction)switchGhostMode:(id)sender {
     _ghostModeButton.selected = !_ghostModeButton.selected;
@@ -1055,13 +1057,12 @@ replacementString:(NSString *)string{
 
 -(void)uploadPhoto {
 
-    [self ScrollToHomeView];
+    //[self ScrollToHomeView];
     
     //Show Loader
     [[NSNotificationCenter defaultCenter] postNotificationName:@"show_loader" object:self];
     
     if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
-        //NSLog(@"Version: %f", NSFoundationVersionNumber);
         
     } else{
      
@@ -1077,7 +1078,6 @@ replacementString:(NSString *)string{
     UIImage *myNewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
-
     UIImage *finalImage = myNewImage;
     
     finalImage = resizeDasPic(finalImage);
@@ -1087,28 +1087,15 @@ replacementString:(NSString *)string{
     // Upload image******************************************
 
     //NSData *imageData = UIImagePNGRepresentation(finalImage);
-    NSData *imageData = UIImageJPEGRepresentation(finalImage, 0.9875);
+    NSData *imageData = UIImageJPEGRepresentation(finalImage, 0.994399993);
     [self uploadToS3:imageData];
 
     [self.filterSwitcherView setFilters:nil];
-    //NSLog(@"Here: 2");
-
 }
-
-//UIImage* ResizePhoto(UIImage *image, CGFloat width, CGFloat height) {
-//
-//    CGSize size = CGSizeMake(width, height);
-//    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
-//    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
-//    image = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-//    return image;
-//}
-
 
 UIImage* resizeDasPic(UIImage *image) {
     
-    float heightFactor = 960/image.size.height;
+    float heightFactor = 1200/image.size.height;
     CGSize size = CGSizeApplyAffineTransform(image.size, CGAffineTransformMakeScale(heightFactor, heightFactor));
     
     UIGraphicsBeginImageContext(size);
@@ -1158,7 +1145,6 @@ UIImage* resizeDasPic(UIImage *image) {
 
         if (task.error) {
 
-            //NSLog(@"AWS ERROR: %@", task.error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             //Hide Loader
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
@@ -1169,10 +1155,8 @@ UIImage* resizeDasPic(UIImage *image) {
 
         else {
 
-            //NSLog(@"AWS URL: %@", _awsPicUrl);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [self uploadToParse];
-            //NSLog(@"Here: 4");
             [ProgressHUD dismiss];
             //Hide Loader
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hide_loader" object:self];
@@ -1201,7 +1185,7 @@ UIImage* resizeDasPic(UIImage *image) {
     }
     
     [userPhoto setObject:@"photo" forKey:@"postType"];
-    [userPhoto setObject:@"pending" forKey:@"postStatus"];
+    [userPhoto setObject:@"approved" forKey:@"postStatus"];
     [userPhoto setObject:userSchool forKey:@"userSchool"];
     [userPhoto setObject:schoolId forKey:@"userSchoolId"];
     if (self.currentUser != nil) {
@@ -1236,7 +1220,6 @@ UIImage* resizeDasPic(UIImage *image) {
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"askToEnablePushV1.0"] isEqualToString:@"YES"]) {
         
     } else {
-        
         [self performSelector:@selector(showAlert) withObject:nil afterDelay:0.2];
     }
 }
@@ -1247,7 +1230,7 @@ UIImage* resizeDasPic(UIImage *image) {
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     //NSString *school = [[NSUserDefaults standardUserDefaults] objectForKey:@"userSchool"];
-    NSString *message = [NSString stringWithFormat:@"Want to get notified when your post is published?"];
+    NSString *message = [NSString stringWithFormat:@"Want to get notified about your post?"];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable notifications" message:message delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Yeah", nil];
     [alertView show];
@@ -1265,18 +1248,18 @@ UIImage* resizeDasPic(UIImage *image) {
             
         } else {
             
-            [self askToEnablePush];
+            //[self askToEnablePush];
+            
+            AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appD registerUserForOneSignalPushNotifications];
         }
     }
 }
 
--(void)askToEnablePush {
-    
-    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appD askUserToEnablePushInAppDelgate];
-    
-}
-
+//-(void)askToEnablePush {
+//    AppDelegate *appD = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    [appD askUserToEnablePushInAppDelgate];
+//}
 
 -(void)doThis: (UILongPressGestureRecognizer *)recognizer {
     
@@ -1316,6 +1299,7 @@ UIImage* resizeDasPic(UIImage *image) {
                 
                 [self showNoInternetError];
             }
+            
         } else {
             
             self.currentUser = object;
@@ -1323,13 +1307,23 @@ UIImage* resizeDasPic(UIImage *image) {
             NSString *userSchool = [object objectForKey:@"userSchool"];
             NSString *userStatus = [object objectForKey:@"userStatus"];
             NSString *universityStatus = [object objectForKey:@"universityStatus"];
+            NSNumber *userRunCount = [object objectForKey:@"runCount"];
             [[NSUserDefaults standardUserDefaults] setObject:userSchool forKey:@"userSchool"];
             [[NSUserDefaults standardUserDefaults] setObject:userStatus forKey:@"userStatus"];
             [[NSUserDefaults standardUserDefaults] setObject:universityStatus forKey:@"universityStatus"];
+            [[NSUserDefaults standardUserDefaults] setObject:userRunCount forKey:@"userRunCount"];
+            
+            int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userRunCount"] intValue];
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:i+1] forKey:@"userRunCount"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+            [appDelegate setOneSignalTag];
+            [appDelegate saveOneSignalPlayerId:self.currentUser];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"justReloadTheTable" object:self];
-            [self.currentUser incrementKey:@"runCount"];
-            [self.currentUser saveEventually];
+            //[self.currentUser incrementKey:@"runCount"];
+            //[self.currentUser saveEventually];
         }
     }];
 }

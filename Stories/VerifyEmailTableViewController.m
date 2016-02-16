@@ -190,7 +190,6 @@
             return;
     } else {
         
-        
         [self incrementSchoolUserCount];
         [[NSUserDefaults standardUserDefaults] setObject:self.userschool forKey:@"userSchool"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -239,7 +238,7 @@
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
                             [self.emailTextfield resignFirstResponder];
-                            NSString *userObjectId = user.objectId;
+                            //NSString *userObjectId = user.objectId;
                             
                             CameraViewController *cvc = [self.storyboard instantiateViewControllerWithIdentifier:@"Camera"];
                             cvc.currentUser = user;

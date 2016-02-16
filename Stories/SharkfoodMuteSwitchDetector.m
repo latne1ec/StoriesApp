@@ -120,16 +120,14 @@ void SharkfoodSoundMuteNotificationCompletionProc(SystemSoundID  ssID,void* clie
 
 -(void)complete {
     
-    NSLog(@"Called");
     self.isPlaying = NO;
     NSTimeInterval elapsed = [NSDate timeIntervalSinceReferenceDate] - self.interval;
-    BOOL isMute = elapsed < 0.1; // Should have been 0.5 sec, but it seems to return much faster (0.3something)
+    BOOL isMute = elapsed < 0.05; // Should have been 0.5 sec, but it seems to return much faster (0.3something)
     if (self.isMute != isMute || self.forceEmit) {
 
         self.forceEmit = NO;
         _isMute = isMute;
         if (self.silentNotify)
-        NSLog(@"Setting notif");
         self.silentNotify(isMute);
         
     }

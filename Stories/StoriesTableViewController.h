@@ -41,6 +41,10 @@
 @property (nonatomic, strong) PFObject *university;
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
+@property (strong, nonatomic) IBOutlet UILabel *subtitleLabel;
+
+
+@property (nonatomic) BOOL disableInteractivePlayerTransitioning;
 
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapp;
