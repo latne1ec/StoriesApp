@@ -13,7 +13,7 @@
 #import <Parse/Parse.h>
 
 
-@interface CameraViewController : UIViewController <SCRecorderDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, SCRecorderToolsViewDelegate, UIAlertViewDelegate>
+@interface CameraViewController : UIViewController <SCRecorderDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, SCRecorderToolsViewDelegate, UIAlertViewDelegate, UITextViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *recordView;
 @property (weak, nonatomic) IBOutlet UIButton *stopButton;
@@ -41,6 +41,7 @@
 @property (nonatomic, strong) UIImage *selectedImage;
 @property (nonatomic, strong) UIView *photoOverlayView;
 @property (nonatomic, strong) UITextField *caption;
+//@property (nonatomic, strong) UITextView *caption;
 @property (assign, nonatomic) AVCaptureDevicePosition device;
 @property (strong, nonatomic) IBOutlet SCSwipeableFilterView *filterSwitcherView;
 @property (nonatomic, strong) UIButton *uploadPhotoButton;

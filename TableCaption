@@ -1,0 +1,60 @@
+-(void)addSubtitle {
+NSLog(@"add sub");
+HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
+self.subtitleLabel = [[UILabel alloc] init];
+
+self.subtitleLabel.frame = CGRectMake(0,0, cell.homeStoryImage.frame.size.width-1.8, 6);
+[self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Bold" size:3.62]];
+
+//self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.50];
+self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.98];
+self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
+
+[cell.homeStoryImage addSubview:self.subtitleLabel];
+self.subtitleLabel.hidden = YES;
+
+}
+
+-(void)addCaption {
+
+HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
+CGFloat yOrigin = [[self.home objectForKey:@"capLocY"] floatValue];
+CGFloat xOrigin = [[self.home objectForKey:@"capLocX"] floatValue];
+float height = cell.homeStoryImage.frame.size.height;
+float width = cell.homeStoryImage.frame.size.width;
+
+CGRect frame = self.subtitleLabel.frame;
+frame.origin.x = xOrigin*width;
+frame.origin.y = yOrigin*height;
+frame.size.height = 3.62;
+if ([[self.home objectForKey:@"contentCaption"] length] > 25) {
+frame.size.height = 18;
+self.subtitleLabel.numberOfLines = 2;
+}
+
+if (frame.origin.y == 0) {
+
+} else {
+
+self.subtitleLabel.frame = frame;
+
+self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
+
+if ([[self.home objectForKey:@"contentCaption"] length] > 20) {
+self.subtitleLabel.textAlignment = NSTextAlignmentLeft;
+}
+
+self.subtitleLabel.text = [self.home objectForKey:@"contentCaption"];
+
+if ([[self.home objectForKey:@"contentCaption"] length] > 0) {
+
+self.subtitleLabel.hidden = NO;
+[cell.homeStoryImage bringSubviewToFront:self.subtitleLabel];
+
+} else {
+self.subtitleLabel.hidden = YES;
+}
+}
+}

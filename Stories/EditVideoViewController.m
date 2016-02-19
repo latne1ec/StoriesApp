@@ -17,6 +17,11 @@
 @property (nonatomic, strong) YZSwipeBetweenViewController *yzBaby;
 @property (nonatomic) float keyboardOriginY;
 @property (nonatomic, strong) AppDelegate *appDelegate;
+@property (nonatomic, strong) NSTimer *timer;
+
+
+@property (nonatomic) CGRect newFrame;
+
 
 @end
 
@@ -51,9 +56,9 @@
         
         self.filterSwitcherView.filters = @[
                                             emptyFilter,
+                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectFade"],
                                             [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"a_filter" withExtension:@"cisf"]],
-                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"yellow6" withExtension:@"cisf"]],
-                                            [SCFilter filterWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"purp5" withExtension:@"cisf"]],
+                                            [SCFilter filterWithCIFilterName:@"CIPhotoEffectTonal"],
                                             ];
 
         _player.SCImageView = self.filterSwitcherView;
@@ -85,7 +90,7 @@
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] init];
     longPress.delegate = self;
-    longPress.minimumPressDuration = 0.05;
+    longPress.minimumPressDuration = 0.01;
     [longPress addTarget:self action:@selector(makeButtonBounce:)];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
@@ -95,15 +100,15 @@
     
     UIView *overlayView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame)-50, CGRectGetWidth(self.view.frame), 50)];
     [overlayView setBackgroundColor:[UIColor clearColor]];
-    [self.view addSubview:overlayView];
+    //[self.view addSubview:overlayView];
 
-    self.uploadPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(overlayView.frame)-57, -5, 44, 44)];
+    self.uploadPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.view.frame)-57, CGRectGetHeight(self.view.frame)-56, 44, 44)];
     [self.uploadPhotoButton setImage:[UIImage imageNamed:@"addDos"] forState:UIControlStateNormal];
     //[self.uploadPhotoButton addTarget:self action:@selector(saveToCameraRoll) forControlEvents:UIControlEventTouchUpInside];
     
     [self.uploadPhotoButton addGestureRecognizer:longPress];
     
-    [overlayView addSubview:self.uploadPhotoButton];
+    [self.view addSubview:self.uploadPhotoButton];
     
     UITapGestureRecognizer *imageViewTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped:)];
     imageViewTap.delegate = (id) self;
@@ -117,12 +122,21 @@
     
     //NSLog(@"Duraition: %f", CMTimeGetSeconds(_recordSession.duration));
     
-    
+    self.timer = [NSTimer timerWithTimeInterval:0.50 target:self selector:@selector(playTheVideo) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 
     [self bounce];
+    [_player play];
+    [self performSelector:@selector(playTheVideo) withObject:nil afterDelay:0.5];
+
+}
+
+-(void)playTheVideo {
+    
+    [_player play];
 }
 
 - (IBAction)bounce {
@@ -175,51 +189,53 @@
 
 ///********************************************************************
 /////PHOTO CAPTION
+
 - (void)imageViewTapped:(UITapGestureRecognizer *)recognizer {
+    
+    caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    if([caption isFirstResponder]){
+        [caption resignFirstResponder];
+        caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
         
-        //NSLog(@"Tap tap");
-        caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        if([caption isFirstResponder]){
-            [caption resignFirstResponder];
-            caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
-            
-        } else {
-            if (caption.alpha == 1) {
-            }
-            else {
-                [self initCaption];
-                [caption becomeFirstResponder];
-                caption.alpha = 1;
-            }
+    } else {
+        if (caption.alpha == 1) {
         }
+        else {
+            [self initCaption];
+            [caption becomeFirstResponder];
+            // caption.alpha = 1.0;
+            [UIView animateKeyframesWithDuration:0.0824 delay:0.028 options:0 animations:^{
+                caption.alpha = 1.0;
+            } completion:^(BOOL finished) {
+            }];
+        }
+    }
 }
+
 - (void) initCaption{
     
     caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
-    
-    // Caption
-    caption = [[UITextField alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height/2+80,self.view.frame.size.width,40)];
-    caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.585];
+    caption = [[UITextField alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height/2,self.view.frame.size.width,38)];
+    caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.575];
     caption.textAlignment = NSTextAlignmentCenter;
     caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     caption.textColor = [UIColor whiteColor];
     caption.keyboardAppearance = UIKeyboardAppearanceDefault;
-    caption.alpha = 0;
-    caption.tintColor = [UIColor whiteColor];
+    caption.alpha = 0.0;
     caption.delegate = self;
     caption.font = [UIFont fontWithName:@"AvenirNext-Medium" size:16.5];
     [self.view addSubview:caption];
+    
 }
 
 - (void) captionDrag: (UIGestureRecognizer*)gestureRecognizer{
     
     CGPoint translation = [gestureRecognizer locationInView:self.view];
     
-    if(translation.y < caption.frame.size.height/2+280){
-        //NSLog(@"HEre;");
-        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  caption.frame.size.height/2+280);
+    if(translation.y < caption.frame.size.height/2){
+        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  caption.frame.size.height/2);
     } else if(self.view.frame.size.height < translation.y + caption.frame.size.height/2){
         caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  self.view.frame.size.height - caption.frame.size.height/2);
     } else {
@@ -230,10 +246,9 @@
 -(void)cancelTextCaption {
     
     caption.alpha = 0.0;
-    
     caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
-    
     [self.caption.text isEqualToString:@""];
+    self.caption.text = @"";
     [caption resignFirstResponder];
     
 }
@@ -250,12 +265,7 @@ replacementString:(NSString *)string{
 
 -(void)textFieldDidBeginEditing:(UITextView *)textField{
     
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.15];
-    [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:caption cache:YES];
-    caption.frame = CGRectMake(0,self.view.frame.size.height/2+31,self.view.frame.size.width,40);
-    [UIView commitAnimations];
-    
+    [self setKeyboardFrame];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField*)textField; {
@@ -267,13 +277,27 @@ replacementString:(NSString *)string{
 
 -(void)setKeyboardFrame {
     
-    [UIView animateWithDuration:0.06 animations:^{
-        caption.frame = CGRectMake(0,_keyboardOriginY-42,self.view.frame.size.width,40);
-    } completion:^(BOOL finished) {
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"keyboardOriginY"]) {
+        //doesnt exist yet
+        if (_keyboardOriginY == 0) {
+            //NSLog(@"here");
+        } else {
+            //NSLog(@"here 2");
+            [UIView animateWithDuration:0.125 animations:^{
+                caption.frame = CGRectMake(0,_keyboardOriginY-40,self.view.frame.size.width,38);
+            } completion:^(BOOL finished) {
+            }];
+        }
         
-    }];
+    } else {
+        
+        float kbf = [[[NSUserDefaults standardUserDefaults] objectForKey:@"keyboardOriginY"] floatValue];
+        [UIView animateWithDuration:0.125 animations:^{
+            caption.frame = CGRectMake(0,kbf-40,self.view.frame.size.width,38);
+        } completion:^(BOOL finished) {
+        }];
+    }
 }
-
 
 -(void)keyboardOnScreen:(NSNotification *)notification {
     
@@ -283,9 +307,15 @@ replacementString:(NSString *)string{
     CGRect rawFrame      = [value CGRectValue];
     CGRect keyboardFrame = [self.view convertRect:rawFrame fromView:nil];
     
-    //NSLog(@"keyboard %f and %f", keyboardFrame.origin.y-40, keyboardFrame.origin.x);
-    
     _keyboardOriginY = keyboardFrame.origin.y;
+    
+    if (_keyboardOriginY == 0) {
+        
+    } else {
+        [[NSUserDefaults standardUserDefaults] setFloat:_keyboardOriginY forKey:@"keyboardOriginY"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     [self setKeyboardFrame];
 }
 
@@ -310,10 +340,13 @@ replacementString:(NSString *)string{
     [_player play];
 }
 
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.delegate enableScroll];
-    [_player pause];
+    [self.timer invalidate];
+    self.timer = nil;
+    //[_player pause];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -427,10 +460,11 @@ replacementString:(NSString *)string{
     
     
     int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"localUserScore"] intValue];
+    NSString *userObjectId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userObjectId"];
     
     NSString *randomId = [[NSUUID UUID] UUIDString];
     
-    NSString * uuidStr = [NSString stringWithFormat:@"%@-%d-%@", self.currentUser.objectId, i, randomId];
+    NSString * uuidStr = [NSString stringWithFormat:@"%@-%d-%@", userObjectId, i, randomId];
     
     NSString *textBody = @"posts/PIC_KEY.mp4";
     NSString* newString = [textBody stringByReplacingOccurrencesOfString:@"PIC_KEY" withString:uuidStr];
@@ -587,13 +621,16 @@ UIImage* ResizePhotoTwo(UIImage *image, CGFloat width, CGFloat height) {
     [userPhoto setObject:_awsPicUrl forKey:@"imageUrl"];
     
     float height = [[UIScreen mainScreen] bounds].size.height;
+    //float width = [[UIScreen mainScreen] bounds].size.width;
     
-    NSString *capLoc = [NSString stringWithFormat:@"%f", caption.frame.origin.y/height];
+    NSString *capLocY = [NSString stringWithFormat:@"%f", caption.frame.origin.y/height];
+    //NSString *capLocX = [NSString stringWithFormat:@"%f", caption.frame.origin.x/width];
     
     
     if ([self.caption.text length] >= 1) {
         [userPhoto setObject:caption.text forKey:@"contentCaption"];
-        [userPhoto setObject:capLoc forKey:@"captionLocation"];
+        [userPhoto setObject:capLocY forKey:@"captionLocation"];
+        //[userPhoto setObject:capLocX forKey:@"capLocX"];
     }
     [userPhoto setObject:@"approved" forKey:@"postStatus"];
     [userPhoto setObject:@"video" forKey:@"postType"];

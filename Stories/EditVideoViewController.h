@@ -23,7 +23,7 @@
 @end
 
 
-@interface EditVideoViewController : UIViewController <SCPlayerDelegate, SCAssetExportSessionDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate>
+@interface EditVideoViewController : UIViewController <SCPlayerDelegate, SCAssetExportSessionDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, UITextViewDelegate>
 
 @property(nonatomic,weak) IBOutlet id<EditVideoViewControllerDelegate> delegate;
 
@@ -33,6 +33,7 @@
 @property (weak, nonatomic) IBOutlet UIView *exportView;
 @property (weak, nonatomic) IBOutlet UIView *progressView;
 @property (nonatomic, strong) UITextField *caption;
+//@property (nonatomic, strong) UITextView *caption;
 
 //AWS
 @property (nonatomic, strong) AWSS3TransferManagerUploadRequest *uploadRequest;

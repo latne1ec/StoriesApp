@@ -11,8 +11,7 @@
 #import "ProgressHUD.h"
 #import "SCVideoPlayerView.h"
 #import "CERoundProgressView.h"
-
-
+#import "Stories-swift.h"
 
 @class ViewContentViewController;
 
@@ -52,7 +51,7 @@
 @property (nonatomic, strong) UIView *replayView;
 @property (nonatomic, strong) UIButton *replayButton;
 
-@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactor;
+@property (nonatomic, strong) Interactor *interactor;
 
 
 @property (weak, nonatomic) IBOutlet CERoundProgressView *progressView;

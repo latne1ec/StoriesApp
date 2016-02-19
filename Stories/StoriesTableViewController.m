@@ -21,7 +21,6 @@
 #import "MyPostsTableCell.h"
 
 
-
 @interface StoriesTableViewController ()  {
     
     CLLocationManager *locationManager;
@@ -44,6 +43,12 @@
 @property (nonatomic, strong) NSMutableArray *content;
 @property (nonatomic, strong) NSMutableArray *myPosts;
 @property (nonatomic, strong) SDWebImageManager *manager;
+
+@property (nonatomic, strong) Interactor *interactor;
+@property (nonatomic, strong) DismissAnimator *dismissAnimator;
+
+@property (nonatomic) BOOL finishedInvitingFriends;
+
 
 
 @end
@@ -71,8 +76,18 @@ bool uploadingPost;
     return UIStatusBarStyleDefault;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _finishedInvitingFriends = false;
+    
+    
+    self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    
+    self.interactor = [[Interactor alloc] init];
+    self.dismissAnimator = [[DismissAnimator alloc] init];
     
     self.manager = [[SDWebImageManager alloc] init];
     
@@ -185,7 +200,7 @@ bool uploadingPost;
 }
 
 -(void)hideLoader {
-    [self performSelector:@selector(queryForHomePic) withObject:nil afterDelay:0.10];
+    
     uploadingPost = false;
     self.tableView.allowsSelection = YES;
     HomeTableCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -194,8 +209,8 @@ bool uploadingPost;
     [self.indicator stopAnimating];
     self.tableView.allowsSelection = YES;
     [self.tableView reloadData];
-    self.subtitleLabel.hidden = YES;
-
+    //self.subtitleLabel.hidden = YES;
+    [self performSelector:@selector(queryForHomePic) withObject:nil afterDelay:0.164];
 }
 
 
@@ -207,6 +222,7 @@ bool uploadingPost;
 -(void)viewDidAppear:(BOOL)animated {
     
     [self.tableView reloadData];
+    
 }
 
 -(void)reloadDasTable {
@@ -252,12 +268,31 @@ bool uploadingPost;
     
     [super viewWillAppear:animated];
     
+    if (self.appDelegate.hasViewedStory) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    } else {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+    }
+    
+    if (_finishedInvitingFriends) {
+     
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+        _finishedInvitingFriends = false;
+    }
+    
+    
+    [self.navigationController.navigationBar setNeedsDisplay];
+    [self.navigationController.navigationBar setNeedsLayout];
+    
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBarHidden = NO;
     [self.navigationController setNavigationBarHidden:NO];
     [self.tableView reloadData];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
 }
+
 
 -(void)viewWillDisappear:(BOOL)animated {
     
@@ -369,7 +404,8 @@ bool uploadingPost;
                                              if (finished) {
                                                  cell.homeStoryImage.image = images;
                                                  cell.homeStoryImage.alpha = 0.96;
-                                                 [self addCaption];
+                                                  [self addCaption];
+                                                 
                                                  if ([self.home.objectId isEqualToString:lastSeenContentId]) {
                                                      
                                                      cell.homeStoryImage.alpha = 0.60;
@@ -430,19 +466,32 @@ bool uploadingPost;
         }
         
         else if (![userStatus isEqualToString:@"approved"]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Account pending" message:@"Check your email and activate your account to unlock. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Account pending" message:@"Check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
             [alert show];
             
         } else {
+
+            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+            [self performSelector:@selector(presentViewContentViewController) withObject:nil afterDelay:0.0];
             
-            HomeTableCell *cell = (HomeTableCell *) [tableView cellForRowAtIndexPath:indexPath];
-            self.transition.animatedView = cell.homeStoryImage;
-            ViewContentViewController *pmvc = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewContent"];
-            pmvc.modalPresentationStyle = UIModalPresentationCustom;
-            pmvc.transitioningDelegate = self;
-            [self presentViewController:pmvc animated:NO completion:nil];
+//            HomeTableCell *cell = (HomeTableCell *) [tableView cellForRowAtIndexPath:indexPath];
+//            self.transition.animatedView = cell.homeStoryImage;
+//            ViewContentViewController *pmvc = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewContent"];
+//            pmvc.modalPresentationStyle = UIModalPresentationCustom;
+//            pmvc.transitioningDelegate = self;
+//            [self presentViewController:pmvc animated:NO completion:nil];
         }
     }
+}
+
+-(void)presentViewContentViewController {
+    
+    ViewContentViewController *vcvc = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewContent"];
+    vcvc.modalPresentationStyle = UIModalPresentationCurrentContext;
+    vcvc.transitioningDelegate = self;
+    vcvc.interactor = self.interactor;
+    [self presentViewController:vcvc animated:NO completion:nil];
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -487,6 +536,8 @@ bool uploadingPost;
             
             self.home = object;
             [self.tableView reloadData];
+            //self.subtitleLabel.hidden = YES;
+            
             [self performSelector:@selector(endRefresh) withObject:nil afterDelay:0.650];
             
         } if (error) {
@@ -636,6 +687,8 @@ bool uploadingPost;
 
 - (IBAction)inviteButtonTapped:(id)sender {
     
+    _finishedInvitingFriends = true;
+    
     NSString *link = [[NSUserDefaults standardUserDefaults] objectForKey:@"appLink"];
     NSString* newString = [NSString stringWithFormat:@"%@", link];
     
@@ -667,16 +720,28 @@ bool uploadingPost;
 - (void)createTransition {
     self.transition = [[JTMaterialTransition alloc] initWithAnimatedView:self.presentControllerButton];
 }
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
-                                                                  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
-    self.transition.reverse = NO;
-    return self.transition;
-}
+//- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
+//                                                                  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+//    self.transition.reverse = NO;
+//    return self.transition;
+//}
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
     
-    self.transition.reverse = YES;
-    return self.transition;
+//    self.transition.reverse = YES;
+//    return self.transition;
+    
+    return self.dismissAnimator;
+    
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>) animator {
+    
+    if (self.interactor.hasStarted) {
+        return self.interactor;
+    } else {
+        return  nil;
+    }
 }
 
 -(void)addSubtitle {
@@ -694,7 +759,7 @@ bool uploadingPost;
     
     [cell.homeStoryImage addSubview:self.subtitleLabel];
     self.subtitleLabel.hidden = YES;
-
+    
 }
 
 -(void)addCaption {
@@ -720,6 +785,7 @@ bool uploadingPost;
         self.subtitleLabel.hidden = YES;
     }
 }
+
 
 -(void)getMyPosts {
     

@@ -37,7 +37,6 @@
                                 <connections>
                                     <outlet property="homeName" destination="1mO-oX-3Bc" id="oZ2-Kk-NOw"/>
                                     <outlet property="homeStoryImage" destination="R1U-9i-rS2" id="kIB-iz-8yE"/>
-                                    <segue destination="Djf-X4-j2I" kind="custom" id="exg-gO-x19"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Me" rowHeight="72" id="THp-QX-2QD" customClass="MyPostsTableCell">
@@ -629,11 +628,11 @@
                                 <rect key="frame" x="0.0" y="0.0" width="325" height="568"/>
                             </imageView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PtC-a7-lek" customClass="CERoundProgressView">
-                                <rect key="frame" x="11" y="11" width="16" height="16"/>
+                                <rect key="frame" x="11" y="11" width="17" height="17"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YgG-RD-hyq" customClass="CERoundProgressView">
-                                <rect key="frame" x="13" y="13" width="12" height="12"/>
+                                <rect key="frame" x="13" y="13" width="13" height="13"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <button opaque="NO" alpha="0.28000000000000003" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0bP-4G-BXn">
@@ -748,7 +747,4 @@
         <image name="blueBox.png" width="50" height="50"/>
         <image name="flag.png" width="40" height="40"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="exg-gO-x19"/>
-    </inferredMetricsTieBreakers>
 </document>

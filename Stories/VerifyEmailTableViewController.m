@@ -20,6 +20,7 @@
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSMutableArray *acceptableEmailAddress;
 @property (nonatomic, strong) PFObject *previouslyCreatedUser;
+@property (nonatomic, strong) PFObject *recoveryUser;
 
 @end
 
@@ -106,15 +107,20 @@
     [q getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         
         if (object == nil) {
-            //Email doesn't exists in database
+            //Email doesn't exist in database
             [self buttonTapped:self];//??
             
         } else {
             
             if ([[object objectForKey:@"hasLoggedIn"] isEqualToString:@"YES"]) {
                 //show some popup that says a user already exists for that email
+                
+                self.recoveryUser = object;
+                
                 [ProgressHUD dismiss];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bummer" message:@"That email address is already in use." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"That email address is already in use. If this email address belongs to you, tap the Resend link button to receive a verification email to reactivate your account." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Cancel", @"Resend link", nil];
+                alert.delegate = self;
+                alert.tag = 202;
                 [alert show];
                 
             } else {
@@ -126,9 +132,53 @@
     }];
 }
 
+-(void)resendActivationLinkAndAllowUserToEnter: (PFObject *)user {
+    
+    [ProgressHUD show:nil Interaction:NO];
+    NSString *emailAddress = [user objectForKey:@"emailAddress"];
+    NSString *userSchool = [user objectForKey:@"userSchool"];
+    NSString *parseUserObjectId = user.objectId;
+    
+    NSString *urlString = [NSString stringWithFormat:@"http://storiesss.com/verify.php?user_id=%@&email_address=%@&user_school=%@&recovery=true", parseUserObjectId, emailAddress, userSchool];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+    
+    [request setHTTPMethod:@"POST"];
+    NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            
+            [self tryMailgun:emailAddress :parseUserObjectId];
+            
+        } else {
+            
+            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            //NSLog(@"Response: %@", responseString);
+            
+            [ProgressHUD dismiss];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //show a popup to check email to reactivate
+                
+                [ProgressHUD dismiss];
+                self.emailTextfield.text = @"";
+                NSString *message = @"An activation link has been sent to your email address. Check your email and click the link to reactivate your account. Check your spam folder if you didn't receive the email in your primary inbox. Once you have reactivated your account, re-enter your email address and tap submit.";
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email sent" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+                [alert show];
+                
+            });
+        }
+    }];
+    
+    [postDataTask resume];
+}
+
+
 -(void)allowUserToEnter {
     
-    NSLog(@"User: %@", self.previouslyCreatedUser);
+    //NSLog(@"User: %@", self.previouslyCreatedUser);
     
     NSString *userSchool = [self.previouslyCreatedUser objectForKey:@"userSchool"];
     NSString *userSchoolId = [self.previouslyCreatedUser objectForKey:@"userSchoolId"];
@@ -215,9 +265,8 @@
             } else {
                 
                 NSString *parseUserObjectId = user.objectId;
-
                 
-                NSString *urlString = [NSString stringWithFormat:@"http://storiesss.com/verify.php?user_id=%@&email_address=%@&user_school=%@", parseUserObjectId, emailAddress, self.userschool];
+                NSString *urlString = [NSString stringWithFormat:@"http://storiesss.com/verify.php?user_id=%@&email_address=%@&user_school=%@&recovery=false", parseUserObjectId, emailAddress, self.userschool];
                 NSURL *url = [NSURL URLWithString:urlString];
                 
                 NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
@@ -231,7 +280,7 @@
                         
                     } else {
                        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                        NSLog(@"Response: %@", responseString);
+                        //NSLog(@"Response: %@", responseString);
                         
                         [ProgressHUD dismiss];
                         
@@ -281,7 +330,7 @@
 -(void)showAlert {
     
     [ProgressHUD dismiss];
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Check your email and activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Email sent" message:@"An activation link has been sent to your email address. Check your email and click the link to activate your account. Check your spam folder if you didn't receive the email in your primary inbox." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"ok", nil];
     [alertView show];
 
     alertView.tag = 101;
@@ -296,6 +345,13 @@
         if (buttonIndex == 0) {
             
             [self dismissViewControllerAnimated:NO completion:nil];
+        }
+    }
+    
+    if (alertView.tag == 202) {
+        if (buttonIndex == 1) {
+            //Resend link button
+            [self resendActivationLinkAndAllowUserToEnter:self.recoveryUser];
         }
     }
 }

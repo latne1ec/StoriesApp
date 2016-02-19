@@ -16,14 +16,15 @@
 @interface AppDelegate ()
 
 @property (strong, nonatomic) OneSignal *oneSignal;
-
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    _accepted = false; 
+    _accepted = false;
+    
+    self.hasViewedStory = FALSE;
 
     [Parse setApplicationId:@"UaGnyAmcvVo2aDaCaHf0bnNm0c5IyjyiSCSip75i"
                   clientKey:@"CR1zqHWJ8FdsZWgf43IjSJbxuckMT83UZRCS7Kba"];
@@ -47,6 +48,7 @@
     
     [self.oneSignal enableInAppAlertNotification:true];
     
+    
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"hasRanApp"] isEqualToString:@"YES"]) {        
 
     } else {
@@ -68,6 +70,7 @@
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [appDelegate.swipeBetweenVC scrollToViewControllerAtIndex:1 animated:NO];
 
+
     [self.window makeKeyAndVisible];
     
     AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1
@@ -84,8 +87,9 @@
     
     [self.oneSignal IdsAvailable:^(NSString* userId, NSString* pushToken) {
         //NSLog(@"UserId:%@", userId);
-        if (pushToken != nil)
-            NSLog(@"pushToken");
+        if (pushToken != nil) {
+            //NSLog(@"pushToken");
+        }
     }];
 
     //NSLog(@"set One Signal tag");
@@ -140,7 +144,7 @@
     
     self.swipeBetweenVC.viewControllers = @[navCon2, navCon1];
     self.swipeBetweenVC.initialViewControllerIndex = (NSInteger)self.swipeBetweenVC.viewControllers.count/2;
-    
+        
 }
 
 //-(void)askUserToEnablePushInAppDelgate {

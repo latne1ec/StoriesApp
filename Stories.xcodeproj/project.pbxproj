@@ -46,6 +46,11 @@
 		208017601C48545500600365 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2080175F1C48545500600365 /* Reachability.m */; };
 		208017621C4886C000600365 /* camBlueNew@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 208017611C4886C000600365 /* camBlueNew@2x.png */; };
 		208017661C48BB3900600365 /* blueBox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 208017651C48BB3900600365 /* blueBox@2x.png */; };
+		2089D4EC1C75042000079CC4 /* TextViewCaption in Resources */ = {isa = PBXBuildFile; fileRef = 2089D4EB1C75042000079CC4 /* TextViewCaption */; };
+		2089D4F01C7520D600079CC4 /* transferCustom.cisf in Resources */ = {isa = PBXBuildFile; fileRef = 2089D4EF1C7520D600079CC4 /* transferCustom.cisf */; };
+		2089D4F21C762D6700079CC4 /* TableCaption in Resources */ = {isa = PBXBuildFile; fileRef = 2089D4F11C762D6700079CC4 /* TableCaption */; };
+		2089D4F41C76340F00079CC4 /* BigCaption in Resources */ = {isa = PBXBuildFile; fileRef = 2089D4F31C76340F00079CC4 /* BigCaption */; };
+		2089D4F61C76350500079CC4 /* BigCaptionCamera in Resources */ = {isa = PBXBuildFile; fileRef = 2089D4F51C76350500079CC4 /* BigCaptionCamera */; };
 		20D7DC3E1C3EDC04002099A8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DC3D1C3EDC04002099A8 /* main.m */; };
 		20D7DC411C3EDC04002099A8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DC401C3EDC04002099A8 /* AppDelegate.m */; };
 		20D7DC471C3EDC04002099A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DC451C3EDC04002099A8 /* Main.storyboard */; };
@@ -187,13 +192,9 @@
 		20D7DE8F1C46CBAE002099A8 /* UnlockTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7DE8E1C46CBAE002099A8 /* UnlockTableCell.m */; };
 		20D7DE911C470343002099A8 /* black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DE901C470343002099A8 /* black@2x.png */; };
 		20D7DE931C472348002099A8 /* camPurp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D7DE921C472348002099A8 /* camPurp@2x.png */; };
-		20D81FA91C72359F000A1CAF /* MiniToLargeViewAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FA61C72359F000A1CAF /* MiniToLargeViewAnimator.m */; };
-		20D81FAA1C72359F000A1CAF /* MiniToLargeViewInteractive.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FA81C72359F000A1CAF /* MiniToLargeViewInteractive.m */; };
-		20D81FAD1C7237B5000A1CAF /* BaseAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FAC1C7237B5000A1CAF /* BaseAnimator.m */; };
-		20D81FB01C723830000A1CAF /* DummyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FAF1C723830000A1CAF /* DummyView.m */; };
 		20D81FB31C725748000A1CAF /* MyPostsTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FB21C725748000A1CAF /* MyPostsTableCell.m */; };
-		20D81FB61C72FB77000A1CAF /* Interactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FB51C72FB77000A1CAF /* Interactor.m */; };
-		20D81FB91C72FC08000A1CAF /* DismissAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FB81C72FC08000A1CAF /* DismissAnimator.m */; };
+		20D81FBD1C72FDB0000A1CAF /* DismissAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FBB1C72FDB0000A1CAF /* DismissAnimator.swift */; };
+		20D81FBE1C72FDB0000A1CAF /* Interactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D81FBC1C72FDB0000A1CAF /* Interactor.swift */; };
 		20F553031C4DBCD7001CA4C2 /* iphone4Black.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553021C4DBCD7001CA4C2 /* iphone4Black.png */; };
 		20F553051C4DBDC5001CA4C2 /* 6plusBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553041C4DBDC5001CA4C2 /* 6plusBlack.png */; };
 		20F553071C4E98B6001CA4C2 /* flag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F553061C4E98B6001CA4C2 /* flag@2x.png */; };
@@ -247,6 +248,11 @@
 		2080175F1C48545500600365 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		208017611C4886C000600365 /* camBlueNew@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camBlueNew@2x.png"; sourceTree = "<group>"; };
 		208017651C48BB3900600365 /* blueBox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueBox@2x.png"; sourceTree = "<group>"; };
+		2089D4EB1C75042000079CC4 /* TextViewCaption */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextViewCaption; sourceTree = "<group>"; };
+		2089D4EF1C7520D600079CC4 /* transferCustom.cisf */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = transferCustom.cisf; sourceTree = "<group>"; };
+		2089D4F11C762D6700079CC4 /* TableCaption */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TableCaption; path = ../TableCaption; sourceTree = "<group>"; };
+		2089D4F31C76340F00079CC4 /* BigCaption */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BigCaption; sourceTree = "<group>"; };
+		2089D4F51C76350500079CC4 /* BigCaptionCamera */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BigCaptionCamera; sourceTree = "<group>"; };
 		20D7DC391C3EDC04002099A8 /* Stories.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stories.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		20D7DC3D1C3EDC04002099A8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		20D7DC3F1C3EDC04002099A8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -478,20 +484,11 @@
 		20D7DE8E1C46CBAE002099A8 /* UnlockTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnlockTableCell.m; sourceTree = "<group>"; };
 		20D7DE901C470343002099A8 /* black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black@2x.png"; sourceTree = "<group>"; };
 		20D7DE921C472348002099A8 /* camPurp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camPurp@2x.png"; sourceTree = "<group>"; };
-		20D81FA51C72359F000A1CAF /* MiniToLargeViewAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiniToLargeViewAnimator.h; sourceTree = "<group>"; };
-		20D81FA61C72359F000A1CAF /* MiniToLargeViewAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiniToLargeViewAnimator.m; sourceTree = "<group>"; };
-		20D81FA71C72359F000A1CAF /* MiniToLargeViewInteractive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiniToLargeViewInteractive.h; sourceTree = "<group>"; };
-		20D81FA81C72359F000A1CAF /* MiniToLargeViewInteractive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiniToLargeViewInteractive.m; sourceTree = "<group>"; };
-		20D81FAB1C7237B5000A1CAF /* BaseAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseAnimator.h; sourceTree = "<group>"; };
-		20D81FAC1C7237B5000A1CAF /* BaseAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseAnimator.m; sourceTree = "<group>"; };
-		20D81FAE1C723830000A1CAF /* DummyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummyView.h; sourceTree = "<group>"; };
-		20D81FAF1C723830000A1CAF /* DummyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DummyView.m; sourceTree = "<group>"; };
 		20D81FB11C725748000A1CAF /* MyPostsTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPostsTableCell.h; sourceTree = "<group>"; };
 		20D81FB21C725748000A1CAF /* MyPostsTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPostsTableCell.m; sourceTree = "<group>"; };
-		20D81FB41C72FB77000A1CAF /* Interactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interactor.h; sourceTree = "<group>"; };
-		20D81FB51C72FB77000A1CAF /* Interactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Interactor.m; sourceTree = "<group>"; };
-		20D81FB71C72FC08000A1CAF /* DismissAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DismissAnimator.h; sourceTree = "<group>"; };
-		20D81FB81C72FC08000A1CAF /* DismissAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DismissAnimator.m; sourceTree = "<group>"; };
+		20D81FBA1C72FDAF000A1CAF /* Stories-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stories-Bridging-Header.h"; sourceTree = "<group>"; };
+		20D81FBB1C72FDB0000A1CAF /* DismissAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissAnimator.swift; sourceTree = "<group>"; };
+		20D81FBC1C72FDB0000A1CAF /* Interactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interactor.swift; sourceTree = "<group>"; };
 		20F553021C4DBCD7001CA4C2 /* iphone4Black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone4Black.png; sourceTree = "<group>"; };
 		20F553041C4DBDC5001CA4C2 /* 6plusBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 6plusBlack.png; sourceTree = "<group>"; };
 		20F553061C4E98B6001CA4C2 /* flag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flag@2x.png"; sourceTree = "<group>"; };
@@ -612,6 +609,25 @@
 			name = Misc;
 			sourceTree = "<group>";
 		};
+		205C23B41C73DA40006A5335 /* MuteSwitch */ = {
+			isa = PBXGroup;
+			children = (
+				2052E5621C554DD000B6CF60 /* mute.caf */,
+				2052E5631C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.h */,
+				2052E5641C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.m */,
+			);
+			name = MuteSwitch;
+			sourceTree = "<group>";
+		};
+		205C23B51C73DA4A006A5335 /* DismissVCAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				20D81FBB1C72FDB0000A1CAF /* DismissAnimator.swift */,
+				20D81FBC1C72FDB0000A1CAF /* Interactor.swift */,
+			);
+			name = DismissVCAnimation;
+			sourceTree = "<group>";
+		};
 		208017631C48943F00600365 /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
@@ -686,17 +702,8 @@
 		20D7DC531C3EDD95002099A8 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				20D81FAE1C723830000A1CAF /* DummyView.h */,
-				20D81FAF1C723830000A1CAF /* DummyView.m */,
-				20D81FAB1C7237B5000A1CAF /* BaseAnimator.h */,
-				20D81FAC1C7237B5000A1CAF /* BaseAnimator.m */,
-				20D81FA51C72359F000A1CAF /* MiniToLargeViewAnimator.h */,
-				20D81FA61C72359F000A1CAF /* MiniToLargeViewAnimator.m */,
-				20D81FA71C72359F000A1CAF /* MiniToLargeViewInteractive.h */,
-				20D81FA81C72359F000A1CAF /* MiniToLargeViewInteractive.m */,
-				2052E5621C554DD000B6CF60 /* mute.caf */,
-				2052E5631C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.h */,
-				2052E5641C554DD000B6CF60 /* SharkfoodMuteSwitchDetector.m */,
+				205C23B51C73DA4A006A5335 /* DismissVCAnimation */,
+				205C23B41C73DA40006A5335 /* MuteSwitch */,
 				208017631C48943F00600365 /* Reachability */,
 				20D7DE7D1C45E9A3002099A8 /* CERoundProgressView */,
 				20D7DD951C419C1E002099A8 /* JTMaterial */,
@@ -711,6 +718,7 @@
 				20D7DD151C418D0B002099A8 /* ProgressHUD */,
 				20D7DCFC1C4166EE002099A8 /* SwipeViews */,
 				20D7DCCB1C416337002099A8 /* Camera */,
+				20D81FBA1C72FDAF000A1CAF /* Stories-Bridging-Header.h */,
 			);
 			name = Libs;
 			path = Stories;
@@ -1012,10 +1020,7 @@
 				20D81FB21C725748000A1CAF /* MyPostsTableCell.m */,
 				20D7DD011C418C3B002099A8 /* StoriesTableViewController.h */,
 				20D7DD021C418C3B002099A8 /* StoriesTableViewController.m */,
-				20D81FB71C72FC08000A1CAF /* DismissAnimator.h */,
-				20D81FB81C72FC08000A1CAF /* DismissAnimator.m */,
-				20D81FB41C72FB77000A1CAF /* Interactor.h */,
-				20D81FB51C72FB77000A1CAF /* Interactor.m */,
+				2089D4F11C762D6700079CC4 /* TableCaption */,
 			);
 			name = Table;
 			sourceTree = "<group>";
@@ -1023,8 +1028,10 @@
 		20D7DD981C41A64D002099A8 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				2089D4EB1C75042000079CC4 /* TextViewCaption */,
 				20D7DDE91C436A6F002099A8 /* CameraViewController.h */,
 				20D7DDEA1C436A6F002099A8 /* CameraViewController.m */,
+				2089D4F51C76350500079CC4 /* BigCaptionCamera */,
 				20439D4E1C61AD4600C56E90 /* Camera */,
 				20D7DE501C436F57002099A8 /* EditVideoViewController.h */,
 				20D7DE511C436F57002099A8 /* EditVideoViewController.m */,
@@ -1038,6 +1045,7 @@
 				2033F5FC1C6EEC490068D81F /* Misc */,
 				20D7DD8F1C4195C9002099A8 /* ViewContentViewController.h */,
 				20D7DD901C4195C9002099A8 /* ViewContentViewController.m */,
+				2089D4F31C76340F00079CC4 /* BigCaption */,
 			);
 			name = "View Content";
 			sourceTree = "<group>";
@@ -1069,6 +1077,7 @@
 		20F8D66C1C679E450077F4AB /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				2089D4EF1C7520D600079CC4 /* transferCustom.cisf */,
 				2033F6011C6EF43B0068D81F /* yellow6.cisf */,
 				2033F5FA1C6EE1D30068D81F /* purp6.cisf */,
 				2033F5EC1C6EB7420068D81F /* transfer.cisf */,
@@ -1160,12 +1169,15 @@
 				20D7DC4C1C3EDC04002099A8 /* LaunchScreen.storyboard in Resources */,
 				2033F5D31C6E6BB00068D81F /* yellow3.cisf in Resources */,
 				2052E5261C502A1300B6CF60 /* Default-568h@2x.png in Resources */,
+				2089D4F61C76350500079CC4 /* BigCaptionCamera in Resources */,
 				20D7DD291C418D73002099A8 /* TSMessagesDefaultDesign.json in Resources */,
 				206641331C4C455C008AC9AA /* OldVideo in Resources */,
 				20F5530D1C4EF73B001CA4C2 /* OldAppDelegate in Resources */,
 				2033F6021C6EF43B0068D81F /* yellow6.cisf in Resources */,
+				2089D4EC1C75042000079CC4 /* TextViewCaption in Resources */,
 				2033F5ED1C6EB7420068D81F /* transfer.cisf in Resources */,
 				2080175A1C484D5F00600365 /* blackScreen6@2x.png in Resources */,
+				2089D4F21C762D6700079CC4 /* TableCaption in Resources */,
 				2033F4971C67A2EE0068D81F /* flashTwo@2x.png in Resources */,
 				2033F5CF1C6E6A850068D81F /* yellow2.cisf in Resources */,
 				2033F5DD1C6E6FF60068D81F /* yellow5.cisf in Resources */,
@@ -1201,6 +1213,7 @@
 				20F553461C50097A001CA4C2 /* cancelNew@2x.png in Resources */,
 				2033F5831C6CE0A50068D81F /* iPhone5@2x.png in Resources */,
 				20F553071C4E98B6001CA4C2 /* flag@2x.png in Resources */,
+				2089D4F41C76340F00079CC4 /* BigCaption in Resources */,
 				20F8D66B1C66CF710077F4AB /* MultiplePlayerViews in Resources */,
 				20439D551C65564600C56E90 /* Anotha View Contnet in Resources */,
 				20D7DC471C3EDC04002099A8 /* Main.storyboard in Resources */,
@@ -1217,6 +1230,7 @@
 				20D7DE741C45B92D002099A8 /* blueBkg@2x.png in Resources */,
 				2033F5FB1C6EE1D30068D81F /* purp6.cisf in Resources */,
 				2033F5D11C6E6B010068D81F /* purp4.cisf in Resources */,
+				2089D4F01C7520D600079CC4 /* transferCustom.cisf in Resources */,
 				20D7DCF41C4164AE002099A8 /* flipCamTho@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1240,7 +1254,6 @@
 				20D7DE4F1C436F13002099A8 /* SCRecorderFocusView.m in Sources */,
 				20D7DD621C418DEB002099A8 /* UIImage+WebP.m in Sources */,
 				20D7DE431C436B1A002099A8 /* SCVideoConfiguration.m in Sources */,
-				20D81FAD1C7237B5000A1CAF /* BaseAnimator.m in Sources */,
 				20D7DE8C1C46B61F002099A8 /* StatusTableViewController.m in Sources */,
 				20D7DDEB1C436A6F002099A8 /* CameraViewController.m in Sources */,
 				20D7DE321C436B1A002099A8 /* SCFilterAnimation.m in Sources */,
@@ -1252,7 +1265,6 @@
 				20D7DE401C436B1A002099A8 /* SCSampleBufferHolder.m in Sources */,
 				20D7DD571C418DEB002099A8 /* NSData+ImageContentType.m in Sources */,
 				20D7DD5C1C418DEB002099A8 /* SDWebImageDownloaderOperation.m in Sources */,
-				20D81FA91C72359F000A1CAF /* MiniToLargeViewAnimator.m in Sources */,
 				20D7DD9F1C430F1C002099A8 /* VerifyEmailTableViewController.m in Sources */,
 				20D7DD341C418DC3002099A8 /* WelcomeViewController.m in Sources */,
 				20D7DE2B1C436B1A002099A8 /* SCAssetExportSession.m in Sources */,
@@ -1277,7 +1289,7 @@
 				20D7DD641C418DEB002099A8 /* UIImageView+WebCache.m in Sources */,
 				20D7DE3E1C436B1A002099A8 /* SCRecordSession.m in Sources */,
 				20D7DC411C3EDC04002099A8 /* AppDelegate.m in Sources */,
-				20D81FB01C723830000A1CAF /* DummyView.m in Sources */,
+				20D81FBD1C72FDB0000A1CAF /* DismissAnimator.swift in Sources */,
 				20D7DE2D1C436B1A002099A8 /* SCAudioTools.m in Sources */,
 				20D7DD741C418F6A002099A8 /* SCLButton.m in Sources */,
 				20D7DE2F1C436B1A002099A8 /* SCFilter.m in Sources */,
@@ -1290,15 +1302,13 @@
 				20D7DCFB1C4166EB002099A8 /* YZSwipeBetweenViewController.m in Sources */,
 				20D7DE381C436B1A002099A8 /* SCPlayer.m in Sources */,
 				20D7DD311C418DB0002099A8 /* LPPopupListViewCell.m in Sources */,
-				20D81FB61C72FB77000A1CAF /* Interactor.m in Sources */,
-				20D81FAA1C72359F000A1CAF /* MiniToLargeViewInteractive.m in Sources */,
 				20D7DD1B1C418D59002099A8 /* JGActionSheet.m in Sources */,
 				20D7DE331C436B1A002099A8 /* SCFilterImageView.m in Sources */,
 				20D7DD031C418C3B002099A8 /* StoriesTableViewController.m in Sources */,
-				20D81FB91C72FC08000A1CAF /* DismissAnimator.m in Sources */,
 				20D7DD911C4195C9002099A8 /* ViewContentViewController.m in Sources */,
 				20D7DD601C418DEB002099A8 /* UIImage+GIF.m in Sources */,
 				20D7DE3C1C436B1A002099A8 /* SCRecorderTools.m in Sources */,
+				20D81FBE1C72FDB0000A1CAF /* Interactor.swift in Sources */,
 				20D7DD5D1C418DEB002099A8 /* SDWebImageManager.m in Sources */,
 				20D7DE7B1C45D9C2002099A8 /* CERoundProgressLayer.m in Sources */,
 				20D7DD721C418F6A002099A8 /* SCLAlertViewResponder.m in Sources */,
@@ -1363,8 +1373,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1387,7 +1397,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6eea1408-3570-46c7-b0fc-0f2e08da46cc";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1409,8 +1419,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1426,7 +1436,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6eea1408-3570-46c7-b0fc-0f2e08da46cc";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1437,8 +1447,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1450,7 +1462,9 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.storiesapp.Stories;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6eea1408-3570-46c7-b0fc-0f2e08da46cc";
+				SWIFT_OBJC_BRIDGING_HEADER = "Stories/Stories-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -1459,8 +1473,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Level Labs, LLC (HL4WWQQF9X)";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1472,7 +1488,8 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.storiesapp.Stories;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6eea1408-3570-46c7-b0fc-0f2e08da46cc";
+				SWIFT_OBJC_BRIDGING_HEADER = "Stories/Stories-Bridging-Header.h";
 			};
 			name = Release;
 		};

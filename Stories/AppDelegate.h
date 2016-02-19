@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "YZSwipeBetweenViewController.h"
 #import <Parse/Parse.h>
+#import "Stories-swift.h"
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -17,6 +18,8 @@
 @property (strong) YZSwipeBetweenViewController *swipeBetweenVC;
 @property (nonatomic, strong) PFObject *currentUser;
 @property (nonatomic) BOOL accepted;
+@property (nonatomic) BOOL hasViewedStory;
+
 
 
 -(void)setupRootViewControllerForWindow;

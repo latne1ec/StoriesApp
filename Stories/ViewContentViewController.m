@@ -11,6 +11,8 @@
 #import "YZSwipeBetweenViewController.h"
 #import "UIView+Toast.h"
 #import "SharkfoodMuteSwitchDetector.h"
+#import "AppDelegate.h"
+#import "StoriesTableViewController.h"
 
 @interface ViewContentViewController ()
 
@@ -26,8 +28,9 @@
 @property (nonatomic,strong) SharkfoodMuteSwitchDetector* detector;
 @property (nonatomic) BOOL playerOneReady;
 @property (nonatomic) BOOL playerTwoReady;
+@property (nonatomic) BOOL controllerIsDismissing;
 
-
+@property (nonatomic, strong) AppDelegate *appDelegate;
 
 @end
 
@@ -47,6 +50,11 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.appDelegate.hasViewedStory = TRUE;
+    
+    _controllerIsDismissing = FALSE;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategorySoloAmbient error:nil];
@@ -55,11 +63,9 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         __weak ViewContentViewController* sself = self;
         self.detector.silentNotify = ^(BOOL silent){
             if (silent) {
-                NSLog(@"silent");
                 [sself.avPlayer setVolume:0.0];
                 [sself.avPlayerTwo setVolume:0.0];
             } else {
-                NSLog(@"NOT silent");
                 [sself.avPlayer setVolume:1.0];
                 [sself.avPlayer setVolume:1.0];
             }
@@ -77,7 +83,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(goHome:)];
     swipe.direction = UISwipeGestureRecognizerDirectionDown;
     
-    [self.view addGestureRecognizer:swipe];
+    //[self.view addGestureRecognizer:swipe];
     
     self.yzBaby = [[YZSwipeBetweenViewController alloc] init];
     self.delegate = self.yzBaby;
@@ -91,22 +97,24 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     else if([UIScreen mainScreen].bounds.size.height == 568.0) {
         self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 36);
         [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:15.75]];
-
+        
     } else if ([UIScreen mainScreen].bounds.size.height == 667.0) {
         self.subtitleLabel.frame = CGRectMake(0,-40, self.view.frame.size.width, 38);
         [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:16.75]];
-
+        
     } else  if ([UIScreen mainScreen].bounds.size.height == 736.0) {
         self.subtitleLabel.frame = CGRectMake(0,-42, self.view.frame.size.width, 42);
         [self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:17.75]];
     }
-
+    
     self.subtitleLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.565];
     self.subtitleLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.995];
     self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
     //[self.subtitleLabel setFont:[UIFont fontWithName:@"AvenirNext-DemiBold" size:16]];
     
     [self.view addSubview:self.subtitleLabel];
+    
+    self.subtitleLabel.hidden = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(methodToShowViewOnTop)
@@ -162,7 +170,72 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appClosed) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
+    [self.view addGestureRecognizer:pan];
+    
 }
+
+-(void)handlePanGesture:(UIPanGestureRecognizer *)sender {
+    
+    [self.avPlayer pause];
+    [self.avPlayerTwo pause];
+    
+    CGPoint translation = [sender translationInView:self.view];
+    CGFloat verticalMovement = translation.y / self.view.bounds.size.height*1.72;
+    float downwardMovement = fmaxf(verticalMovement, 0.0);
+    float downwardMovementPercent = fmin(downwardMovement, 1.0);
+    CGFloat progress = downwardMovementPercent;
+    
+    self.view.clipsToBounds = YES;
+    
+    self.view.alpha = 1-progress*1.36;
+   
+    self.view.layer.cornerRadius = progress*34;
+    
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        _controllerIsDismissing = TRUE;
+        self.interactor.hasStarted = TRUE;
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    if (sender.state == UIGestureRecognizerStateChanged) {
+        self.interactor.shouldFinish = progress > 0.3;
+        [self.interactor updateInteractiveTransition:progress];
+    }
+    if (sender.state == UIGestureRecognizerStateCancelled) {
+        [UIView animateWithDuration:0.1 animations:^{
+            self.view.alpha = 1.0;
+        } completion:^(BOOL finished) {            
+        }];
+        [self.interactor cancelInteractiveTransition];
+    }
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        
+        self.interactor.hasStarted = FALSE;
+        if (self.interactor.shouldFinish) {
+            [self.skipTimer invalidate];
+            [self.dasTimer invalidate];
+            [self.handleTapTimer invalidate];
+            [self.avPlayer pause];
+            [self.avPlayerTwo pause];
+            self.avPlayer = nil;
+            self.avPlayer = nil;
+            self.avPlayerTwo = nil;
+            self.detector = nil;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"change_home_pic" object:self];
+            _controllerIsDismissing = FALSE;
+            [self.interactor finishInteractiveTransition];
+        } else {
+            [UIView animateWithDuration:0.04 animations:^{
+                self.view.alpha = 1.0;
+                self.view.layer.cornerRadius = 0;
+            } completion:^(BOOL finished) {
+                [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+            }];
+            [self.interactor cancelInteractiveTransition];
+        }
+    }
+}
+
 
 -(void)appClosed {
     [ProgressHUD dismiss];
@@ -198,11 +271,14 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [self.avPlayerTwo pause];
     self.countDownLabel.text = @"";
     
+    [self.handleTapTimer invalidate];
+    self.handleTapTimer = nil;
+    
     self.subtitleLabel.hidden = YES;
     
-    PFObject *lastObject = [self.contentArray lastObject];
-    [[NSUserDefaults standardUserDefaults] setObject:lastObject.objectId forKey:@"lastSeenContentId"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+//    PFObject *lastObject = [self.contentArray lastObject];
+//    [[NSUserDefaults standardUserDefaults] setObject:lastObject.objectId forKey:@"lastSeenContentId"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
     
     self.replayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.replayView];
@@ -253,7 +329,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     currentSkipCount = 0;
     self.countDownLabel.text = @"";
     
-    //[self.contentArray removeAllObjects];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.replayView removeFromSuperview];
@@ -288,6 +363,10 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 -(void)viewWillAppear:(BOOL)animated {
     
+    if (_controllerIsDismissing) {
+        
+    } else {
+    
     currentIndex = 0;
     videoCount = 0;
     imageCount = 0;
@@ -295,17 +374,22 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     skipCount = 0;
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+        
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     
-    self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    self.indicator.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-    self.indicator.center = self.view.center;
-    [self.indicator setHidden:NO];
-    [self.indicator startAnimating];
-    [self.view addSubview:self.indicator];
-
+    if (_controllerIsDismissing) {
+        
+    } else {
+        self.indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        self.indicator.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+        self.indicator.center = self.view.center;
+        [self.indicator setHidden:NO];
+        [self.indicator startAnimating];
+        [self.view addSubview:self.indicator];
+    }
 }
 
 -(void)addTapTapRecoginzer {
@@ -322,30 +406,29 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 
 -(void)viewWillDisappear:(BOOL)animated {
     
-    //[self.avPlayer removeObserver:self forKeyPath:@"currentItem"];
-    //[self.avPlayerTwo removeObserver:self forKeyPath:@"currentItem"];
-    //[self.avPlayer removeObserver:self forKeyPath:@"status"];
-    //[self.avPlayerTwo removeObserver:self forKeyPath:@"status"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"change_home_pic" object:self];
-    [self.skipTimer invalidate];
-    [self.dasTimer invalidate];
-    [self.handleTapTimer invalidate];
-    [self.avPlayer pause];
-    [self.avPlayerTwo pause];
-    self.avPlayer = nil;
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    self.avPlayer = nil;
-    self.avPlayerTwo = nil;
-    self.detector = nil;
-    
-}
+    if (_controllerIsDismissing) {
+        [UIApplication sharedApplication].statusBarHidden = NO;
+    } else {
+     
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"change_home_pic" object:self];
+        [self.skipTimer invalidate];
+        [self.dasTimer invalidate];
+        [self.handleTapTimer invalidate];
+        [self.avPlayer pause];
+        [self.avPlayerTwo pause];
+        self.avPlayer = nil;
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        self.avPlayer = nil;
+        self.avPlayerTwo = nil;
+        self.detector = nil;
 
+    }
+}
 
 -(void)handleSingleTap {
     
     skipCount = skipCount + 1;
-    
     
     if (canSkip == 1) {
         
@@ -363,7 +446,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
         } else {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                
+
                 int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"storyViewCount"] intValue];
                 [[NSUserDefaults standardUserDefaults] setInteger:i+1 forKey:@"storyViewCount"];
                 
@@ -447,7 +530,6 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     }
                              completed:^(UIImage *images, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                  
-                                 NSLog(@"Hi!!");
                                  self.imageView.image = images;
                                  self.imageView.hidden = NO;
                                  //[CATransaction setDisableActions:YES];
@@ -481,7 +563,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
 }
 
 -(void)addCaption {
-    
+
     PFObject *currentContent = [self.contentArray objectAtIndex:currentIndex];
     CGFloat yOrigin = [[currentContent objectForKey:@"captionLocation"] floatValue];
     float height = [[UIScreen mainScreen] bounds].size.height;
@@ -580,7 +662,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
                                  [self.view bringSubviewToFront:self.imageView];
                                  
                                  if (finished) {
-                                     [self addVideoCaption];
+                                     [self addCaption];
                                      [self playDasVideo];
                                      [self preloadVideoPlayer];
                                      //[self makeSkipable];
@@ -753,7 +835,7 @@ static void* CurrentItemObservationContext = &CurrentItemObservationContext;
     [query whereKey:@"postStatus" equalTo:@"approved"];
     [query whereKey:@"userSchoolId" equalTo:userSchoolId];
     [query orderByDescending:@"createdAt"];
-    [query setLimit:118];
+    [query setLimit:100];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
         if (error) {

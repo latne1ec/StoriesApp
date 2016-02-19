@@ -1,0 +1,198 @@
+- (void)imageViewTapped:(UITapGestureRecognizer *)recognizer {
+
+//caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+//caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+if([caption isFirstResponder]){
+[caption resignFirstResponder];
+caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
+
+} else {
+if (caption.alpha == 1) {
+}
+else {
+[self initCaption];
+[caption becomeFirstResponder];
+caption.alpha = 1;
+}
+}
+}
+
+- (void) initCaption{
+
+NSLog(@"INIT");
+caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
+
+//caption = [[UITextView alloc] initWithFrame:CGRectMake(0,self.capturedImageView.frame.size.height/2+80,self.capturedImageView.frame.size.width,40)];
+
+caption = [[UITextView alloc] init];
+
+//caption.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.575];
+caption.backgroundColor = [UIColor clearColor];
+caption.scrollEnabled = NO;
+//caption.layer.cornerRadius = 6;
+caption.textAlignment = NSTextAlignmentLeft;
+//caption.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+//caption.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+caption.textColor = [UIColor whiteColor];
+caption.keyboardAppearance = UIKeyboardAppearanceDefault;
+caption.alpha = 0;
+//caption.tintColor = [UIColor whiteColor];
+caption.delegate = self;
+caption.font = [UIFont fontWithName:@"AvenirNext-Bold" size:28.0];
+caption.layer.shadowColor = [UIColor blackColor].CGColor;
+caption.layer.shadowOffset = CGSizeMake(0.0, 0.04);
+caption.layer.shadowRadius = 5.84;
+caption.layer.shadowOpacity = 0.22;
+[self.capturedImageView addSubview:caption];
+
+UIRotationGestureRecognizer *rotationGesture = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(rotatePiece:)];
+rotationGesture.delegate = self;
+//[caption addGestureRecognizer:rotationGesture];
+
+
+}
+
+- (void)rotatePiece:(UIRotationGestureRecognizer *)gestureRecognizer {
+
+if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) {
+[gestureRecognizer view].transform = CGAffineTransformRotate([[gestureRecognizer view] transform], [gestureRecognizer rotation]);
+[gestureRecognizer setRotation:0];
+}
+}
+
+//-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+//
+//    return YES;
+//}
+
+
+-(void)textViewDidBeginEditing:(UITextView *)textView {
+
+[UIView animateWithDuration:0.1 animations:^{
+caption.textAlignment = NSTextAlignmentLeft;
+self.tintView.alpha = 0.8;
+} completion:^(BOOL finished) {
+
+}];
+
+[self setKeyboardFrame];
+}
+
+-(void)textViewDidEndEditing:(UITextView *)textView {
+
+if ([caption.text length] > 20) {
+caption.textAlignment = NSTextAlignmentLeft;
+} else {
+caption.textAlignment = NSTextAlignmentCenter;
+}
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+
+//caption.textAlignment = NSTextAlignmentCenter;
+
+if ([caption.text length] > 20) {
+caption.textAlignment = NSTextAlignmentLeft;
+
+}
+if ([caption.text length] > 1) {
+
+CGFloat fixedWidth = textView.frame.size.width;
+CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+CGRect newFrame = textView.frame;
+newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
+textView.frame = newFrame;
+self.newFrame = newFrame;
+[self setKeyboardFrame];
+
+}
+}
+
+
+- (void) captionDrag: (UIGestureRecognizer*)gestureRecognizer{
+
+CGPoint translation = [gestureRecognizer locationInView:self.view];
+
+caption.center = CGPointMake(translation.x, translation.y);
+
+
+//    if(translation.y < caption.frame.size.height/2){
+//        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  caption.frame.size.height/2);
+//    } else if(self.capturedImageView.frame.size.height < translation.y + caption.frame.size.height/2){
+//        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  self.capturedImageView.frame.size.height - caption.frame.size.height/2+100);
+//    } else {
+//        caption.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,  translation.y);
+//    }
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+return textView.text.length + (text.length - range.length) <= 48;
+}
+
+-(void)cancelTextCaption {
+
+caption.alpha = 0.0;
+caption.alpha = ([caption.text isEqualToString:@""]) ? 0 : caption.alpha;
+[self.caption.text isEqualToString:@""];
+[caption resignFirstResponder];
+
+}
+
+- (BOOL)textField:(UITextField *)textField
+shouldChangeCharactersInRange:(NSRange)range
+replacementString:(NSString *)string{
+
+NSString *text = textField.text;
+text = [text stringByReplacingCharactersInRange:range withString:string];
+CGSize textSize = [text sizeWithAttributes: @{NSFontAttributeName:textField.font}];
+return (textSize.width + 20 < textField.bounds.size.width) ? true : false;
+}
+
+//-(void)textFieldDidBeginEditing:(UITextView *)textField{
+//
+//    [UIView beginAnimations:nil context:NULL];
+//    [UIView setAnimationDuration:0.15];
+//    [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:caption cache:YES];
+//    caption.frame = CGRectMake(0,self.view.frame.size.height/2+31,self.view.frame.size.width,38);
+//    //[self setKeyboardFrame];
+//    [UIView commitAnimations];
+//
+//}
+
+-(BOOL)textFieldShouldReturn:(UITextField*)textField; {
+
+[caption resignFirstResponder];
+
+return YES;
+}
+
+-(void)setKeyboardFrame {
+
+if (self.newFrame.size.height == 0) {
+NSLog(@"0000");
+[UIView animateWithDuration:0.06 animations:^{
+caption.frame = CGRectMake(6,_keyboardOriginY-60,self.view.frame.size.width-26,60);
+} completion:^(BOOL finished) {
+}];
+
+} else {
+
+[UIView animateWithDuration:0.06 animations:^{
+caption.frame = CGRectMake(6,_keyboardOriginY-self.newFrame.size.height,self.view.frame.size.width-26,self.newFrame.size.height);
+} completion:^(BOOL finished) {
+}];
+}
+}
+
+-(void)keyboardOnScreen:(NSNotification *)notification {
+
+NSDictionary *info  = notification.userInfo;
+NSValue      *value = info[UIKeyboardFrameEndUserInfoKey];
+
+CGRect rawFrame      = [value CGRectValue];
+CGRect keyboardFrame = [self.view convertRect:rawFrame fromView:nil];
+
+_keyboardOriginY = keyboardFrame.origin.y;
+[self setKeyboardFrame];
+}
